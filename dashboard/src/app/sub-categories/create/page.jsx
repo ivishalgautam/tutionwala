@@ -5,7 +5,7 @@ import http from "@/utils/http";
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { SubCategoryForm } from "@/components/Forms/SubCategory";
+import { SubCategoryForm } from "@/components/forms/sub-category";
 import { useRouter } from "next/navigation";
 
 async function postSubCategory(data) {

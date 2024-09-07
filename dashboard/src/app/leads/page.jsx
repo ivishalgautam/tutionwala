@@ -2,7 +2,7 @@
 import Title from "@/components/Title";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import { useState } from "react";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
@@ -12,7 +12,6 @@ import { endpoints } from "../../utils/endpoints.js";
 import { toast } from "sonner";
 import { isObject } from "@/utils/object";
 import { useRouter } from "next/navigation.js";
-import Loader from "@/components/loader";
 
 async function deleteCustomer(data) {
   return http().delete(`${endpoints.leads.getAll}/${data.id}`);
@@ -73,7 +72,7 @@ export default function Users() {
   }
 
   if (isLoading) {
-    return <Loader />;
+    return <Spinner />;
   }
 
   if (isError) {

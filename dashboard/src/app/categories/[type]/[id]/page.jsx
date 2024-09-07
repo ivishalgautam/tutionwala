@@ -1,5 +1,5 @@
 "use client";
-import Section from "@/components/Section";
+import Section from "@/components/section";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import React from "react";

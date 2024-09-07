@@ -1,12 +1,12 @@
 "use client";
-import Section from "@/components/Section";
+import Section from "@/components/section";
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { SubCategoryForm } from "@/components/Forms/SubCategory";
+import { SubCategoryForm } from "@/components/forms/sub-category";
 
 async function updateSubCategory(data) {
   return http().put(`${endpoints.subCategories.getAll}/${data.id}`, data);

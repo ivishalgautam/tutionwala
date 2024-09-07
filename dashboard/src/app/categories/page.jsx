@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import { isObject } from "@/utils/object";
 import { toast } from "sonner";
 import Link from "next/link";
