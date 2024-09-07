@@ -7,7 +7,7 @@ import { endpoints } from "@/utils/endpoints";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import Spinner from "../Spinner";
+import Spinner from "../spinner";
 import { Plus, X } from "lucide-react";
 
 export function BoardForm({ type, handleCreate, handleUpdate, boardId }) {

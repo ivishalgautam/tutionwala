@@ -19,7 +19,7 @@ import { Switch } from "../ui/switch";
 import { useFetchCategories } from "@/hooks/useFetchCategories";
 
 import ReactSelect from "react-select";
-import Spinner from "../Spinner";
+import Spinner from "../spinner";
 import ShadcnSelect from "../ui/shadcn-select";
 import { Plus, Trash, Trash2 } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
