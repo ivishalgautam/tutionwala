@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "../ui/textarea";
 import { H4 } from "../ui/typography";
 import useFileUpload from "@/hooks/useFileUpload";
-import Spinner from "../Spinner";
+import Spinner from "../spinner";
 
 export function CategoryForm({
   type,
