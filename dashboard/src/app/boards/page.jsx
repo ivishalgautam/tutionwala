@@ -3,17 +3,13 @@ import Title from "@/components/Title";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import Modal from "@/components/Modal";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { CategoryForm } from "@/components/Forms/Category";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import Spinner from "@/components/Spinner";
-import { isObject } from "@/utils/object";
 import { toast } from "sonner";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { BoardForm } from "@/components/forms/board";
 
 async function createBoard(data) {
