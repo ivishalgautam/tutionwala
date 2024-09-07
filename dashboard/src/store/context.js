@@ -3,7 +3,7 @@ import { useEffect, createContext, useState } from "react";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { usePathname } from "next/navigation";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import Loader from "@/components/loader";
 
 export const MainContext = createContext(null);
