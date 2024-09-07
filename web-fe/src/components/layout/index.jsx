@@ -1,0 +1,94 @@
+"use client";
+import React, { useContext, useEffect } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { allRoutes } from "@/data/routes";
+import { MainContext } from "@/store/context";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import Header from "../header";
+
+export default function Layout({ children }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { slug } = useParams();
+  const { user, isUserLoading } = useContext(MainContext);
+  useEffect(() => {
+    if (
+      pathname === "/login" ||
+      pathname === "/signup" ||
+      pathname === "/signup/tutor" ||
+      pathname === "/signup/student" ||
+      pathname === "/verify" ||
+      pathname === "/complete-profile/tutor" ||
+      pathname === "/complete-profile/student"
+    ) {
+      return;
+    }
+    if (isUserLoading) return;
+
+    // Find the current route in the AllRoutes array
+    const currentRoute = allRoutes?.find(
+      (route) => route.link === pathname.replace("[slug]", slug),
+    );
+    if (user?.role === "tutor") {
+      async function getTutorDetails(id) {
+        const { data } = await http().get(
+          `${endpoints.tutor.getAll}/getByUser/${id}`,
+        );
+        if (!data.is_profile_completed)
+          return router.replace("/complete-profile/tutor");
+      }
+      getTutorDetails(user.id);
+    }
+
+    if (user?.role === "student") {
+      async function getStudentDetails(id) {
+        const { data } = await http().get(
+          `${endpoints.student.getAll}/getByUser/${id}`,
+        );
+        if (!data.is_profile_completed)
+          return router.replace("/complete-profile/student");
+      }
+      getStudentDetails(user.id);
+    }
+    // If the current route is not found in the array or the user's role is not allowed for this route
+    if (
+      currentRoute &&
+      currentRoute?.roles?.length &&
+      !currentRoute?.roles?.includes(user?.role)
+    ) {
+      localStorage.clear();
+      router.replace("/login");
+    }
+  }, [pathname, user, isUserLoading, slug, router]);
+
+  const getContent = () => {
+    // Array of all the paths that don't need the layout
+    if (
+      [
+        "/login",
+        "/signup",
+        "/signup/tutor",
+        "/signup/student",
+        "/unauthorized",
+      ].includes(pathname)
+    ) {
+      return children;
+    }
+
+    return (
+      <>
+        <Header />
+        {children}
+      </>
+    );
+  };
+
+  // if (isUserLoading) return <Spinner />;
+
+  return (
+    <main className="min-h-screen bg-gray-100">
+      <div className="h-full">{getContent()}</div>
+    </main>
+  );
+}
