@@ -1,6 +1,6 @@
 "use client";
-import { CategoryForm } from "@/components/Forms/Category";
-import Section from "@/components/Section";
+import { CategoryForm } from "@/components/forms/Category";
+import Section from "@/components/section";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import React from "react";

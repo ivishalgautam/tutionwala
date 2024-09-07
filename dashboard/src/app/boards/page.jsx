@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import { BoardForm } from "@/components/forms/board";
 

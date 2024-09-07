@@ -1,5 +1,4 @@
 "use client";
-import { CategoryForm } from "@/components/Forms/Category";
 import Section from "@/components/Section";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
@@ -7,6 +6,7 @@ import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { CategoryForm } from "@/components/forms/Category";
 
 async function updateCategory(data) {
   return http().put(`${endpoints.categories.getAll}/${data.id}`, data);
