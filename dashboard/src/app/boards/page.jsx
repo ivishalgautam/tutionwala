@@ -11,7 +11,7 @@ import { endpoints } from "@/utils/endpoints";
 import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import { BoardForm } from "@/components/forms/board";
-
+//
 async function createBoard(data) {
   return http().post(`${endpoints.boards.getAll}`, data);
 }
