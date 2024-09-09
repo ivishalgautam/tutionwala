@@ -4,7 +4,6 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { usePathname } from "next/navigation";
 import Spinner from "@/components/spinner";
-import Loader from "@/components/loader";
 
 export const MainContext = createContext(null);
 
@@ -36,7 +35,7 @@ export default function Context({ children }) {
         isUserLoading,
       }}
     >
-      {!user || isUserLoading ? <Loader /> : children}
+      {!user || isUserLoading ? <Spinner /> : children}
     </MainContext.Provider>
   );
 }

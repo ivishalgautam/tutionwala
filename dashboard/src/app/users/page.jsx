@@ -33,8 +33,6 @@ export default function Users() {
     queryFn: fetchUsers,
   });
 
-  console.log({ data });
-
   function handleNavigate(href) {
     router.push(href);
   }
