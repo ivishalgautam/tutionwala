@@ -3,6 +3,7 @@ import { useEffect, createContext, useState } from "react";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { usePathname } from "next/navigation";
+import Loading from "@/components/loading";
 
 export const MainContext = createContext(null);
 
@@ -25,17 +26,14 @@ function Context({ children }) {
           setIsUserLoading(false);
         });
     }
-    if (
-      ![
-        "/login",
-        "/signup",
-        "/verify",
-        "/signup/student",
-        "/signup/tutor",
-      ].includes(pathname)
-    )
+    if (!["/login", "/signup/student", "/signup/tutor"].includes(pathname)) {
       fetchData();
+    } else {
+      setIsUserLoading(false);
+    }
   }, [pathname]);
+
+  if (isUserLoading) return <Loading />;
 
   return (
     <MainContext.Provider

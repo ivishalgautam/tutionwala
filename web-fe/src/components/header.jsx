@@ -55,7 +55,7 @@ export default function NavbarComponent() {
           <NavbarList>
             <Link
               className={buttonVariants({ variant: "default" })}
-              href={"/dashboard"}
+              href={"/dashboard?tab=enquiries"}
             >
               Dashboard
             </Link>
@@ -87,12 +87,39 @@ export default function NavbarComponent() {
           {/* <NavbarItem>Projects</NavbarItem>
           <NavbarItem>Research</NavbarItem>
           <NavbarItem>Contact</NavbarItem> */}
-          <NavbarItem>
-            <Link href={"/login"}>Login</Link>
-          </NavbarItem>
-          <NavbarItem active={true}>
-            <Link href={"/signup/tutor"}>Signup as Tutor</Link>
-          </NavbarItem>
+          {isUserLoading ? (
+            <Loader />
+          ) : user ? (
+            <>
+              <Link
+                className={buttonVariants({ variant: "default" })}
+                href={"/dashboard?tab=enquiries"}
+              >
+                Dashboard
+              </Link>
+              <Button
+                type="button"
+                onClick={() => {
+                  localStorage.clear();
+                  setUser("");
+                  router.replace("/login");
+                }}
+                variant="outline"
+              >
+                <LucideLogOut size={15} />
+                &nbsp;Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <NavbarItem>
+                <Link href={"/login"}>Login</Link>
+              </NavbarItem>
+              <NavbarItem active={true}>
+                <Link href={"/signup/tutor"}>Signup as Tutor</Link>
+              </NavbarItem>
+            </>
+          )}
         </NavbarCollapse>
       </NavbarContainer>
     </Navbar>

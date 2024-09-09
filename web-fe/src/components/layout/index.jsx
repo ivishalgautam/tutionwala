@@ -25,10 +25,9 @@ export default function Layout({ children }) {
       return;
     }
     if (isUserLoading) return;
-
     // Find the current route in the AllRoutes array
     const currentRoute = allRoutes?.find(
-      (route) => route.link === pathname.replace("[slug]", slug),
+      (route) => route.link.replace("[slug]", slug) === pathname,
     );
     if (user?.role === "tutor") {
       async function getTutorDetails(id) {

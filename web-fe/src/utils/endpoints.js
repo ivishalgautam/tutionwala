@@ -71,4 +71,7 @@ export const endpoints = {
   student: {
     getAll: "/students",
   },
+  followUps: {
+    getAll: "/followUps",
+  },
 };

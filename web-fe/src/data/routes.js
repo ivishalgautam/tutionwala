@@ -15,15 +15,15 @@ export const allRoutes = [
     roles: [ROLES.USER],
   },
   {
-    link: "/categories/[slug]/[subCatSlug]",
-    roles: [ROLES.USER],
-  },
-  {
     link: "/complete-profile/tutor",
     roles: [ROLES.TUTOR],
   },
   {
     link: "/search/[subCatSlug]",
     roles: [],
+  },
+  {
+    link: "/follow-ups/[slug]",
+    roles: [ROLES.TUTOR],
   },
 ];

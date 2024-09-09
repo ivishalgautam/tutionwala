@@ -1,7 +1,9 @@
 "use client";
 import Loading from "@/components/loading";
-import { columns } from "@/components/table/enquiries/tutors/columns";
-import { DataTable } from "@/components/table/enquiries/tutors/data-table";
+import { columns as tutorColumns } from "@/components/table/enquiries/tutors/columns";
+import { columns as studentColumns } from "@/components/table/enquiries/students/columns";
+import { DataTable as TutorsEnquiryDataTable } from "@/components/table/enquiries/tutors/data-table";
+import { DataTable as StudentsEnquiryDataTable } from "@/components/table/enquiries/students/data-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Muted, Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
@@ -34,7 +36,6 @@ export default function Page() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const currTab = searchParams.get("tab");
-  const currSTab = searchParams.get("stab");
   const {
     data: enquiries,
     isLoading: isEnquiriesLoading,
@@ -43,7 +44,7 @@ export default function Page() {
   } = useQuery({
     queryFn: fetchEnquiries,
     queryKey: ["enquiries"],
-    enabled: !!(currSTab === "enquiries"),
+    enabled: !!(currTab === "enquiries"),
   });
 
   const deleteMutation = useMutation(deleteCategory, {
@@ -86,7 +87,7 @@ export default function Page() {
               )}
             </div>
             <ul className="space-y-[1px]">
-              {["dashboard", "profile"].map((item) => (
+              {["enquiries"].map((item) => (
                 <li
                   key={item}
                   className={cn(
@@ -110,45 +111,31 @@ export default function Page() {
         </div>
         <div className="col-span-9">
           <div className="rounded bg-white p-4">
-            <Tabs defaultValue="enquiries">
-              <div className="sticky top-0 z-50">
-                <TabsList className="w-full rounded-lg">
-                  {tabs.map(
-                    (tab, idx) =>
-                      !isUserLoading &&
-                      tab.roles.includes(user.role) && (
-                        <TabsTrigger
-                          key={idx}
-                          className="flex flex-1 rounded-md capitalize"
-                          value={tab.value}
-                        >
-                          <Link
-                            href={`?tab=dashboard&stab=${tab.value}`}
-                            className="h-full w-full"
-                          >
-                            {tab.label}
-                          </Link>
-                        </TabsTrigger>
-                      ),
-                  )}
-                </TabsList>
-              </div>
-              <TabsContent value="enquiries">
-                {isEnquiriesLoading ? (
-                  <Loading />
-                ) : (
-                  <DataTable
-                    columns={columns(handleDelete)}
-                    data={enquiries?.map(({ id, tutor, created_at }) => ({
-                      id,
-                      created_at,
-                      fullname: tutor[0].fullname,
-                    }))}
-                  />
-                )}
-              </TabsContent>
-              <TabsContent value="follow-ups">followups</TabsContent>
-            </Tabs>
+            {isEnquiriesLoading ? (
+              <Loading />
+            ) : user.role === "student" ? (
+              <TutorsEnquiryDataTable
+                columns={tutorColumns(handleDelete)}
+                data={enquiries?.map(({ id, tutor, created_at }) => ({
+                  id,
+                  created_at,
+                  fullname: tutor[0].fullname,
+                }))}
+              />
+            ) : user.role === "tutor" ? (
+              <StudentsEnquiryDataTable
+                columns={studentColumns(handleDelete)}
+                data={enquiries?.map(({ id, student, created_at }) => ({
+                  id,
+                  created_at,
+                  fullname: student[0].fullname,
+                  userId: student[0].user_id,
+                  studentId: student[0].student_id,
+                }))}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
