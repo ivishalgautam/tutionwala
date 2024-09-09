@@ -20,7 +20,10 @@ export default function FollowUpCard({
   setFollowUpId,
 }) {
   return (
-    <div key={followup.id} className="relative rounded-lg bg-white p-4 shadow">
+    <div
+      key={followup.id}
+      className="relative rounded-lg border bg-white p-4 shadow"
+    >
       <H4>{followup.title}</H4>
       <p
         className={cn("text-gray-400", {
