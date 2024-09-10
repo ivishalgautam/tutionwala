@@ -554,72 +554,29 @@ export default function CompleteProfileTutor({
 
           {/* form 3 */}
           {currStep === 3 && (
-            <div className="space-y-4">
-              <H5 className={"text-center"}>Adhaar and profile</H5>
-              <div className="flex items-center gap-2">
-                {!images.profile_picture ? (
-                  <div className="flex-1 rounded-lg border border-dashed border-gray-300 p-8">
-                    <Label>Profile Picture</Label>
-                    <Input
-                      type="file"
-                      placeholder="Select profile picture"
-                      {...register("profile_picture", {
-                        required: "Required*",
-                      })}
-                      onChange={(e) => handleFileChange(e, "profile_picture")}
-                      accept="image/png, image/jpeg, image/jpg"
-                    />
-                    {errors.profile_picture && (
-                      <span className="text-sm text-red-500">
-                        {errors.profile_picture.message}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex flex-1 items-center justify-center">
-                    <figure className="relative size-32">
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.profile_picture}`}
-                        width={500}
-                        height={500}
-                        alt="Profile picture"
-                        className="h-full w-full"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() =>
-                          deleteFile(images.profile_picture, "profile_picture")
-                        }
-                        className="absolute -right-2 -top-2"
-                        size="icon"
-                      >
-                        <Trash size={20} />
-                      </Button>
-                    </figure>
-                  </div>
-                )}
-                {!images.adhaar ? (
-                  <div className="flex-1 rounded-lg border border-dashed border-gray-300 p-8">
-                    <Label>Adhaar</Label>
-                    <Input
-                      type="file"
-                      placeholder="Select Adhaar Card"
-                      {...register("adhaar", {
-                        required: "Required*",
-                      })}
-                      onChange={(e) => handleFileChange(e, "adhaar")}
-                      multiple={false}
-                      accept="image/png, image/jpeg, image/jpg"
-                    />
-                    {errors.adhaar && (
-                      <span className="text-sm text-red-500">
-                        {errors.adhaar.message}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex flex-1 items-center justify-center">
+            <div className="space-y-4 p-6">
+              <H5 className={"text-center"}>Adhaar</H5>
+              <div className="space-y-4">
+                <div className="flex flex-col items-center justify-center">
+                  <Input
+                    type="file"
+                    placeholder="Select Adhaar Card"
+                    {...register("adhaar", {
+                      required: "Required*",
+                    })}
+                    onChange={(e) => handleFileChange(e, "adhaar")}
+                    multiple={false}
+                    accept="image/png, image/jpeg, image/jpg"
+                    className={`max-w-56 bg-primary text-white`}
+                  />
+                  {errors.adhaar && (
+                    <span className="text-sm text-red-500">
+                      {errors.adhaar.message}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
+                  {images.adhaar ? (
                     <figure className="relative size-32">
                       <Image
                         src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.adhaar}`}
@@ -632,17 +589,17 @@ export default function CompleteProfileTutor({
                       <Button
                         type="button"
                         variant="destructive"
-                        onClick={() =>
-                          deleteFile(images.profile_picture, "adhaar")
-                        }
+                        onClick={() => deleteFile(images.adhaar, "adhaar")}
                         className="absolute -right-2 -top-2"
                         size="icon"
                       >
                         <Trash size={20} />
                       </Button>
                     </figure>
-                  </div>
-                )}
+                  ) : (
+                    <div>No file selected</div>
+                  )}
+                </div>
               </div>
               <div className="text-end">
                 <Button>Submit</Button>
