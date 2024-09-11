@@ -69,13 +69,13 @@ export const columns = (handleDelete, handleNavigate) => [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Sub categories
+          Courses
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const count = row.original.totalSubCategories;
+      const count = row.original.courses;
       return <Badge>{count ?? 0}</Badge>;
     },
   },

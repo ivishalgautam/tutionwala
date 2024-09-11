@@ -309,6 +309,7 @@ export function SubCategoryForm({
                 //     `${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image}`
                 //   );
                 // }}
+                onError={(err) => setImage("")}
               />
             </div>
           ) : (
