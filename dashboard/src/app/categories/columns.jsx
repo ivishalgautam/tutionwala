@@ -21,6 +21,24 @@ import { Badge } from "@/components/ui/badge";
 
 export const columns = (handleDelete, handleNavigate) => [
   {
+    accessorKey: "image",
+    header: ({ column }) => {
+      return <Button variant="ghost">Image</Button>;
+    },
+    cell: ({ row }) => {
+      const image = row.original.image;
+      return (
+        <Image
+          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image}`}
+          width={50}
+          height={50}
+          alt="image"
+          className="rounded"
+        />
+      );
+    },
+  },
+  {
     accessorKey: "name",
     header: ({ column }) => {
       return (
