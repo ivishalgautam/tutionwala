@@ -33,11 +33,12 @@ import http from "@/utils/http";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { CheckIcon, Plus, Trash } from "lucide-react";
+import { CheckIcon, Plus, Trash, TrashIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Progress } from "../ui/progress";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -71,6 +72,7 @@ export default function CompleteProfileTutor({
         : currStep === 2
           ? {
               experience: "",
+              intro_video: "",
             }
           : currStep === 3
             ? {
@@ -79,17 +81,30 @@ export default function CompleteProfileTutor({
               }
             : null,
   });
-  const [images, setImages] = useState({
+  const [media, setMedia] = useState({
     profile_picture: "",
     adhaar: "",
+    video: "",
   });
+  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { token } = useLocalStorage("token");
-  const { fields: languages, append: appendLang } = useFieldArray({
+  const {
+    fields: languages,
+    append: appendLang,
+    remove: removeLang,
+  } = useFieldArray({
     control,
     name: "languages",
   });
 
-  const { data, isLoading } = useQuery({
+  const {
+    data,
+    isLoading: isSubCatLoading,
+    isError,
+    error,
+    isFetching,
+  } = useQuery({
     queryKey: [`subCategory-${id}`],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
@@ -155,6 +170,7 @@ export default function CompleteProfileTutor({
   };
 
   const onSubmit = (formData) => {
+    console.log({ formData });
     const payload =
       currStep === 1
         ? {
@@ -165,11 +181,12 @@ export default function CompleteProfileTutor({
         : currStep === 2
           ? {
               experience: formData.experience,
+              profile_picture: media.profile_picture,
+              intro_video: media.video,
             }
           : currStep === 3
             ? {
-                profile_picture: images.profile_picture,
-                adhaar: images.adhaar,
+                adhaar: media.adhaar,
               }
             : null;
 
@@ -177,6 +194,7 @@ export default function CompleteProfileTutor({
   };
 
   const handleFileChange = async (event, type) => {
+    setIsLoading(true);
     try {
       const selectedFiles = event.target.files[0];
       const formData = new FormData();
@@ -190,14 +208,33 @@ export default function CompleteProfileTutor({
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
+          onUploadProgress: (progressEvent) => {
+            const progress = parseInt(
+              Math.round((progressEvent.loaded * 100) / progressEvent.total),
+            );
+            setProgress(progress);
+          },
         },
       );
-      type === "profile_picture"
-        ? setImages((prev) => ({ ...prev, profile_picture: response.data[0] }))
-        : setImages((prev) => ({ ...prev, adhaar: response.data[0] }));
+
+      const file = response.data[0];
+      if (type === "adhaar") {
+        setMedia((prev) => ({ ...prev, adhaar: file }));
+        localStorage.setItem("adhaar", file);
+      }
+      if (type === "profile_picture") {
+        setMedia((prev) => ({ ...prev, profile_picture: file }));
+        localStorage.setItem("profile_picture", file);
+      }
+      if (type === "video") {
+        setMedia((prev) => ({ ...prev, video: file }));
+        localStorage.setItem("video", file);
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
+      setIsLoading(false);
+      setProgress(0);
     }
   };
   const deleteFile = async (filePath, type) => {
@@ -207,9 +244,21 @@ export default function CompleteProfileTutor({
       );
       toast.success(resp?.message);
 
-      type === "profile_picture"
-        ? setImages((prev) => ({ ...prev, profile_picture: "" }))
-        : setImages((prev) => ({ ...prev, adhaar: "" }));
+      if (type === "adhaar") {
+        setMedia((prev) => ({ ...prev, adhaar: "" }));
+        localStorage.removeItem("adhaar");
+        setValue("adhaar", "");
+      }
+      if (type === "profile_picture") {
+        setMedia((prev) => ({ ...prev, profile_picture: "" }));
+        localStorage.removeItem("profile_picture");
+        setValue("profile_picture", "");
+      }
+      if (type === "video") {
+        setMedia((prev) => ({ ...prev, video: "" }));
+        localStorage.removeItem("video");
+        setValue("video", "");
+      }
     } catch (error) {
       console.log(error);
       return toast.error(error?.message ?? "Error deleting image");
@@ -224,8 +273,10 @@ export default function CompleteProfileTutor({
       }
     }
   }, [data, unregister]);
+  console.log(watch());
 
-  if (isLoading) return <Loading />;
+  if (isFetching && isSubCatLoading) return <Loading />;
+  if (isError) return error?.message ?? "error";
 
   return (
     <div className={"space-y-4 p-8"}>
@@ -246,7 +297,7 @@ export default function CompleteProfileTutor({
                     {languages.map((language, ind) => (
                       <div
                         key={ind}
-                        className="flex items-center justify-start gap-2"
+                        className="flex items-end justify-start gap-2"
                       >
                         <div className="flex-1">
                           <Label>Language</Label>
@@ -293,6 +344,14 @@ export default function CompleteProfileTutor({
                             </span>
                           )}
                         </div>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="destructive"
+                          onClick={() => removeLang()}
+                        >
+                          <TrashIcon />
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -546,6 +605,111 @@ export default function CompleteProfileTutor({
                   </span>
                 )}
               </div>
+
+              <div className="flex items-start justify-center gap-4">
+                {/* profile pic */}
+                <div className="flex-1 space-y-4">
+                  <H5 className={"text-center"}>Profile Picture</H5>
+                  <div className="flex flex-col items-center justify-center">
+                    <Input
+                      type="file"
+                      placeholder="Select Profile Picture"
+                      {...register("profile_picture", {
+                        required: "Required*",
+                      })}
+                      onChange={(e) => handleFileChange(e, "profile_picture")}
+                      multiple={false}
+                      accept="image/png, image/webp, image/jpg, image/jpeg"
+                    />
+                    {errors.profile_picture && (
+                      <span className="text-sm text-red-500">
+                        {errors.profile_picture.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
+                    {media.profile_picture ? (
+                      <figure className="relative aspect-square size-32">
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.profile_picture}`}
+                          className="h-full w-full"
+                          width={200}
+                          height={200}
+                          alt="profile"
+                        ></Image>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() =>
+                            deleteFile(media.profile_picture, "profile_picture")
+                          }
+                          className="absolute -right-2 -top-2"
+                          size="icon"
+                        >
+                          <Trash size={20} />
+                        </Button>
+                      </figure>
+                    ) : (
+                      <div>No file selected</div>
+                    )}
+                  </div>
+                </div>
+
+                {/* intro video */}
+                <div className="flex-1 space-y-4">
+                  <H5 className={"text-center"}>Intro Video</H5>
+                  <div className="flex flex-col items-center justify-center">
+                    <Input
+                      type="file"
+                      placeholder="Select Intro video"
+                      {...register("video", {
+                        required: "Required*",
+                      })}
+                      onChange={(e) => handleFileChange(e, "video")}
+                      multiple={false}
+                      accept=".mp4, .mkv"
+                    />
+                    {errors.video && (
+                      <span className="text-sm text-red-500">
+                        {errors.video.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
+                    {isLoading && (
+                      <Progress
+                        id="file"
+                        value={progress}
+                        max="100"
+                      >{`${progress}%`}</Progress>
+                    )}
+                    {media.video ? (
+                      <div className="relative w-max">
+                        <video
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.video}`}
+                          autoPlay
+                          loop
+                          muted
+                          className="aspect-video w-44"
+                        ></video>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() => deleteFile(media.video, "video")}
+                          className="absolute -right-2 -top-2"
+                          size="icon"
+                        >
+                          <Trash size={20} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>No file selected</div>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div className="text-end">
                 <Button>Submit</Button>
               </div>
@@ -575,11 +739,12 @@ export default function CompleteProfileTutor({
                     </span>
                   )}
                 </div>
+
                 <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                  {images.adhaar ? (
+                  {media.adhaar ? (
                     <figure className="relative size-32">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.adhaar}`}
+                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.adhaar}`}
                         width={500}
                         height={500}
                         alt="adhaar"
@@ -589,7 +754,7 @@ export default function CompleteProfileTutor({
                       <Button
                         type="button"
                         variant="destructive"
-                        onClick={() => deleteFile(images.adhaar, "adhaar")}
+                        onClick={() => deleteFile(media.adhaar, "adhaar")}
                         className="absolute -right-2 -top-2"
                         size="icon"
                       >

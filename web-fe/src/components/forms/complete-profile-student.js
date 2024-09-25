@@ -40,6 +40,7 @@ import { useEffect, useState } from "react";
 // icons
 import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
+import NextImage from "../next-image";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -64,6 +65,7 @@ export default function CompleteProfileStudent({
   setCurrStep,
   profileStep,
   setProfileStep,
+  subCatSlug,
 }) {
   const {
     register,
@@ -98,9 +100,8 @@ export default function CompleteProfileStudent({
   // console.log(data?.fields);
   const tutors = useMutation({
     mutationKey: [`tutors-${id}`],
-    mutationFn: fetchTutors,
+    mutationFn: (data) => fetchTutors({ ...data, subCatSlug }),
     onSettled: (data) => {
-      console.log({ data });
       setFilteredTutors({ found: data.total, data: data.data });
     },
   });
@@ -314,16 +315,18 @@ export default function CompleteProfileStudent({
                               rules={{ required: "required*" }}
                               render={({ field }) => (
                                 <Checkbox
-                                  checked={field.value?.includes(language.id)}
+                                  checked={field.value?.includes(
+                                    language.value,
+                                  )}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([
                                           ...field.value,
-                                          language.id,
+                                          language.value,
                                         ])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== language.id,
+                                            (value) => value !== language.value,
                                           ),
                                         );
                                   }}
@@ -580,7 +583,7 @@ export default function CompleteProfileStudent({
 
           {/* form 2 */}
           {profileStep === 2 && (
-            <div className="space-y-4 p-6">
+            <div className="space-y-4 rounded-lg bg-white p-6">
               <H5 className={"text-center"}>Adhaar</H5>
               <div className="space-y-4">
                 <div className="flex flex-col items-center justify-center">
@@ -641,7 +644,7 @@ export default function CompleteProfileStudent({
                 {filteredTutors?.data?.map((image, ind) => (
                   <div
                     key={image}
-                    className={cn({
+                    className={cn("size-20", {
                       relative: filteredTutors.data?.length - 1 === ind,
                     })}
                   >
@@ -655,12 +658,12 @@ export default function CompleteProfileStudent({
                           <Plus size={10} /> {filteredTutors.found - limit}
                         </div>
                       )}
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image}`}
+                    <NextImage
+                      src={image.profile_picture}
                       width={100}
                       height={100}
                       alt=""
-                      className="rounded"
+                      className="h-full w-full rounded-lg object-cover object-center"
                     />
                   </div>
                 ))}

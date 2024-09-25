@@ -52,9 +52,10 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
           return client(error.config);
         })
         .catch((refreshError) => {
-          // console.log({ refreshError });
           if (refreshError.response?.status === 401) {
             // Refresh token is expired or invalid, logout the user
+            localStorage.clear();
+            window.location.href = "/login";
           } else {
             // Unable to refresh the token
             // console.log("Error refreshing token:", refreshError);
@@ -67,9 +68,10 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
       // Handle forbidden access cases
       // console.log("Forbidden access:", error.response.data?.message);
       // typeof logout === "function" && logout();
+      localStorage.clear();
+      window.location.href = "/login";
     }
-
-    if (error.response?.status !== 500) {
+    if (error.status !== 500) {
       return Promise.reject(error.response?.data);
     } else {
       return Promise.reject(error);

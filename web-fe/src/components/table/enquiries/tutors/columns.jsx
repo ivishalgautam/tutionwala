@@ -12,7 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 
-export const columns = (handleDelete) => [
+export const columns = (
+  handleDelete,
+  openReviewModal,
+  setTutorId,
+  setEnquiryId,
+) => [
   {
     accessorKey: "fullname",
     header: ({ column }) => {
@@ -50,7 +55,8 @@ export const columns = (handleDelete) => [
     enableHiding: false,
     cell: ({ row }) => {
       const id = row.original.id;
-
+      const status = row.original.status;
+      const tutorId = row.original.tutorId;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -62,9 +68,21 @@ export const columns = (handleDelete) => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleDelete(id)}>
+
+            {status === "converted" && (
+              <DropdownMenuItem
+                onClick={() => {
+                  openReviewModal();
+                  setTutorId(tutorId);
+                  setEnquiryId(id);
+                }}
+              >
+                Review
+              </DropdownMenuItem>
+            )}
+            {/* <DropdownMenuItem onClick={() => handleDelete(id)}>
               Delete
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

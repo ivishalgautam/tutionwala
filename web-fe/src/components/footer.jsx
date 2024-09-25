@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 
 import Link from "next/link";
 import { H2, Small } from "./ui/typography";
+import { GradualSpacing } from "./ui/animated-text";
 
 const pathArr = [
   "M 62 140 L 43 140 L 43 16.8 L 0 16.8 L 0 0 L 105 0 L 105 16.8 L 62 16.8 L 62 140 Z", // T
@@ -44,7 +45,7 @@ const Footer = () => {
         className="relative h-full bg-white pt-8 text-black sm:pt-14"
         ref={container}
       >
-        <div className="mx-auto  px-4 sm:container">
+        <div className="mx-auto space-y-8 px-4 sm:container">
           <div className="w-full justify-between md:flex">
             <div className="md:flex-1">
               <H2 className="mb-2 text-2xl font-semibold text-primary md:text-4xl">
@@ -129,7 +130,7 @@ const Footer = () => {
           </div>
           <div className="flex flex-col-reverse justify-between gap-3 py-2 md:flex-row">
             <span className="font-medium">
-              &copy; {new Date().getFullYear()} TUTIONWALA.COM. All Rights
+              &copy; {new Date().getFullYear()} TUTIONWALA.IN. All Rights
               Reserved.
             </span>
             <a href="#" className="font-semibold">

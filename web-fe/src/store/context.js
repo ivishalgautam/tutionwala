@@ -20,6 +20,7 @@ function Context({ children }) {
         .then((data) => {
           setUser(data);
           setIsUserLoading(false);
+          localStorage.setItem("user", JSON.stringify(data));
         })
         .catch((error) => {
           // console.log(error);

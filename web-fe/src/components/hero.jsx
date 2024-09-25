@@ -35,7 +35,7 @@ export default function Hero() {
             height={1000}
             quality={100}
             alt="tutionwala"
-            className="mx-auto w-full rounded-lg  sm:w-10/12 lg:w-full"
+            className="mx-auto w-full rounded-lg shadow-2xl sm:w-10/12 lg:w-full"
           />
         </div>
       </section>

@@ -28,8 +28,6 @@ export default function SearchModal() {
     enabled: !!inputVal,
   });
 
-  console.log({ data });
-
   const handleChange = async (value) => {
     if (!value.trim()) return;
 
@@ -45,7 +43,7 @@ export default function SearchModal() {
       handleChange(value);
     }, 300);
   };
-  console.log({ inputVal });
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <div className="text-start">

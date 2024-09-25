@@ -1,3 +1,4 @@
+"use client";
 import { FileImage } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -7,7 +8,7 @@ export default function NextImage({ width, height, alt, src, className }) {
   const [isImageError, setIsImageError] = useState(false);
   return (
     <Image
-      src={isImageError ? "/images/not-found.jpg" : `${baseUrl}/${src}`}
+      src={isImageError ? "/images/not-found.png" : `${baseUrl}/${src}`}
       width={width}
       height={height}
       alt={alt}

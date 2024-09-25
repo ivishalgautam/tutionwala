@@ -19,6 +19,8 @@ import { Edit } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { formatTime } from "@/utils/time";
 import { useRouter } from "next/navigation";
+import { useJsApiLoader } from "@react-google-maps/api";
+import { useAutocomplete } from "@/hooks/useAutoComplete";
 
 const defaultValues = {
   type: "",
@@ -41,7 +43,6 @@ const fetchSubcategories = async () => {
   );
   return data.data;
 };
-
 export default function SignUpTutorForm() {
   const [loading, setLoading] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -49,7 +50,6 @@ export default function SignUpTutorForm() {
   const [remainingTime, setRemainingTime] = useState(0);
   const [minute] = useState(5);
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -61,11 +61,17 @@ export default function SignUpTutorForm() {
     getValues,
     setFocus,
   } = useForm({ defaultValues });
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
+    libraries: ["places"],
+  });
+  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
 
   const { data: subCategories } = useQuery({
     queryKey: ["sub-categories"],
     queryFn: fetchSubcategories,
   });
+
   const formattedSubCategories = useCallback(() => {
     return (
       subCategories?.map(({ id: value, name: label }) => ({
@@ -118,13 +124,11 @@ export default function SignUpTutorForm() {
           email,
         },
       );
-      if (statusText === "OK") {
-        toast.success(data.message);
-        setIsOtpSent(true);
-        setIsResendDisabled(true);
-        setRemainingTime(60 * minute);
-        setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
-      }
+      toast.success(data.message);
+      setIsOtpSent(true);
+      setIsResendDisabled(true);
+      setRemainingTime(60 * minute);
+      setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message ?? "error");
@@ -141,7 +145,7 @@ export default function SignUpTutorForm() {
       country_code: data.country_code,
       mobile_number: data.mobile_number,
       gender: data.gender,
-      sub_categories: [data.sub_category_id],
+      sub_categories: data.sub_category_id,
       otp: data.otp,
       role: data.role,
       location: data.location,
@@ -157,6 +161,12 @@ export default function SignUpTutorForm() {
       return () => clearInterval(interval);
     }
   }, [isResendDisabled]);
+
+  useEffect(() => {
+    if (selectedPlace) {
+      setValue("location", selectedPlace.address);
+    }
+  }, [selectedPlace]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
@@ -378,14 +388,22 @@ export default function SignUpTutorForm() {
               {/* location */}
               <div>
                 <Label className="text-sm">Location</Label>
-                <Input
+                <Controller
+                  control={control}
+                  name="location"
+                  rules={{ required: "required*" }}
+                  render={({ field: { onChange, value } }) => (
+                    <Input ref={inputRef} />
+                  )}
+                />
+                {/* <Input
                   type="text"
                   {...register("location", {
                     required: "required*",
                   })}
                   placeholder="Enter Your location"
                   className="rounded-lg bg-gray-100"
-                />
+                /> */}
                 {errors.location && (
                   <span className="text-sm text-rose-500">
                     {errors.location.message}

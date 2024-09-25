@@ -7,7 +7,7 @@ import Layout from "@/components/layout";
 import Image from "next/image";
 
 export const metadata = {
-  // metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
+  // metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL)
 };
 
 export default function RootLayout({ children }) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
         className={`${GeistSans.className}`}
         suppressHydrationWarning={true}
       >
-        {process.env.NEXT_PUBLIC_COMING_SOON ? (
+        {process.env.NEXT_PUBLIC_COMING_SOON == 1 ? (
           <div className="flex h-screen items-center justify-center">
             <Image
               src={"/images/coming-soon.jpeg"}

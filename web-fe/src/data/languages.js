@@ -1,18 +1,26 @@
 export const languages = [
   {
-    id: "hindi",
+    value: "hindi",
     label: "Hindi",
   },
   {
-    id: "english",
+    value: "english",
     label: "English",
   },
   {
-    id: "german",
+    value: "marathi",
+    label: "Marathi",
+  },
+  {
+    value: "punjabi",
+    label: "Punjabi",
+  },
+  {
+    value: "german",
     label: "German",
   },
   {
-    id: "french",
+    value: "french",
     label: "French",
   },
 ];

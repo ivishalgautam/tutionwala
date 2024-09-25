@@ -14,8 +14,29 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { DotsNine } from "phosphor-react";
+import Loading from "./loading";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import NextImage from "./next-image";
+import { H5, H6, Large, Muted, Small } from "./ui/typography";
+
+async function fetchCategories() {
+  const { data } = await http().get(`${endpoints.categories.getAll}`);
+  return data;
+}
 
 export function CategoryMenu() {
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: fetchCategories,
+    queryKey: ["categories"],
+    keepPreviousData: true,
+  });
+
+  if (isLoading) return <Loading />;
+  if (isError) return error?.message ?? "Error";
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -25,14 +46,12 @@ export function CategoryMenu() {
             <span>Category</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] lg:grid-cols-3 ">
-              {Array.from({ length: 9 }).map((_, ind) => (
-                <ListItem
-                  key={ind}
-                  title={`Category ${ind + 1}`}
-                  href={"#"}
-                ></ListItem>
-              ))}
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] lg:grid-cols-3">
+              {data.map((category) =>
+                Array.from({ length: 10 }).map((_, ind) => (
+                  <ListItem key={category.id} category={category}></ListItem>
+                )),
+              )}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -42,11 +61,13 @@ export function CategoryMenu() {
 }
 
 const ListItem = React.forwardRef(
-  ({ className, title, children, ...props }, ref) => {
+  ({ className, category, children, ...props }, ref) => {
     return (
       <li>
         <NavigationMenuLink asChild>
           <Link
+            // href={category.slug}
+            href={"#"}
             ref={ref}
             className={cn(
               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
@@ -54,7 +75,23 @@ const ListItem = React.forwardRef(
             )}
             {...props}
           >
-            <div className="text-sm font-medium leading-none">{title}</div>
+            <div className="flex items-center justify-start gap-2 text-sm font-medium capitalize leading-none">
+              <figure className="size-12">
+                <NextImage
+                  src={category.image}
+                  width={100}
+                  height={100}
+                  alt={category.title}
+                  className={"h-full w-full object-cover object-center"}
+                />
+              </figure>
+              <div>
+                <Small className={"font-medium uppercase"}>
+                  {category.name}
+                </Small>
+                <Muted className={"text-xs"}>{category.courses}+ Courses</Muted>
+              </div>
+            </div>
             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
               {children}
             </p>

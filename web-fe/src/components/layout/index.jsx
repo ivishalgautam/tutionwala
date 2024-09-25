@@ -77,19 +77,15 @@ export default function Layout({ children }) {
     }
 
     return (
-      <>
+      <div className="h-full">
         <Header />
-        {children}
+        <div className="min-h-screen">{children}</div>
         <Footer />
-      </>
+      </div>
     );
   };
 
   // if (isUserLoading) return <Spinner />;
 
-  return (
-    <main className="min-h-screen bg-gray-100">
-      <div className="h-full">{getContent()}</div>
-    </main>
-  );
+  return <main className="min-h-screen bg-gray-100">{getContent()}</main>;
 }

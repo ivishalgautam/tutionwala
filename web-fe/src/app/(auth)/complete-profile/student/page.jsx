@@ -18,6 +18,7 @@ export default function Page() {
   const router = useRouter();
   const { user } = useContext(MainContext);
   const id = user?.sub_categories?.[0]?.id;
+  const slug = user?.sub_categories?.[0]?.slug;
 
   const createMutation = useMutation(createStudentProfile, {
     onSuccess: (data) => {
@@ -44,6 +45,7 @@ export default function Page() {
       setCurrStep={setCurrStep}
       profileStep={profileStep}
       setProfileStep={setProfileStep}
+      subCatSlug={slug}
     />
   );
 }

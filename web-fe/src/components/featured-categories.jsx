@@ -12,8 +12,9 @@ import {
   PrevButton,
   usePrevNextButtons,
 } from "./carousel/EmblaCarouselArrowButtons";
+import CategoryCard from "./card/category";
 
-async function fetchFeaturedSubCategories() {
+async function fetchFeaturedCategories() {
   const { data } = await http().get(
     `${endpoints.categories.getAll}?featured=true`,
   );
@@ -35,7 +36,7 @@ export default function FeaturedCategories() {
   } = usePrevNextButtons(emblaApi);
 
   const { data, isLoading, isError, error } = useQuery({
-    queryFn: fetchFeaturedSubCategories,
+    queryFn: fetchFeaturedCategories,
     queryKey: ["featured-categories"],
     keepPreviousData: true,
   });
@@ -63,36 +64,11 @@ export default function FeaturedCategories() {
       <section className="embla">
         <div className="embla__viewport" ref={emblaRef}>
           <div className="embla__container">
-            {data.map((cat) =>
-              Array.from({ length: 20 }).map((index) => (
+            {data.map((category) =>
+              Array.from({ length: 20 }).map((_, index) => (
                 <div className="embla__slide" key={index}>
                   <div className="embla__slide__number">
-                    <div
-                      key={cat.id}
-                      className="cursor-pointer rounded-md border bg-white p-8 px-14 transition-colors hover:border-primary"
-                    >
-                      <figure className="size-20">
-                        <NextImage
-                          src={cat.image}
-                          width={500}
-                          height={500}
-                          alt={cat.name}
-                          className={"h-full w-full object-cover object-center"}
-                        />
-                      </figure>
-                      <div className="mt-4">
-                        <Large className={"text-center uppercase"}>
-                          {cat.name}
-                        </Large>
-                        <Muted
-                          className={
-                            "block text-nowrap text-center text-xs uppercase"
-                          }
-                        >
-                          {Math.floor(Math.random() * 100)}+ Course
-                        </Muted>
-                      </div>
-                    </div>
+                    <CategoryCard category={category} />
                   </div>
                 </div>
               )),

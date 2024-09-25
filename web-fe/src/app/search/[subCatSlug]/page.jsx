@@ -17,39 +17,42 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { H3, H4, H6, Muted, P } from "@/components/ui/typography";
+import { H6 } from "@/components/ui/typography";
 import { languages } from "@/data/languages";
 import { cn } from "@/lib/utils";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CheckIcon, MoveLeft, MoveRight } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { CheckIcon, MoveLeft, MoveRight, Plus } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import "@smastrom/react-rating/style.css";
-import { Rating } from "@smastrom/react-rating";
-import { Badge } from "@/components/ui/badge";
-import EnquiryForm from "@/components/forms/enquiry";
 import Tutors from "@/components/tutors";
+import NextImage from "@/components/next-image";
+import "@smastrom/react-rating/style.css";
+import { useAutocomplete } from "@/hooks/useAutoComplete";
+import { useJsApiLoader } from "@react-google-maps/api";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}/${id}`);
   return data;
 };
 
+const limit = 6;
 const fetchTutors = async (formData, limit) => {
-  const { data } = await http().post(
+  return await http().post(
     `${endpoints.tutor.getAll}/filter${limit ? `?limit=${limit}` : ""}`,
     formData,
   );
-
-  return data;
 };
 
 export default function Page({ params: { subCatSlug } }) {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
+    libraries: ["places"],
+  });
+  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
   const storedFilteration =
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem(subCatSlug))
@@ -71,12 +74,10 @@ export default function Page({ params: { subCatSlug } }) {
       selected_subjects: [],
     },
   });
-
   const watchFields = watch();
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [totalSteps, setTotalSteps] = useState(0);
   const [isFilterationComplete, setIsFilterationComplete] = useState(false);
-
   const [currStep, setCurrStep] = useState(storedFilteration?.currStep ?? 1);
 
   const { data, isLoading } = useQuery({
@@ -87,15 +88,42 @@ export default function Page({ params: { subCatSlug } }) {
 
   const tutors = useMutation({
     mutationKey: [`tutors-${subCatSlug}`],
-    mutationFn: (data) => fetchTutors(data, isFilterationComplete ? null : 6),
+    mutationFn: (data) =>
+      fetchTutors(data, isFilterationComplete ? null : limit),
     onSettled: (data) => {
       setFilteredTutors(data);
     },
   });
-
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoard = watch("selected_board");
+
+  const setBoards = (board, subject) => {
+    const prevBoards = watch("boards");
+
+    const existingBoard = prevBoards.find(
+      ({ board_name }) => board_name === board,
+    );
+
+    if (existingBoard) {
+      const updatedBoards = prevBoards.map((b) =>
+        b.board_name === board
+          ? {
+              ...b,
+              subjects: b.subjects.includes(subject)
+                ? b.subjects.filter((s) => s !== subject)
+                : [...b.subjects, subject],
+            }
+          : b,
+      );
+      setValue("boards", updatedBoards);
+    } else {
+      setValue("boards", [
+        ...prevBoards,
+        { board_name: board, subjects: [subject] },
+      ]);
+    }
+  };
 
   const setFields = (fieldName, option, type) => {
     const prevFields = watch("fields") ?? [];
@@ -128,18 +156,8 @@ export default function Page({ params: { subCatSlug } }) {
   };
 
   const onSubmit = (formData) => {
-    const payload = {
-      fields: formData.fields,
-      boards: {
-        board_name: formData.selected_board,
-        subjects: formData.selected_subjects,
-      },
-      languages: formData.languages,
-      location: formData.location,
-    };
     setIsFilterationComplete(true);
-    // console.log({ payload });
-    // handleCreate({ ...payload, tutor_id: data.tutor_id, curr_step: currStep });
+    tutors.mutate({ ...formData, subCatSlug });
   };
 
   useEffect(() => {
@@ -154,36 +172,63 @@ export default function Page({ params: { subCatSlug } }) {
 
   const handlePrev = () => {
     setCurrStep((prev) => prev - 1);
-    tutors.mutate(storedFilteration);
+    localStorage.setItem(subCatSlug, JSON.stringify(watchFields));
+
+    tutors.mutate({ ...watchFields, subCatSlug });
   };
 
   const handleNext = async () => {
     if (!(await trigger())) return;
-
     setCurrStep((prev) => prev + 1);
-    tutors.mutate(storedFilteration);
+    localStorage.setItem(subCatSlug, JSON.stringify({ ...watchFields }));
+    tutors.mutate({
+      ...watchFields,
+      subCatSlug,
+      boards:
+        data?.is_boards && currStep >= 4
+          ? [
+              {
+                board_name: selectedBoard,
+                subjects: [...watch("selected_subjects")],
+              },
+            ]
+          : [],
+    });
   };
 
   useEffect(() => {
     localStorage.setItem(
       subCatSlug,
-      JSON.stringify({ ...watchFields, currStep }),
+      JSON.stringify({ ...watchFields, subCatSlug: subCatSlug }),
     );
+    return () => {
+      localStorage.removeItem(subCatSlug);
+    };
   }, [watchFields, subCatSlug, currStep]);
 
   useEffect(() => {
     if (subCatSlug) {
-      tutors.mutate(storedFilteration);
+      tutors.mutate({ ...watchFields, subCatSlug });
     }
   }, []);
 
   useEffect(() => {
     if (isFilterationComplete) {
-      tutors.mutate(storedFilteration);
+      tutors.mutate({ ...storedFilteration, subCatSlug });
     }
   }, [isFilterationComplete]);
 
-  console.log({ filteredTutors });
+  useEffect(() => {
+    if (watch("selected_board")) {
+      setValue("selected_subjects", []);
+    }
+  }, [watch("selected_board")]);
+
+  useEffect(() => {
+    if (selectedPlace) {
+      setValue("location", selectedPlace.address);
+    }
+  }, [selectedPlace]);
 
   if (isLoading) return <Loading />;
 
@@ -196,7 +241,7 @@ export default function Page({ params: { subCatSlug } }) {
             <div className="space-y-6">
               {/* <H3 className={"text-center"}>Complete your profile</H3> */}
               <div className="space-y-4 divide-y">
-                {/* language */}
+                {/* location */}
                 {currStep === 1 && (
                   <div className="space-y-1">
                     <div>
@@ -208,17 +253,16 @@ export default function Page({ params: { subCatSlug } }) {
                           {errors?.location.message}
                         </span>
                       )}
-                      <div className="">
-                        <div className="">
-                          <Label className="capitalize">Location</Label>
-                          <Input
-                            type="text"
-                            {...register(`location`, {
-                              required: "required*",
-                            })}
-                            placeholder="Enter location"
-                          />
-                        </div>
+                      <div>
+                        <Label className="text-sm">Location</Label>
+                        <Controller
+                          control={control}
+                          name="location"
+                          rules={{ required: "required*" }}
+                          render={({ field: { onChange, value } }) => (
+                            <Input ref={inputRef} />
+                          )}
+                        />
                       </div>
                     </div>
                   </div>
@@ -246,23 +290,27 @@ export default function Page({ params: { subCatSlug } }) {
                             control={control}
                             name="languages"
                             rules={{ required: "required*" }}
-                            render={({ field }) => (
-                              <Checkbox
-                                checked={field.value?.includes(language.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...field.value,
-                                        language.id,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== language.id,
-                                        ),
-                                      );
-                                }}
-                              />
-                            )}
+                            render={({ field }) => {
+                              return (
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    language.value,
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field?.value,
+                                          language.value,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== language.value,
+                                          ),
+                                        );
+                                  }}
+                                />
+                              );
+                            }}
                           />
                         </div>
                       ))}
@@ -277,6 +325,11 @@ export default function Page({ params: { subCatSlug } }) {
                       Which {data?.name} board of education are you looking for?
                     </div>
                     <div className="space-y-1">
+                      {errors?.selected_board && (
+                        <span className="text-sm text-red-500">
+                          {errors?.selected_board.message}
+                        </span>
+                      )}
                       {boardNames.map((option) => (
                         <div key={option} className="text-sm text-gray-700">
                           <Label className="flex items-center justify-between">
@@ -286,7 +339,9 @@ export default function Page({ params: { subCatSlug } }) {
                             <Input
                               type="radio"
                               value={option}
-                              {...register("selected_board")}
+                              {...register("selected_board", {
+                                required: "required*",
+                              })}
                               className="size-6 accent-primary"
                             />
                           </Label>
@@ -307,11 +362,11 @@ export default function Page({ params: { subCatSlug } }) {
                       subjects fo you need tution for?
                     </div>
                     <div className="space-y-1">
-                      {errors?.selected_subjects && (
+                      {/* {errors?.selected_subjects && (
                         <span className="text-sm text-red-500">
                           {errors?.selected_subjects.message}
                         </span>
-                      )}
+                      )} */}
                       {boards
                         .find((item) => item.board_name === selectedBoard)
                         ?.subjects.map((subject, ind) => (
@@ -341,12 +396,16 @@ export default function Page({ params: { subCatSlug } }) {
                                 )}
                               />
                               {/* <input
-                              type="checkbox"
-                              value={subject}
-                              className="size-6 accent-primary"
-                              {...register(`selected_subjects.${ind}.subjects`)}
-                              onChange={() => setBoards(selectedBoard, subject)}
-                            /> */}
+                                type="checkbox"
+                                value={subject}
+                                className="size-6 accent-primary"
+                                {...register(
+                                  `selected_subjects.${ind}.subjects`,
+                                )}
+                                onChange={() =>
+                                  setBoards(selectedBoard, subject)
+                                }
+                              /> */}
                             </Label>
                           </div>
                         ))}
@@ -360,12 +419,21 @@ export default function Page({ params: { subCatSlug } }) {
                     currStep === (data.is_boards ? 2 + key + 3 : key + 3) && (
                       <div className="space-y-4" key={key}>
                         <div className="mt-3 space-y-4">
-                          <div className="text-sm font-medium">
-                            {field.question}
+                          <div className="text-sm font-medium capitalize">
+                            {field.questionForStudent}
                           </div>
                           <div>
                             {field.fieldType === "checkbox" && (
                               <div className="space-y-1">
+                                {errors?.selected?.[field.fieldName]
+                                  ?.options && (
+                                  <span className="text-sm text-red-500">
+                                    {
+                                      errors?.selected?.[field.fieldName]
+                                        ?.options.message
+                                    }
+                                  </span>
+                                )}
                                 {field.options.map((option) => (
                                   <div
                                     key={option}
@@ -379,6 +447,7 @@ export default function Page({ params: { subCatSlug } }) {
                                         type="checkbox"
                                         {...register(
                                           `selected.${field.fieldName}.options`,
+                                          { required: "required*" },
                                         )}
                                         value={option}
                                         className="size-6 accent-primary"
@@ -398,6 +467,15 @@ export default function Page({ params: { subCatSlug } }) {
 
                             {field.fieldType === "radio" && (
                               <div className="space-y-1">
+                                {errors?.selected?.[field.fieldName]
+                                  ?.options && (
+                                  <span className="text-sm text-red-500">
+                                    {
+                                      errors?.selected?.[field.fieldName]
+                                        ?.options.message
+                                    }
+                                  </span>
+                                )}
                                 {field.options.map((option) => (
                                   <div
                                     key={option}
@@ -411,6 +489,7 @@ export default function Page({ params: { subCatSlug } }) {
                                         type="radio"
                                         {...register(
                                           `selected.${field.fieldName}.options`,
+                                          { required: "required*" },
                                         )}
                                         value={option}
                                         className="size-6 accent-primary"
@@ -429,6 +508,15 @@ export default function Page({ params: { subCatSlug } }) {
                             )}
                             {field.fieldType === "dropdown" && (
                               <div>
+                                {errors?.selected?.[field.fieldName]
+                                  ?.options && (
+                                  <span className="text-sm text-red-500">
+                                    {
+                                      errors?.selected?.[field.fieldName]
+                                        ?.options.message
+                                    }
+                                  </span>
+                                )}
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <Button
@@ -525,21 +613,41 @@ export default function Page({ params: { subCatSlug } }) {
               </div>
             </div>
 
-            <div className="mt-6">
-              {filteredTutors?.map((tutor) => (
-                <Image
-                  key={tutor.id}
-                  src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${tutor.profile_picture}`}
-                  width={100}
-                  height={100}
-                  alt=""
-                />
-              ))}
-            </div>
+            {filteredTutors?.data?.length > 0 && (
+              <div className="mt-6 flex items-center justify-start gap-2 border-t pt-4">
+                <div className="mr-auto">Matches found</div>
+                {filteredTutors?.data?.map((item, ind) => (
+                  <div
+                    key={item.id}
+                    className={cn("size-20", {
+                      relative: filteredTutors.data?.length - 1 === ind,
+                    })}
+                  >
+                    {filteredTutors.data?.length - 1 === ind &&
+                      filteredTutors.total > limit && (
+                        <div
+                          className={cn(
+                            "absolute inset-0 flex items-center justify-center rounded bg-black/50 text-white",
+                          )}
+                        >
+                          <Plus size={10} /> {filteredTutors.total - limit}
+                        </div>
+                      )}
+                    <NextImage
+                      src={item.profile_picture}
+                      width={100}
+                      height={100}
+                      alt=""
+                      className="h-full w-full rounded-lg object-cover object-center"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </form>
         ) : (
           <div className="p-4">
-            <Tutors tutors={filteredTutors} isLoading={tutors.isLoading} />
+            <Tutors tutors={filteredTutors.data} isLoading={tutors.isLoading} />
           </div>
         )}
       </div>

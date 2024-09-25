@@ -1,3 +1,4 @@
+"use client";
 import React, { useContext } from "react";
 import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
@@ -23,6 +24,7 @@ export default function EnquiryForm({ tutorId }) {
   });
 
   const handleSubmit = async (e) => {
+    e.stopPropagation();
     e.preventDefault();
     if (!user) {
       return toast.warning("You are not logged in!");

@@ -26,4 +26,12 @@ export const allRoutes = [
     link: "/follow-ups/[slug]",
     roles: [ROLES.TUTOR],
   },
+  {
+    link: "/tutors",
+    roles: [],
+  },
+  {
+    link: "/tutors/[slug]",
+    roles: [],
+  },
 ];

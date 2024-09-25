@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
+import { P } from "./ui/typography";
 
 async function createFollowUp(data) {
   return http().post(endpoints.followUps.getAll, data);
@@ -115,19 +116,23 @@ export default function FollowUps({ studentId }) {
           <PlusIcon /> &nbsp; Add Follow Up
         </Button>
       </div>
-      {isLoading
-        ? Array.from({ length: 5 }).map((_, idx) => <Skeloton key={idx} />)
-        : followUps?.map((followup) => (
-            <FollowUpCard
-              key={followup.id}
-              followup={followup}
-              handleUpdate={handleUpdate}
-              handleDelete={handleDelete}
-              setType={setType}
-              openModal={openModal}
-              setFollowUpId={setFollowUpId}
-            />
-          ))}
+      {isLoading ? (
+        Array.from({ length: 5 }).map((_, idx) => <Skeloton key={idx} />)
+      ) : followUps?.length ? (
+        followUps?.map((followup) => (
+          <FollowUpCard
+            key={followup.id}
+            followup={followup}
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+            setType={setType}
+            openModal={openModal}
+            setFollowUpId={setFollowUpId}
+          />
+        ))
+      ) : (
+        <P className={"text-center"}>No Follows Ups Yet</P>
+      )}
       <Modal isOpen={isModal} onClose={closeModal}>
         <CreateFollowUpForm
           handleCreate={handleCreate}

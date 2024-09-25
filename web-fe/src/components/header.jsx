@@ -14,13 +14,14 @@ import Link from "next/link";
 import { useContext } from "react";
 import { MainContext } from "@/store/context";
 import { Button, buttonVariants } from "./ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LucideLogOut } from "lucide-react";
 import Image from "next/image";
 
 export default function NavbarComponent() {
   const { user, setUser, isUserLoading } = useContext(MainContext);
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <Navbar>
@@ -30,11 +31,11 @@ export default function NavbarComponent() {
             <Link href={"/"} className={`text-3xl`}>
               <figure className="aspect-video w-24">
                 <Image
-                  src={"/images/logo.png"}
+                  src={"/images/logo.jpeg"}
                   width={200}
                   height={200}
                   alt="logo"
-                  className="rounded-lg"
+                  className="h-full w-full rounded-lg object-cover object-center"
                 />
               </figure>
             </Link>
@@ -42,13 +43,15 @@ export default function NavbarComponent() {
               <CategoryMenu />
             </div>
           </div>
-          {/* <Image src={KeepLogo} alt="keep" width="88" height="40" /> */}
         </NavbarBrand>
-        {/* <NavbarList>
-          <NavbarItem active={true}>Home</NavbarItem>
-          <NavbarItem>Research</NavbarItem>
-          <NavbarItem>Contact</NavbarItem>
-        </NavbarList> */}
+        <NavbarList>
+          <NavbarItem active={pathname === "/"}>
+            <Link href={"/"}>Home</Link>
+          </NavbarItem>
+          <NavbarItem active={pathname === "/tutors"}>
+            <Link href={"/tutors"}>Tutors</Link>
+          </NavbarItem>
+        </NavbarList>
         {isUserLoading ? (
           <Loader />
         ) : user ? (

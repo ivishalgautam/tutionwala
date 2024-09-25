@@ -12,8 +12,16 @@ import {
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export const columns = (handleDelete) => [
+export const columns = (handleDelete, handleUpdate) => [
   {
     accessorKey: "fullname",
     header: ({ column }) => {
@@ -25,6 +33,37 @@ export const columns = (handleDelete) => [
           Fullname
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return (
+        <Select
+          defaultValue={row.getValue("status")}
+          onValueChange={(value) => handleUpdate({ status: value, id })}
+        >
+          <SelectTrigger className="w-[120px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="converted">Converted</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+          </SelectContent>
+        </Select>
       );
     },
   },
@@ -52,7 +91,6 @@ export const columns = (handleDelete) => [
     cell: ({ row }) => {
       const id = row.original.id;
       const studentId = row.original.studentId;
-      console.log({ studentId });
 
       return (
         <DropdownMenu>
