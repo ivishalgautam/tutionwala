@@ -34,4 +34,8 @@ export const allRoutes = [
     link: "/tutors/[slug]",
     roles: [],
   },
+  {
+    link: "/dashboard",
+    roles: [ROLES.TUTOR, ROLES.STUDENT],
+  },
 ];

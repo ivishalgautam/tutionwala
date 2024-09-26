@@ -21,6 +21,7 @@ import { DataTable as StudentsEnquiryDataTable } from "@/components/table/enquir
 import { CoursesColumns } from "@/components/table/courses/columns";
 import { CoursesDataTable } from "@/components/table/courses/data-table";
 import DashboardLayout from "@/components/layout/dashboard-layout";
+import Map from "@/components/map";
 
 async function fetchEnquiries() {
   const { data } = await http().get(endpoints.enquiries.getAll);
@@ -133,6 +134,8 @@ export default function Page() {
             {...{ isCoursesLoading, courses, isCoursesError, coursesError }}
           />
         )}
+
+        {currTab === "profile" && <Map />}
       </DashboardLayout>
       <Modal isOpen={isReviewModal} onClose={closeReviewModal}>
         <ReviewForm tutorId={tutorId} enquiryId={enquiryId} />

@@ -8,11 +8,11 @@ import { toast } from "sonner";
 
 const libs = ["core", "maps", "places", "marker"];
 
-const showInfoContent = (fullAddr, name) => {
+const showInfoContent = (fullAddr) => {
   return `
     <div>
       <div class="text-black font-bold">
-        ${name}
+        ${fullAddr}
       </div>
     </div>
   `;
@@ -34,17 +34,16 @@ const currentLatLng = async () => {
   });
 };
 
-export default function AutoComplete() {
+export default function Map() {
   const [map, setMap] = useState(null);
   const [autoComplete, setAutoComplete] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [coordinates, setCoordinates] = useState([0, 0]);
+  const [selectedCoordinates, setSelectedCoordinates] = useState([0, 0]);
   const markersRef = useRef([]);
   const mapRef = useRef(null);
   const geocoderRef = useRef(null);
   const placeAutoCompleteRef = useRef(null);
-
-  console.log({ selectedPlace });
 
   const clearMarkers = useCallback(() => {
     markersRef.current.forEach((marker) => {
@@ -63,16 +62,15 @@ export default function AutoComplete() {
   };
 
   const setMarker = useCallback(
-    (location, name, full_addr) => {
+    (location, full_addr) => {
       if (!map) return;
-
       clearMarkers();
 
       map.setCenter(location);
-      const marker = new google.maps.Marker({
+      const marker = new google.maps.marker.AdvancedMarkerElement({
         map: map,
         position: location,
-        draggable: true,
+        gmpDraggable: true,
         title: "Marker",
       });
 
@@ -80,17 +78,20 @@ export default function AutoComplete() {
         position: location,
         content: showInfoContent(full_addr, name),
       });
-
-      infoCard.open({
-        map: map,
-        anchor: marker,
-      });
+      if (full_addr) {
+        infoCard.open({
+          map: map,
+          anchor: marker,
+        });
+      }
 
       markersRef.current.push(marker);
       google.maps.event.addListener(marker, "dragend", () => {
-        const newPosition = marker.getPosition();
+        const newPosition = marker.position;
+        const lat = newPosition.lat;
+        const lng = newPosition.lng;
+        setSelectedCoordinates([lat, lng]);
 
-        // Update the info window with the new position
         if (newPosition && geocoderRef.current) {
           geocoderRef.current.geocode(
             { location: newPosition.toJSON() },
@@ -98,20 +99,10 @@ export default function AutoComplete() {
               if (status === "OK" && results[0]) {
                 const newAddress = results[0].formatted_address;
 
-                // Close previous InfoWindow
                 infoCard.close();
+                infoCard.setContent(`Pin dropped at: ${newAddress}`);
+                infoCard.open(marker.map, marker);
 
-                // Update the info window content and re-open it at the new location
-                infoCard = new google.maps.InfoWindow({
-                  content: showInfoContent(newAddress, newAddress),
-                  maxWidth: 200,
-                });
-                infoCard.open({
-                  map: map,
-                  anchor: marker,
-                });
-
-                // Optionally update the input field with the new address
                 placeAutoCompleteRef.current.value = newAddress;
                 setSelectedPlace(newAddress);
               } else {
@@ -125,30 +116,13 @@ export default function AutoComplete() {
     [map, clearMarkers],
   );
 
-  const geocodeLatLng = useCallback(
-    (location) => {
-      if (!geocoderRef.current) {
-        geocoderRef.current = new google.maps.Geocoder();
-      }
-
-      geocoderRef.current.geocode({ location }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          const fullAddr = results[0].formatted_address;
-          setMarker(location, fullAddr, fullAddr); // Use address as both name and full address
-        } else {
-          console.error("Geocoder failed due to: " + status);
-        }
-      });
-    },
-    [setMarker],
-  );
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
     libraries: libs,
   });
 
   useEffect(() => {
+    // initialize map
     const initializeMap = async () => {
       if (isLoaded && coordinates[0] !== 0 && coordinates[1] !== 0) {
         const mapOptions = {
@@ -184,6 +158,7 @@ export default function AutoComplete() {
   }, [isLoaded, coordinates]);
 
   useEffect(() => {
+    // ad place_changed listener on input for autocomplete
     if (autoComplete) {
       autoComplete.addListener("place_changed", () => {
         const place = autoComplete.getPlace();
@@ -193,14 +168,14 @@ export default function AutoComplete() {
         }
         const position = place.geometry?.location;
         if (position) {
-          setMarker(position, place.name, place.formatted_address);
+          setMarker(position, place.formatted_address);
         }
       });
     }
   }, [autoComplete, setMarker]);
 
-  // Add map click listener once the map is set
   useEffect(() => {
+    // add click event on map load to set marker
     if (map) {
       map.addListener("click", (event) => {
         if (event.latLng) {
@@ -217,7 +192,10 @@ export default function AutoComplete() {
                   placeAutoCompleteRef.current.value = fullAddr; // Fill the input with the selected address
                   setSelectedPlace(fullAddr);
                 }
-                setMarker(event.latLng, fullAddr, fullAddr); // Use address as both name and full address
+                const lat = event.latLng.lat();
+                const lng = event.latLng.lng();
+                setSelectedCoordinates([lat, lng]);
+                setMarker(event.latLng, fullAddr); // Use address as both name and full address
               } else {
                 console.error("Geocoder failed due to: " + status);
               }
@@ -229,6 +207,34 @@ export default function AutoComplete() {
   }, [map, setMarker]);
 
   useEffect(() => {
+    // set marker on load
+    if (coordinates[0] !== 0 && coordinates[1] !== 0) {
+      if (!map) return;
+
+      if (!geocoderRef.current) {
+        geocoderRef.current = new google.maps.Geocoder();
+      }
+
+      geocoderRef.current.geocode(
+        { location: { lat: coordinates[0], lng: coordinates[1] } },
+        (results, status) => {
+          if (status === "OK" && results[0]) {
+            const fullAddr = results[0].formatted_address;
+            if (fullAddr) {
+              placeAutoCompleteRef.current.value = fullAddr; // Fill the input with the selected address
+              setSelectedPlace(fullAddr);
+            }
+
+            setMarker({ lat: coordinates[0], lng: coordinates[1] }, fullAddr); // Use address as both name and full address
+          } else {
+            console.error("Geocoder failed due to: " + status);
+          }
+        },
+      );
+    }
+  }, [coordinates, setMarker, isLoaded, geocoderRef]);
+
+  useEffect(() => {
     getCurrentLatLng();
   }, []);
 
@@ -236,7 +242,7 @@ export default function AutoComplete() {
     <div>
       <div className="mx-auto max-w-[900px] space-y-4 p-8">
         <Input ref={placeAutoCompleteRef} />
-        <div className="h-96 rounded-lg" ref={mapRef}></div>
+        <div className="h-96 rounded-lg drop-shadow-xl" ref={mapRef}></div>
         <Button type="button" onClick={getCurrentLatLng}>
           <LocateIcon />
         </Button>

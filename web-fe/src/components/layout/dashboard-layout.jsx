@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 const tabs = [
   { value: "enquiries", label: "Enquiries", roles: ["student", "tutor"] },
   { value: "courses", label: "Courses", roles: ["tutor"] },
+  { value: "profile", label: "Profile", roles: ["tutor", "student"] },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -27,9 +28,9 @@ export default function DashboardLayout({ children }) {
             </div>
             <ul className="space-y-[1px]">
               {tabs.map(
-                (item) =>
+                (item, key) =>
                   item.roles.includes(user?.role) && (
-                    <ListItem key={item.id} item={item} />
+                    <ListItem key={key} item={item} />
                   ),
               )}
             </ul>
@@ -45,23 +46,22 @@ export default function DashboardLayout({ children }) {
 }
 
 export const Profile = ({ isUserLoading, user }) => {
-  console.log({ user });
   return isUserLoading ? (
     "loading..."
   ) : (
     <div className="flex items-start justify-start gap-2">
       <figure className="size-20">
         <Image
-          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${user.profile_picture}`}
+          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${user?.profile_picture}`}
           width={100}
           height={100}
-          alt={user.fullname}
+          alt={user?.fullname}
           className="h-full w-full rounded"
         />
       </figure>
       <div>
-        <Small>{user.fullname}</Small>
-        <Muted className={"text-xs capitalize"}>{user.role}</Muted>
+        <Small>{user?.fullname}</Small>
+        <Muted className={"text-xs capitalize"}>{user?.role}</Muted>
       </div>
     </div>
   );
