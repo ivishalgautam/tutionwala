@@ -1,37 +1,25 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { useContext, useState } from "react";
-
-import { toast } from "sonner";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
+import DashboardLayout from "@/components/layout/dashboard-layout";
 import Loading from "@/components/loading";
-import { endpoints } from "@/utils/endpoints";
-import http from "@/utils/http";
-import Modal from "@/components/Modal";
-import ReviewForm from "@/components/forms/review";
-
-import { MainContext } from "@/store/context";
+import React, { useContext, useState } from "react";
 
 // table imports
 import { columns as tutorColumns } from "@/components/table/enquiries/tutors/columns";
 import { columns as studentColumns } from "@/components/table/enquiries/students/columns";
 import { DataTable as TutorsEnquiryDataTable } from "@/components/table/enquiries/tutors/data-table";
 import { DataTable as StudentsEnquiryDataTable } from "@/components/table/enquiries/students/data-table";
-import { CoursesColumns } from "@/components/table/courses/columns";
-import { CoursesDataTable } from "@/components/table/courses/data-table";
-import DashboardLayout from "@/components/layout/dashboard-layout";
-import Map from "@/components/map";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Modal from "@/components/Modal";
+import ReviewForm from "@/components/forms/review";
+import { MainContext } from "@/store/context";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
 
 async function fetchEnquiries() {
   const { data } = await http().get(endpoints.enquiries.getAll);
   return data;
 }
 
-async function fetchCourses() {
-  const { data } = await http().get(endpoints.tutor.courses);
-  return data;
-}
 async function updateEnquiry(data) {
   return await http().put(`${endpoints.enquiries.getAll}/${data.id}`, data);
 }
@@ -42,13 +30,11 @@ async function deleteEnquiry({ id }) {
 }
 
 export default function Page() {
-  const { user, isUserLoading } = useContext(MainContext);
-  const queryClient = useQueryClient();
-  const searchParams = useSearchParams();
-  const currTab = searchParams.get("tab");
   const [isReviewModal, setIsReviewModal] = useState(false);
   const [tutorId, setTutorId] = useState("");
   const [enquiryId, setEnquiryId] = useState("");
+  const queryClient = useQueryClient();
+  const { user, isUserLoading } = useContext(MainContext);
 
   const {
     data: enquiries,
@@ -58,26 +44,7 @@ export default function Page() {
   } = useQuery({
     queryFn: fetchEnquiries,
     queryKey: ["enquiries"],
-    enabled: !!(currTab === "enquiries"),
   });
-
-  const {
-    data: courses,
-    isLoading: isCoursesLoading,
-    isError: isCoursesError,
-    error: coursesError,
-  } = useQuery({
-    queryFn: fetchCourses,
-    queryKey: ["courses"],
-    enabled: !!(currTab === "courses"),
-  });
-
-  const openReviewModal = () => {
-    setIsReviewModal(true);
-  };
-  const closeReviewModal = () => {
-    setIsReviewModal(false);
-  };
 
   const updateEnqMutation = useMutation(updateEnquiry, {
     onSuccess: () => {
@@ -108,35 +75,30 @@ export default function Page() {
     deleteEnqMutation.mutate({ id: id });
   };
 
+  const openReviewModal = () => {
+    setIsReviewModal(true);
+  };
+  const closeReviewModal = () => {
+    setIsReviewModal(false);
+  };
+
   return (
     <>
-      <DashboardLayout>
-        {currTab === "enquiries" && (
-          <Enquiries
-            {...{
-              isEnquiriesLoading,
-              isUserLoading,
-              enquiries,
-              user,
-              handleDelete,
-              openReviewModal,
-              setTutorId,
-              handleUpdate,
-              isEnquiriesError,
-              enquiriesError,
-              setEnquiryId,
-            }}
-          />
-        )}
-
-        {currTab === "courses" && (
-          <Courses
-            {...{ isCoursesLoading, courses, isCoursesError, coursesError }}
-          />
-        )}
-
-        {currTab === "profile" && <Map />}
-      </DashboardLayout>
+      <Enquiries
+        {...{
+          isEnquiriesLoading,
+          isUserLoading,
+          enquiries,
+          user,
+          handleDelete,
+          openReviewModal,
+          setTutorId,
+          handleUpdate,
+          isEnquiriesError,
+          enquiriesError,
+          setEnquiryId,
+        }}
+      />
       <Modal isOpen={isReviewModal} onClose={closeReviewModal}>
         <ReviewForm tutorId={tutorId} enquiryId={enquiryId} />
       </Modal>
@@ -218,23 +180,5 @@ export const StudentEnquiries = ({ enquiries, handleDelete, handleUpdate }) => {
         studentId: student[0].student_id,
       }))}
     />
-  );
-};
-
-export const Courses = ({
-  isCoursesLoading,
-  courses,
-  isCoursesError,
-  coursesError,
-}) => {
-  return (
-    <div>
-      {isCoursesError && (coursesError?.message ?? "Error")}
-      {isCoursesLoading ? (
-        <Loading />
-      ) : (
-        <CoursesDataTable data={courses} columns={CoursesColumns()} />
-      )}
-    </div>
   );
 };

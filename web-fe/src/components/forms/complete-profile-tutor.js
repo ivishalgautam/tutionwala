@@ -20,7 +20,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -39,6 +41,8 @@ import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Progress } from "../ui/progress";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { getCurrentCoords } from "@/lib/get-current-coords";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -62,24 +66,27 @@ export default function CompleteProfileTutor({
     handleSubmit,
     unregister,
   } = useForm({
-    defaultValues:
-      currStep === 1
-        ? {
-            fields: [],
-            boards: [],
-            languages: [{ name: "", proficiency: "" }],
-          }
-        : currStep === 2
-          ? {
-              experience: "",
-              intro_video: "",
-            }
-          : currStep === 3
-            ? {
-                profile_picture: "",
-                adhaar: "",
-              }
-            : null,
+    defaultValues: {
+      // step 1
+      fields: [],
+      boards: [],
+      languages: [{ name: "", proficiency: "" }],
+      degree: {
+        name: "",
+        year: "",
+        status: "",
+      },
+      class_conduct_mode: "",
+      enquiry_radius: "",
+
+      // step 2
+      experience: "",
+      intro_video: "",
+      profile_picture: "",
+
+      // step 3
+      adhaar: "",
+    },
   });
   const [media, setMedia] = useState({
     profile_picture: "",
@@ -87,8 +94,10 @@ export default function CompleteProfileTutor({
     video: "",
   });
   const [progress, setProgress] = useState(0);
+  const [coords, setCoords] = useState([0, 0]);
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useLocalStorage("token");
+
   const {
     fields: languages,
     append: appendLang,
@@ -177,6 +186,10 @@ export default function CompleteProfileTutor({
             fields: formData.fields,
             boards: formData.boards,
             languages: formData.languages,
+            degree: formData.degree,
+            class_conduct_mode: formData.class_conduct_mode,
+            enquiry_radius: formData.enquiry_radius,
+            coords: coords,
           }
         : currStep === 2
           ? {
@@ -273,7 +286,15 @@ export default function CompleteProfileTutor({
       }
     }
   }, [data, unregister]);
-  console.log(watch());
+
+  useEffect(() => {
+    async function getCoords() {
+      const coords = await getCurrentCoords();
+      setCoords(coords);
+    }
+
+    getCoords();
+  }, []);
 
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
@@ -287,12 +308,13 @@ export default function CompleteProfileTutor({
           {currStep === 1 && (
             <div className="space-y-6">
               <H3 className={"text-center"}>Complete your profile</H3>
-              <div className="space-y-4 divide-y">
+              <div className="space-y-4 divide-y *:pt-4">
                 {/* language */}
                 <div className="space-y-1">
                   <div>
                     <H6>Add languages that you speak.</H6>
                   </div>
+                  {/* language */}
                   <div>
                     {languages.map((language, ind) => (
                       <div
@@ -348,9 +370,10 @@ export default function CompleteProfileTutor({
                           type="button"
                           size="icon"
                           variant="destructive"
-                          onClick={() => removeLang()}
+                          onClick={() => removeLang(ind)}
+                          disabled={languages.length === 1}
                         >
-                          <TrashIcon />
+                          <TrashIcon size={20} />
                         </Button>
                       </div>
                     ))}
@@ -364,6 +387,155 @@ export default function CompleteProfileTutor({
                       <Plus size={15} /> Add more
                     </Button>
                   </div>
+                </div>
+
+                {/* most recent degree */}
+                <div className="space-y-2">
+                  <H6>Most recent degree</H6>
+                  <div className="space-y-2">
+                    {/* degree name */}
+                    <div>
+                      <Label>Name</Label>
+                      <Input
+                        {...register("degree.name", { required: "required*" })}
+                        placeholder="Enter your degree"
+                      />
+                      {errors.degree?.name && (
+                        <span className="text-sm text-red-500">
+                          {errors.degree?.name.message}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label>Is degree completed</Label>
+                      <Controller
+                        control={control}
+                        name={`degree.status`}
+                        rules={{ required: "required*" }}
+                        render={({ field }) => (
+                          <Select
+                            defaultValue={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Status</SelectLabel>
+                                <SelectItem value="yes">Yes</SelectItem>
+                                <SelectItem value="pursuing">
+                                  Pursuing
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      {errors.degree?.status && (
+                        <span className="text-sm text-red-500">
+                          {errors.degree?.status.message}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* degree completion year */}
+                    {watch("degree.status") === "yes" && (
+                      <div>
+                        <Label>Year of completion</Label>
+                        <Input
+                          type="number"
+                          {...register("degree.year", {
+                            required: "required*",
+                            max: {
+                              value: 2099,
+                              message: "Must be less than 2099",
+                            },
+                            min: {
+                              value: 1900,
+                              message: "Must be greater than 1900",
+                            },
+                          })}
+                          placeholder="Enter completion year"
+                        />
+                        {errors.degree?.year && (
+                          <span className="text-sm text-red-500">
+                            {errors.degree?.year.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* counduct classes */}
+                <div className="space-y-1">
+                  <Label>How will you conduct class.</Label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "required*" }}
+                    name="class_conduct_mode"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex items-center justify-start gap-2"
+                        value={field.value}
+                      >
+                        {["offline", "online", "nearby", "any"].map(
+                          (ele, key) => (
+                            <div
+                              className={cn(
+                                "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                                {
+                                  "border-primary-200 bg-primary-50":
+                                    field.value === ele,
+                                },
+                              )}
+                              key={ele}
+                            >
+                              <RadioGroupItem value={ele} id={ele} />
+                              <Label htmlFor={ele} className="capitalize">
+                                {ele}
+                              </Label>
+                            </div>
+                          ),
+                        )}
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.class_conduct_mode && (
+                    <span className="text-sm text-red-500">
+                      {errors.class_conduct_mode.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <Label>Enquiry radius under</Label>
+                  <Input
+                    type="number"
+                    placeholder="Enter radius in km"
+                    {...register("enquiry_radius", {
+                      required: "required*",
+                      valueAsNumber: true,
+                      validate: (value) => {
+                        if (value > 25) {
+                          return "Radius should be under 25 km";
+                        }
+                      },
+                    })}
+                  />
+                  <span className="absolute right-0 text-xs text-primary">
+                    Max 25 km.
+                  </span>
+
+                  {errors.enquiry_radius && (
+                    <span className="text-sm text-red-500">
+                      {errors.enquiry_radius.message}
+                    </span>
+                  )}
                 </div>
 
                 {data?.is_boards && (
@@ -381,53 +553,74 @@ export default function CompleteProfileTutor({
                             <Input
                               type="checkbox"
                               value={option}
-                              {...register("selected_boards")}
+                              {...register("selected_boards", {
+                                required: "required*",
+                              })}
                               className="size-6 accent-primary"
                             />
                           </Label>
                         </div>
                       ))}
+                      {errors.selected_boards && (
+                        <span className="text-sm text-red-500">
+                          {errors.selected_boards.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
 
                 {/* board subjects */}
-                <div className="space-y-4">
-                  {selectedBoards &&
-                    Array.isArray(selectedBoards) &&
-                    selectedBoards?.map((board, ind) => (
-                      <div key={ind} className="space-y-2">
-                        <div className="text-sm font-medium">
-                          Which subjects of {data?.name} in {board} boards do
-                          you teach?
+                {data?.is_boards && watch("selected_boards")?.length > 0 && (
+                  <div className="space-y-4">
+                    {selectedBoards &&
+                      Array.isArray(selectedBoards) &&
+                      selectedBoards?.map((board, ind) => (
+                        <div key={ind} className="space-y-2">
+                          <div className="text-sm font-medium">
+                            Which subjects of {data?.name} in {board} boards do
+                            you teach?
+                          </div>
+                          <div className="space-y-1">
+                            {boards
+                              .find((item) => item.board_name === board)
+                              ?.subjects.map((subject) => (
+                                <div
+                                  key={subject}
+                                  className="text-sm text-gray-700"
+                                >
+                                  <Label className="flex items-center justify-between">
+                                    <span className="capitalize">
+                                      {subject}
+                                    </span>
+                                    <input
+                                      type="checkbox"
+                                      value={subject}
+                                      className="size-6 accent-primary"
+                                      {...register(
+                                        `selected.${board}.subjects`,
+                                        {
+                                          required: "required*",
+                                        },
+                                      )}
+                                      onChange={() => setBoards(board, subject)}
+                                    />
+                                  </Label>
+                                </div>
+                              ))}
+                            {errors.selected?.[board]?.subjects && (
+                              <span className="text-sm text-red-500">
+                                {errors.selected?.[board]?.subjects?.message}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="space-y-1">
-                          {boards
-                            .find((item) => item.board_name === board)
-                            ?.subjects.map((subject) => (
-                              <div
-                                key={subject}
-                                className="text-sm text-gray-700"
-                              >
-                                <Label className="flex items-center justify-between">
-                                  <span className="capitalize">{subject}</span>
-                                  <input
-                                    type="checkbox"
-                                    value={subject}
-                                    className="size-6 accent-primary"
-                                    {...register(`selected.${board}.subjects`)}
-                                    onChange={() => setBoards(board, subject)}
-                                  />
-                                </Label>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    ))}
-                </div>
+                      ))}
+                  </div>
+                )}
 
                 {/* custom fields */}
-                <div className="space-y-4">
+                <div className="space-y-4 divide-y *:pt-4">
                   {data.fields.map((item, ind) => (
                     <div key={ind} className="mt-3 space-y-4">
                       <div className="text-sm font-medium capitalize">
@@ -449,6 +642,7 @@ export default function CompleteProfileTutor({
                                     type="checkbox"
                                     {...register(
                                       `selected.${item.fieldName}.options`,
+                                      { required: "required*" },
                                     )}
                                     value={option}
                                     className="size-6 accent-primary"
@@ -463,6 +657,14 @@ export default function CompleteProfileTutor({
                                 </Label>
                               </div>
                             ))}
+                            {errors.selected?.[item.fieldName]?.options && (
+                              <span className="text-sm text-red-500">
+                                {
+                                  errors.selected?.[item.fieldName]?.options
+                                    ?.message
+                                }
+                              </span>
+                            )}
                           </div>
                         )}
                         {item.fieldType === "radio" && (
@@ -480,6 +682,7 @@ export default function CompleteProfileTutor({
                                     type="radio"
                                     {...register(
                                       `selected.${item.fieldName}.options`,
+                                      { required: "required*" },
                                     )}
                                     value={option}
                                     className="size-6 accent-primary"
@@ -490,8 +693,17 @@ export default function CompleteProfileTutor({
                                 </Label>
                               </div>
                             ))}
+                            {errors.selected?.[item.fieldName]?.options && (
+                              <span className="text-sm text-red-500">
+                                {
+                                  errors.selected?.[item.fieldName]?.options
+                                    ?.message
+                                }
+                              </span>
+                            )}
                           </div>
                         )}
+
                         {item.fieldType === "dropdown" && (
                           <div>
                             <Popover>
@@ -559,6 +771,7 @@ export default function CompleteProfileTutor({
                                 </Command>
                               </PopoverContent>
                             </Popover>
+
                             {/* {item.options.map((option) => (
                           <div key={option} className="text-sm text-gray-700">
                             <Label className="flex items-center justify-between">

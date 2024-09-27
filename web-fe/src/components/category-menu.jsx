@@ -33,7 +33,6 @@ export function CategoryMenu() {
     queryKey: ["categories"],
     keepPreviousData: true,
   });
-
   if (isLoading) return <Loading />;
   if (isError) return error?.message ?? "Error";
 
@@ -81,7 +80,7 @@ const ListItem = React.forwardRef(
                   src={category.image}
                   width={100}
                   height={100}
-                  alt={category.title}
+                  alt={category.name}
                   className={"h-full w-full object-cover object-center"}
                 />
               </figure>

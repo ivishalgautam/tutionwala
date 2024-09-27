@@ -1,49 +1,32 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useJsApiLoader } from "@react-google-maps/api";
+import useMapLoader from "@/hooks/useMapLoader";
 import { LocateIcon } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-
-const libs = ["core", "maps", "places", "marker"];
 
 const showInfoContent = (fullAddr) => {
   return `
-    <div>
       <div class="text-black font-bold">
         ${fullAddr}
       </div>
-    </div>
   `;
 };
 
-const currentLatLng = async () => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        let lat = position.coords.latitude;
-        let lng = position.coords.longitude;
-        resolve([lat, lng]);
-      },
-      (error) => {
-        reject(error);
-        toast.warning("Allow location permission!");
-      },
-    );
-  });
-};
-
-export default function Map() {
+export default function Map({
+  coordinates,
+  setCoordinates,
+  getCurrentLatLng,
+  handleUpdate,
+}) {
   const [map, setMap] = useState(null);
   const [autoComplete, setAutoComplete] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
-  const [coordinates, setCoordinates] = useState([0, 0]);
-  const [selectedCoordinates, setSelectedCoordinates] = useState([0, 0]);
   const markersRef = useRef([]);
   const mapRef = useRef(null);
   const geocoderRef = useRef(null);
   const placeAutoCompleteRef = useRef(null);
+  const { isLoaded } = useMapLoader();
 
   const clearMarkers = useCallback(() => {
     markersRef.current.forEach((marker) => {
@@ -51,15 +34,6 @@ export default function Map() {
     });
     markersRef.current = [];
   }, []);
-
-  const getCurrentLatLng = async () => {
-    try {
-      const coords = await currentLatLng();
-      setCoordinates(coords);
-    } catch (error) {
-      console.error("Error getting location:", error);
-    }
-  };
 
   const setMarker = useCallback(
     (location, full_addr) => {
@@ -76,8 +50,9 @@ export default function Map() {
 
       let infoCard = new google.maps.InfoWindow({
         position: location,
-        content: showInfoContent(full_addr, name),
+        content: showInfoContent(full_addr),
       });
+
       if (full_addr) {
         infoCard.open({
           map: map,
@@ -90,7 +65,7 @@ export default function Map() {
         const newPosition = marker.position;
         const lat = newPosition.lat;
         const lng = newPosition.lng;
-        setSelectedCoordinates([lat, lng]);
+        setCoordinates([lat, lng]);
 
         if (newPosition && geocoderRef.current) {
           geocoderRef.current.geocode(
@@ -115,11 +90,6 @@ export default function Map() {
     },
     [map, clearMarkers],
   );
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
-    libraries: libs,
-  });
 
   useEffect(() => {
     // initialize map
@@ -194,7 +164,7 @@ export default function Map() {
                 }
                 const lat = event.latLng.lat();
                 const lng = event.latLng.lng();
-                setSelectedCoordinates([lat, lng]);
+                setCoordinates([lat, lng]);
                 setMarker(event.latLng, fullAddr); // Use address as both name and full address
               } else {
                 console.error("Geocoder failed due to: " + status);
@@ -233,10 +203,6 @@ export default function Map() {
       );
     }
   }, [coordinates, setMarker, isLoaded, geocoderRef]);
-
-  useEffect(() => {
-    getCurrentLatLng();
-  }, []);
 
   return (
     <div>

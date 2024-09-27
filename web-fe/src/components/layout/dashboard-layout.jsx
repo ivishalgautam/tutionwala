@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useContext } from "react";
 
 import { Muted, Small } from "@/components/ui/typography";
@@ -68,8 +68,8 @@ export const Profile = ({ isUserLoading, user }) => {
 };
 
 export const ListItem = ({ item }) => {
-  const searchParams = useSearchParams();
-  const currTab = searchParams.get("tab");
+  const pathname = usePathname();
+  const currTab = pathname.split("/dashboard/").pop();
   return (
     <li
       className={cn(
@@ -80,10 +80,7 @@ export const ListItem = ({ item }) => {
         },
       )}
     >
-      <Link
-        href={`?tab=${item.value}${item.value === "dashboard" ? `&stab=enquiries` : ""}`}
-        className="block p-3 px-6"
-      >
+      <Link href={`/dashboard/${item.value}`} className="block p-3 px-6">
         {item.label}
       </Link>
     </li>

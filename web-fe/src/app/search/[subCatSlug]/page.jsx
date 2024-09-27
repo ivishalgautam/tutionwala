@@ -25,14 +25,14 @@ import http from "@/utils/http";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CheckIcon, MoveLeft, MoveRight, Plus } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import Tutors from "@/components/tutors";
 import NextImage from "@/components/next-image";
 import "@smastrom/react-rating/style.css";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
-import { useJsApiLoader } from "@react-google-maps/api";
+import useMapLoader from "@/hooks/useMapLoader";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}/${id}`);
@@ -48,10 +48,8 @@ const fetchTutors = async (formData, limit) => {
 };
 
 export default function Page({ params: { subCatSlug } }) {
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
-    libraries: ["places"],
-  });
+  const { isLoaded } = useMapLoader();
+
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
   const storedFilteration =
     typeof window !== "undefined"
