@@ -472,7 +472,7 @@ export function SubCategoryForm({
                       </span>
                     )}
                   </div>
-
+                  {/*  */}
                   {/* field question for student */}
                   <div className="col-span-3">
                     <Label>Question for Student</Label>
