@@ -1,146 +1,166 @@
 "use client";
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-
+import Image from "next/image";
+import { Large, Small } from "./ui/typography";
+import {
+  EnvelopeSimple,
+  FacebookLogo,
+  InstagramLogo,
+  LinkedinLogo,
+  Phone,
+  TwitterLogo,
+  WhatsappLogo,
+} from "phosphor-react";
+import useFetchFeaturedCourses from "@/hooks/useFetchFeaturedCourses";
 import Link from "next/link";
-import { H2, Small } from "./ui/typography";
-import { GradualSpacing } from "./ui/animated-text";
+import { socialLinks } from "@/data/static";
 
-const pathArr = [
-  "M 62 140 L 43 140 L 43 16.8 L 0 16.8 L 0 0 L 105 0 L 105 16.8 L 62 16.8 L 62 140 Z", // T
-  "M35 100 L35 20 L50 20 L50 85 L65 85 L65 100 Z", // U
-  "M 62 140 L 43 140 L 43 16.8 L 0 16.8 L 0 0 L 105 0 L 105 16.8 L 62 16.8 L 62 140 Z", // T
-  "M145 100 L145 20 L160 20 L160 50 L145 50 L145 85 L160 85 L160 100 Z", // I
-  "M170 100 L170 20 L185 20 L185 50 L170 50 L170 100 Z", // O
-  "M195 100 L195 20 L210 20 L210 100 Z", // N
-  "M220 100 L220 20 L235 20 L235 50 L220 50 L220 100 Z", // W
-  "M245 100 L245 20 L260 20 L260 50 L245 50 L245 100 Z", // A
-  "M270 100 L270 20 L285 20 L285 100 Z", // L
-  "M295 100 L295 20 L310 20 L310 50 L295 50 L295 100 Z", // A
-];
-
-const Footer = () => {
-  const container = useRef(null);
-  const ref = useRef(null);
-  const isInView = useInView(ref);
-
-  const variants = {
-    visible: (i) => ({
-      translateY: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
-        duration: 0.4,
-        delay: i * 0.03,
-      },
-    }),
-
-    hidden: { translateY: 200 },
-  };
+export const Footer = () => {
+  const {
+    data: courses,
+    isLoading,
+    isError,
+    error,
+  } = useFetchFeaturedCourses({ limit: 25 });
 
   return (
-    <>
-      <div
-        className="relative h-full bg-white pt-8 text-black sm:pt-14"
-        ref={container}
-      >
-        <div className="mx-auto space-y-8 px-4 sm:container">
-          <div className="w-full justify-between md:flex">
-            <div className="md:flex-1">
-              <H2 className="mb-2 text-2xl font-semibold text-primary md:text-4xl">
-                Let&lsquo;s do great work together
-              </H2>
-              <Small className={"text-pretty"}>
-                At our tuition classes, we provide personalized attention from
-                experienced educators in a supportive environment. Our goal is
-                to empower students by strengthening fundamental understanding,
-                enhancing reasoning skills, and building self-confidence for
-                academic success.
-              </Small>
-            </div>
-            <div className="flex items-start justify-end gap-10 md:flex-1">
-              <ul>
-                <li className="pb-2 text-2xl font-semibold text-black">
-                  SITEMAP
-                </li>
-                <li className="text-xl font-medium">
-                  <Link className="hover:text-primary-500" href="/">
-                    Home
-                  </Link>
-                </li>
-                <li className="text-xl font-medium">
-                  <Link className="hover:text-primary-500" href="/about">
-                    About us
-                  </Link>
-                </li>
-                <li className="text-xl font-medium">
-                  <Link className="hover:text-primary-500" href="/blogs">
-                    Blogs
-                  </Link>
-                </li>
-                <li className="text-xl font-medium">
-                  <Link className="hover:text-primary-500" href="/contact-us">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-              <ul>
-                <li className="pb-2 text-2xl font-semibold text-black">
-                  SOCIAL
-                </li>
-                <li className="text-xl font-medium">
-                  <a
-                    href="https://www.linkedin.com/company/next-codez/"
-                    target="_blank"
-                    className="underline hover:text-primary-500"
-                  >
-                    LinkedIn
-                  </a>
-                </li>
-                <li className="text-xl font-medium">
-                  <a
-                    href="https://twitter.com/NextCodez"
-                    target="_blank"
-                    className="underline hover:text-primary-500"
-                  >
-                    Twitter
-                  </a>
-                </li>
-                <li className="text-xl font-medium">
-                  <a
-                    href="https://www.instagram.com/nextcodez/"
-                    target="_blank"
-                    className="underline hover:text-primary-500"
-                  >
-                    Instagram
-                  </a>
-                </li>
-                <li className="text-xl font-medium">
-                  <a
-                    href="https://www.facebook.com/nextcodezz"
-                    target="_blank"
-                    className="underline hover:text-primary-500"
-                  >
-                    Facebook
-                  </a>
-                </li>
-              </ul>
+    <footer className="mx-auto bg-primary px-4 py-5 text-white md:px-8">
+      <div className="container">
+        {/* 1 */}
+        <div className="justify-between space-y-8 pb-5 md:flex md:gap-6 md:space-y-0">
+          <div className="flex-1 basis-2/3">
+            <div className="space-y-4">
+              <figure className="flex items-center gap-2">
+                <Image
+                  src={"/images/logo.png"}
+                  width={100}
+                  height={100}
+                  alt="TutionWala logo"
+                  className="rounded-lg"
+                />
+              </figure>
+              <div className="md:flex-1">
+                <Small className={"text-pretty"}>
+                  We provide personalized attention from experienced educators
+                  to strengthen fundamentals, enhance reasoning skills, and
+                  build self-confidence for academic success.
+                </Small>
+              </div>
+              <div>
+                <ul className="flex gap-3">
+                  {socialLinks.map(({ icon, href }) => (
+                    <li
+                      key={href}
+                      className="inline-block rounded-full border-2 border-white/20 p-2 text-sm font-medium transition-colors hover:border-white hover:bg-white hover:text-primary"
+                    >
+                      <a href={href} target="_blank" className="">
+                        {icon}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col-reverse justify-between gap-3 py-2 md:flex-row">
-            <span className="font-medium">
+
+          <div className="flex-1 basis-1/3 items-center justify-between space-y-3 text-sm sm:text-base md:mt-0">
+            <Large>Feel free to share your question</Large>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Phone size={20} /> <span>+91 98113 18314</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <EnvelopeSimple size={20} />{" "}
+                <span>tech.tutionwala@gmail.com</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <WhatsappLogo size={20} /> <span>+91 98113 18314</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2 */}
+        <div className="space-y-2 border-t border-black/10 py-5">
+          <Large>Tutors by subjects</Large>
+          <div>
+            {isError && (error?.message ?? "error")}
+            {isLoading ? "loading..." : <Courses {...{ courses }} />}
+          </div>
+        </div>
+
+        {/* 3 */}
+        <div className="mt-8 items-center justify-between border-t border-black/10 py-6 sm:flex">
+          <div className="mt-4 sm:mt-0">
+            <span className="text-sm font-medium">
               &copy; {new Date().getFullYear()} TUTIONWALA.IN. All Rights
               Reserved.
             </span>
-            <a href="#" className="font-semibold">
-              Privacy Policy
-            </a>
+          </div>
+          <div className="mt-6 sm:mt-0">
+            <ul className="flex gap-4">
+              <li className="text-sm font-medium">
+                <a
+                  href="#"
+                  target="_blank"
+                  className="underline hover:text-primary-500"
+                >
+                  Terms of use
+                </a>
+              </li>
+              <li className="text-sm font-medium">
+                <a
+                  href="#"
+                  target="_blank"
+                  className="underline hover:text-primary-500"
+                >
+                  Privacy policy
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </>
+    </footer>
   );
 };
 
-export default Footer;
+export const Courses = ({ courses = [], sliceCount = 5 }) => {
+  const slice = [
+    [0 * sliceCount, 1 * sliceCount],
+    [1 * sliceCount, 2 * sliceCount],
+    [2 * sliceCount, 3 * sliceCount],
+    [3 * sliceCount, 4 * sliceCount],
+    [4 * sliceCount, 5 * sliceCount],
+  ];
+
+  console.log({ slice });
+
+  return (
+    <div className="grid grid-cols-2 gap-5 pl-4 md:grid-cols-3 lg:grid-cols-5">
+      {slice.map(([from, to]) => (
+        <ul className="list-disc marker:text-white">
+          {courses?.map(({ id, name, slug }) => (
+            <>
+              <li key={id}>
+                <Link
+                  href={`/tutors?category=${slug}`}
+                  className="text-sm font-medium capitalize transition-colors hover:text-primary"
+                >
+                  {name}
+                </Link>
+              </li>
+              <li key={id}>
+                <Link
+                  href={`/tutors?category=${slug}`}
+                  className="text-sm font-medium capitalize transition-colors hover:text-primary"
+                >
+                  {name}
+                </Link>
+              </li>
+            </>
+          ))}
+        </ul>
+      ))}
+    </div>
+  );
+};

@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { H3, H5, H6 } from "@/components/ui/typography";
+import { H3, H5, H6, Muted } from "@/components/ui/typography";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { cn } from "@/lib/utils";
 import { endpoints } from "@/utils/endpoints";
@@ -43,6 +43,7 @@ import { toast } from "sonner";
 import { Progress } from "../ui/progress";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { getCurrentCoords } from "@/lib/get-current-coords";
+import { Checkbox } from "../ui/checkbox";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -78,6 +79,7 @@ export default function CompleteProfileTutor({
       },
       class_conduct_mode: "",
       enquiry_radius: "",
+      is_demo_class: false,
 
       // step 2
       experience: "",
@@ -179,7 +181,7 @@ export default function CompleteProfileTutor({
   };
 
   const onSubmit = (formData) => {
-    console.log({ formData });
+    // console.log({ formData });
     const payload =
       currStep === 1
         ? {
@@ -190,6 +192,7 @@ export default function CompleteProfileTutor({
             class_conduct_mode: formData.class_conduct_mode,
             enquiry_radius: formData.enquiry_radius,
             coords: coords,
+            is_demo_class: formData.is_demo_class,
           }
         : currStep === 2
           ? {
@@ -295,7 +298,6 @@ export default function CompleteProfileTutor({
 
     getCoords();
   }, []);
-
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
 
@@ -378,6 +380,7 @@ export default function CompleteProfileTutor({
                       </div>
                     ))}
                   </div>
+
                   <div className="text-end">
                     <Button
                       type="button"
@@ -408,7 +411,7 @@ export default function CompleteProfileTutor({
                     </div>
 
                     <div>
-                      <Label>Is degree completed</Label>
+                      <Label>Is degree completed?</Label>
                       <Controller
                         control={control}
                         name={`degree.status`}
@@ -471,7 +474,7 @@ export default function CompleteProfileTutor({
 
                 {/* counduct classes */}
                 <div className="space-y-1">
-                  <Label>How will you conduct class.</Label>
+                  <Label>How will you conduct class?</Label>
                   <Controller
                     control={control}
                     rules={{ required: "required*" }}
@@ -510,6 +513,28 @@ export default function CompleteProfileTutor({
                       {errors.class_conduct_mode.message}
                     </span>
                   )}
+                </div>
+
+                {/* demo class */}
+                <div>
+                  <Label>Is demo classes available?</Label>
+                  <Controller
+                    name="is_demo_class"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex flex-row items-center space-x-3 space-y-0 p-2">
+                        <div>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </div>
+                        <div className="space-y-1 leading-none">
+                          <Label>Yes, I provide demo classes.</Label>
+                        </div>
+                      </div>
+                    )}
+                  />
                 </div>
 
                 <div className="relative">

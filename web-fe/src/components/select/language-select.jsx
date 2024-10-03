@@ -1,11 +1,18 @@
 import { languages } from "@/data/languages";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 export default function LanguageSelect({ searchParams }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const router = useRouter();
+  const language = searchParams.get("language");
+  const defaultValues = useCallback(() => {
+    return (
+      languages.filter(({ value }) => language?.split(" ").includes(value)) ??
+      []
+    );
+  }, [language]);
 
   useEffect(() => {
     if (!selectedOption) return;
@@ -30,11 +37,12 @@ export default function LanguageSelect({ searchParams }) {
 
   return (
     <ReactSelect
-      className="min-w-96"
       options={languages}
       isMulti
+      defaultValue={defaultValues}
       placeholder={"Select Preferred languages"}
       onChange={setSelectedOption}
+      menuPortalTarget={document.body}
     />
   );
 }

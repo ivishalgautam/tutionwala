@@ -58,7 +58,7 @@ export default function NavbarComponent() {
           <NavbarList>
             <Link
               className={buttonVariants({ variant: "default" })}
-              href={"/dashboard?tab=enquiries"}
+              href={"/dashboard/enquiries"}
             >
               Dashboard
             </Link>
@@ -96,7 +96,7 @@ export default function NavbarComponent() {
             <>
               <Link
                 className={buttonVariants({ variant: "default" })}
-                href={"/dashboard?tab=enquiries"}
+                href={"/dashboard/enquiries"}
               >
                 Dashboard
               </Link>

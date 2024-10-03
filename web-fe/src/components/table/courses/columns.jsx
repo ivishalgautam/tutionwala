@@ -33,7 +33,7 @@ export const CoursesColumns = (handleDelete) => [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const id = row.original.id;
+      const id = row.original.course_id;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -45,7 +45,7 @@ export const CoursesColumns = (handleDelete) => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleDelete(id)}>
+            <DropdownMenuItem onClick={() => handleDelete({ id })}>
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

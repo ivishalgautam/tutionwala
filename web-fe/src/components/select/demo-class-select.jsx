@@ -1,29 +1,29 @@
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 const options = [
-  { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
+  { label: "Yes", value: "yes" },
+  { label: "No", value: "no" },
   { label: "Any", value: "any" },
 ];
 
-export default function GenderSelect({ searchParams }) {
+export default function DemoClassSelect({ searchParams }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const router = useRouter();
-  const gender = searchParams.get("gender");
+  const demo = searchParams.get("demo");
 
   useEffect(() => {
     if (!selectedOption) return;
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    if (searchParams.get("gender")) {
-      newSearchParams.set("gender", selectedOption.value);
+    if (searchParams.get("demo")) {
+      newSearchParams.set("demo", selectedOption.value);
     } else {
-      newSearchParams.append("gender", selectedOption.value);
+      newSearchParams.append("demo", selectedOption.value);
     }
 
     if (!selectedOption || selectedOption?.value === "any") {
-      newSearchParams.delete("gender");
+      newSearchParams.delete("demo");
     }
 
     router.push(`?${newSearchParams.toString()}`);
@@ -32,8 +32,8 @@ export default function GenderSelect({ searchParams }) {
   return (
     <ReactSelect
       options={options}
-      defaultValue={options.find((so) => so.value === gender)}
-      placeholder={"Select gender"}
+      defaultValue={options.find((so) => so.value === demo)}
+      placeholder={"Select demo class"}
       onChange={setSelectedOption}
       menuPortalTarget={document.body}
     />

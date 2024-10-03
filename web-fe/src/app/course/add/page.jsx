@@ -17,7 +17,7 @@ export default function Page() {
     mutationFn: createCourse,
     onSuccess: (data) => {
       toast.success(data?.message ?? "Added");
-      router.push("/dashboard?tab=courses");
+      router.push("/dashboard/courses");
     },
     onError: (error) => {
       toast.error(error?.message ?? "Error creating!");

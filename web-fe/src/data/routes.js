@@ -11,10 +11,6 @@ export const allRoutes = [
     roles: [],
   },
   {
-    link: "/categories/[slug]",
-    roles: [ROLES.USER],
-  },
-  {
     link: "/complete-profile/tutor",
     roles: [ROLES.TUTOR],
   },
@@ -37,5 +33,13 @@ export const allRoutes = [
   {
     link: "/dashboard",
     roles: [ROLES.TUTOR, ROLES.STUDENT],
+  },
+  {
+    link: "/categories",
+    roles: [],
+  },
+  {
+    link: "/categories/[slug]",
+    roles: [],
   },
 ];

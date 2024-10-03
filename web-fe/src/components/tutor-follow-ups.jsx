@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import FollowUpCard from "./card/follow-up";
-import { Button } from "./ui/button";
-import { PlusIcon } from "@radix-ui/react-icons";
 import Modal from "./Modal";
 import CreateFollowUpForm from "./forms/follow-up";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,10 +8,6 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import { P } from "./ui/typography";
-
-async function createFollowUp(data) {
-  return http().post(endpoints.followUps.getAll, data);
-}
 
 async function updateFollowUp(data) {
   return http().put(`${endpoints.followUps.getAll}/${data.id}`, data);
@@ -23,14 +17,12 @@ async function deleteFollowUp(data) {
   return http().delete(`${endpoints.followUps.getAll}/${data.id}`);
 }
 
-const fetchFollowups = async (id) => {
-  const { data } = await http().get(
-    `${endpoints.followUps.getAll}/getByStudentId/${id}`,
-  );
+const fetchFollowups = async () => {
+  const { data } = await http().get(`${endpoints.followUps.getAll}`);
   return data;
 };
 
-export default function FollowUps({ studentId }) {
+export default function FollowUps() {
   const [followUpId, setFollowUpId] = useState("");
   const [isModal, setIsModal] = useState(false);
   const [type, setType] = useState("");
@@ -41,9 +33,8 @@ export default function FollowUps({ studentId }) {
     isError,
     error,
   } = useQuery({
-    queryKey: [`followups-${studentId}`],
-    queryFn: () => fetchFollowups(studentId),
-    enabled: !!studentId,
+    queryKey: [`followups`],
+    queryFn: fetchFollowups,
   });
 
   const openModal = () => {
@@ -54,21 +45,10 @@ export default function FollowUps({ studentId }) {
     setIsModal(false);
   };
 
-  const createMutation = useMutation(createFollowUp, {
-    onSuccess: (data) => {
-      toast.success(data.message ?? "Follow up added.");
-      queryClient.invalidateQueries(`followups-${studentId}`);
-      setIsModal(false);
-    },
-    onError: (error) => {
-      toast.error(error.message ?? "Failed to create follow up!");
-    },
-  });
-
   const updateMutation = useMutation(updateFollowUp, {
     onSuccess: (data) => {
       toast.success(data.message ?? "Follow up updated.");
-      queryClient.invalidateQueries(`followups-${studentId}`);
+      queryClient.invalidateQueries(`followups`);
       closeModal();
       setFollowUpId("");
     },
@@ -79,17 +59,13 @@ export default function FollowUps({ studentId }) {
 
   const deleteMutation = useMutation(deleteFollowUp, {
     onSuccess: (data) => {
-      toast.success(data.message ?? "Follow up deleted.");
-      queryClient.invalidateQueries(`followups-${studentId}`);
+      toast.success(data?.message ?? "Follow up deleted.");
+      queryClient.invalidateQueries(`followups`);
     },
     onError: (error) => {
       toast.error(error.message ?? "Failed to delete follow up!");
     },
   });
-
-  async function handleCreate(data) {
-    createMutation.mutate(data);
-  }
 
   async function handleUpdate(data) {
     updateMutation.mutate(data);
@@ -101,21 +77,10 @@ export default function FollowUps({ studentId }) {
     deleteMutation.mutate(data);
   }
 
+  if (isError) return error?.message ?? "error";
+
   return (
     <div className="space-y-4">
-      <div className="text-end">
-        <Button
-          variant="outline"
-          type="button"
-          onClick={() => {
-            setFollowUpId("");
-            setType("create");
-            openModal();
-          }}
-        >
-          <PlusIcon /> &nbsp; Add Follow Up
-        </Button>
-      </div>
       {isLoading ? (
         Array.from({ length: 5 }).map((_, idx) => <Skeloton key={idx} />)
       ) : followUps?.length ? (
@@ -135,9 +100,7 @@ export default function FollowUps({ studentId }) {
       )}
       <Modal isOpen={isModal} onClose={closeModal}>
         <CreateFollowUpForm
-          handleCreate={handleCreate}
           handleUpdate={handleUpdate}
-          studentId={studentId}
           type={type}
           followUpId={followUpId}
         />

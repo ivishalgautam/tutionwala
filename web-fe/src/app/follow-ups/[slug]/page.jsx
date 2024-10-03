@@ -1,5 +1,4 @@
-import FollowUps from "@/components/follow-ups";
-import React from "react";
+import FollowUps from "@/components/follow-ups-by-student";
 
 export default function Page({ params: { slug: studentId } }) {
   return (

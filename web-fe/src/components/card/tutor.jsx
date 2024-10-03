@@ -9,7 +9,7 @@ import Review from "../review";
 
 export default function TutorCard({ tutor, ratings, totalReviews }) {
   return (
-    <div className="w-full space-y-2 rounded border p-4">
+    <div className="w-full space-y-2 rounded border border-gray-200 bg-white p-4">
       <div className="flex items-start justify-start gap-4">
         <figure className="size-32 flex-shrink-0">
           <NextImage
@@ -22,7 +22,7 @@ export default function TutorCard({ tutor, ratings, totalReviews }) {
         </figure>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Link href={`/tutors/${tutor.id}`}>
+            <Link href={`/tutors/${tutor.tutor_id}`}>
               <H4 className={"transition-colors hover:text-primary"}>
                 {tutor.fullname}
               </H4>
@@ -59,7 +59,7 @@ export default function TutorCard({ tutor, ratings, totalReviews }) {
             )}
           </div>
           <div className="text-end">
-            <EnquiryForm tutorId={tutor.id} />
+            <EnquiryForm tutorId={tutor.tutor_id} />
           </div>
         </div>
       </div>

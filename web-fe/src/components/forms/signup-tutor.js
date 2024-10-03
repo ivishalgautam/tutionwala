@@ -19,8 +19,8 @@ import { Edit } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { formatTime } from "@/utils/time";
 import { useRouter } from "next/navigation";
-import { useJsApiLoader } from "@react-google-maps/api";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
+import useMapLoader from "@/hooks/useMapLoader";
 
 const defaultValues = {
   type: "",
@@ -61,10 +61,7 @@ export default function SignUpTutorForm() {
     getValues,
     setFocus,
   } = useForm({ defaultValues });
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
-    libraries: ["places"],
-  });
+  const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
 
   const { data: subCategories } = useQuery({

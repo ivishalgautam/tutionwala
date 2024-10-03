@@ -22,6 +22,7 @@ import { useSearchParams } from "next/navigation";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "../ui/checkbox";
 
 const fetchSubCategory = async (slug) => {
   const { data } = await http().get(
@@ -41,6 +42,7 @@ export default function CreateCourse({ handleCreate }) {
     unregister,
   } = useForm({
     defaultValues: {
+      is_demo_class: false,
       fields: [],
       boards: [],
     },
@@ -120,6 +122,7 @@ export default function CreateCourse({ handleCreate }) {
       fields: formData.fields,
       boards: formData.boards,
       sub_category_slug: categorySlug,
+      is_demo_class: formData.is_demo_class,
     };
 
     handleCreate({ ...payload });
@@ -139,6 +142,28 @@ export default function CreateCourse({ handleCreate }) {
           </div>
 
           <div className="space-y-4 divide-y">
+            {/* demo class */}
+            <div>
+              <Label>Is demo classes available?</Label>
+              <Controller
+                name="is_demo_class"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-row items-center space-x-3 space-y-0 p-2">
+                    <div>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </div>
+                    <div className="space-y-1 leading-none">
+                      <Label>Yes, I provide demo classes.</Label>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
             {data?.is_boards && (
               <div>
                 <div className="text-sm font-medium">

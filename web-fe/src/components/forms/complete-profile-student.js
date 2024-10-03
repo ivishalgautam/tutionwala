@@ -41,6 +41,7 @@ import { useEffect, useState } from "react";
 import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextImage from "../next-image";
+import { getCurrentCoords } from "@/lib/get-current-coords";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -84,6 +85,7 @@ export default function CompleteProfileStudent({
   });
   const [filteredTutors, setFilteredTutors] = useState({ found: 0, data: [] });
   const [totalSteps, setTotalSteps] = useState(0);
+  const [coords, setCoords] = useState([0, 0]);
 
   const [images, setImages] = useState({
     profile_picture: "",
@@ -171,6 +173,7 @@ export default function CompleteProfileStudent({
       fields: formData.fields,
       boards: formData.boards,
       languages: formData.languages,
+      coords: coords,
     };
 
     // console.log({ formData });
@@ -245,6 +248,15 @@ export default function CompleteProfileStudent({
     setCurrStep((prev) => prev + 1);
     tutors.mutate(watch());
   };
+
+  useEffect(() => {
+    async function getCoords() {
+      const coords = await getCurrentCoords();
+      setCoords(coords);
+    }
+
+    getCoords();
+  }, []);
 
   if (isLoading) return <Loading />;
   return (

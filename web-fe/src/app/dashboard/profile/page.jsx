@@ -1,16 +1,44 @@
 "use client";
+import PersonalInfoForm from "@/components/forms/personal-info";
 import Loading from "@/components/loading";
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { H5 } from "@/components/ui/typography";
 import { getCurrentCoords } from "@/lib/get-current-coords";
+import { MainContext } from "@/store/context";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+const subTabs = [
+  {
+    label: "Personal Information",
+    href: "?tab=details&stab=personal-information",
+  },
+  {
+    label: "Tutor Profile",
+    href: "?tab=details&stab=tutor-profile",
+  },
+  // {
+  //   label: "Address",
+  //   href: "/dashboard/profile?tab=address",
+  // },
+];
+
 export default function Page() {
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab") ?? "details";
+  const stab = searchParams.get("stab");
   const [coordinates, setCoordinates] = useState([0, 0]);
+  const { user } = useContext(MainContext);
   const getCurrentLatLng = async () => {
     try {
       const coords = await getCurrentCoords();
@@ -34,8 +62,6 @@ export default function Page() {
       return data;
     },
   });
-
-  console.log(tutor);
 
   const updateMutation = useMutation({
     mutationFn: async (data) => {
@@ -63,22 +89,59 @@ export default function Page() {
     }
   }, [tutor]);
 
+  console.log(user);
+
   if (isLoading) return <Loading />;
   if (isError) return error.message ?? "error";
 
   return (
     <div>
-      <Map
-        coordinates={coordinates}
-        setCoordinates={setCoordinates}
-        getCurrentLatLng={getCurrentLatLng}
-        handleUpdate={handleUpdate}
-      />
-      <div className="text-end">
-        <Button type="button" onClick={handleUpdateLocation}>
-          Update location
-        </Button>
-      </div>
+      <Tabs defaultValue={tab} className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="details" className="w-1/2">
+            <Link href={`?tab=details`}>Details</Link>
+          </TabsTrigger>
+          <TabsTrigger value="address" className="w-1/2">
+            <Link href={`?tab=address`}>Address</Link>
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="details">
+          {stab ? (
+            stab === "personal-information" ? (
+              <PersonalInfoForm fullname={user?.fullname} email={user?.email} />
+            ) : (
+              ""
+            )
+          ) : (
+            <div className="space-y-2">
+              {subTabs.map((tab, ind) => (
+                <div
+                  key={tab.label}
+                  className="flex items-center justify-between rounded border p-4 text-sm font-medium"
+                >
+                  <Link href={tab.href} className="flex-shrink-0 flex-grow">
+                    {ind + 1}.&nbsp;{tab.label}
+                  </Link>
+                  <ChevronRight />
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+        <TabsContent value="address">
+          <Map
+            coordinates={coordinates}
+            setCoordinates={setCoordinates}
+            getCurrentLatLng={getCurrentLatLng}
+            handleUpdate={handleUpdate}
+          />
+          <div className="text-end">
+            <Button type="button" onClick={handleUpdateLocation}>
+              Update location
+            </Button>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

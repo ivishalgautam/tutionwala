@@ -206,7 +206,7 @@ export default function Map({
 
   return (
     <div>
-      <div className="mx-auto max-w-[900px] space-y-4 p-8">
+      <div className="mx-auto w-full space-y-4">
         <Input ref={placeAutoCompleteRef} />
         <div className="h-96 rounded-lg drop-shadow-xl" ref={mapRef}></div>
         <Button type="button" onClick={getCurrentLatLng}>

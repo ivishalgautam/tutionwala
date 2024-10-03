@@ -3,14 +3,12 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
+import useMapLoader from "@/hooks/useMapLoader";
 
 const libs = ["places"];
 
 export default function AutoCompleteInput() {
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
-    libraries: libs,
-  });
+  const { isLoaded } = useMapLoader();
 
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
 

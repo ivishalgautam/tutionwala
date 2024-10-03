@@ -6,7 +6,7 @@ import { MainContext } from "@/store/context";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import Header from "../header";
-import Footer from "../footer";
+import { Footer } from "../footer";
 
 export default function Layout({ children }) {
   const pathname = usePathname();
@@ -53,6 +53,9 @@ export default function Layout({ children }) {
       }
       getStudentDetails(user.id);
     }
+
+    // console.log({ currentRoute });
+
     // If the current route is not found in the array or the user's role is not allowed for this route
     if (
       currentRoute &&

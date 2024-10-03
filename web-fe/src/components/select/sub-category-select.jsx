@@ -11,7 +11,6 @@ const searchCategory = async (q) => {
     label: name,
     value: slug,
   }));
-  //   console.log({ filteredData });
   return filteredData;
 };
 
@@ -73,12 +72,13 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
   return (
     <ReactSelect
       // value={}
-      className="min-w-96"
       loadOptions={handleInputChange}
       placeholder={"Search..."}
       isLoading={isFetching && isLoading}
       onChange={setSelectedOption}
       isMulti={isMulti}
+      className="relative z-20"
+      menuPortalTarget={document.body}
     />
   );
 }

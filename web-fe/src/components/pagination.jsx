@@ -7,12 +7,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./ui/pagination";
+import { cn } from "@/lib/utils";
 
 export default function PaginationControl({
   page,
   paginationCount,
   createQueryString,
 }) {
+  console.log({ paginationCount });
   return (
     <Pagination>
       <PaginationContent>
@@ -25,7 +27,8 @@ export default function PaginationControl({
           <PaginationItem key={ind}>
             <PaginationLink
               href={`?${createQueryString("page", ind + 1)}`}
-              isActive={page === ind + 1}
+              isActive={page == ind + 1}
+              className={"hover:bg-primary hover:text-white"}
             >
               {ind + 1}
             </PaginationLink>

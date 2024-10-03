@@ -14,6 +14,10 @@ import ReviewForm from "@/components/forms/review";
 import { MainContext } from "@/store/context";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import FollowUps from "@/components/tutor-follow-ups";
 
 async function fetchEnquiries() {
   const { data } = await http().get(endpoints.enquiries.getAll);
@@ -35,6 +39,8 @@ export default function Page() {
   const [enquiryId, setEnquiryId] = useState("");
   const queryClient = useQueryClient();
   const { user, isUserLoading } = useContext(MainContext);
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab") ?? "enquiries";
 
   const {
     data: enquiries,
@@ -84,21 +90,37 @@ export default function Page() {
 
   return (
     <>
-      <Enquiries
-        {...{
-          isEnquiriesLoading,
-          isUserLoading,
-          enquiries,
-          user,
-          handleDelete,
-          openReviewModal,
-          setTutorId,
-          handleUpdate,
-          isEnquiriesError,
-          enquiriesError,
-          setEnquiryId,
-        }}
-      />
+      <Tabs defaultValue={tab} className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="enquiries" className="w-1/2">
+            <Link href={`?tab=enquiries`}>Enquiries</Link>
+          </TabsTrigger>
+          <TabsTrigger value="follow-ups" className="w-1/2">
+            <Link href={`?tab=follow-ups`}>Follow Ups</Link>
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="enquiries">
+          <Enquiries
+            {...{
+              isEnquiriesLoading,
+              isUserLoading,
+              enquiries,
+              user,
+              handleDelete,
+              openReviewModal,
+              setTutorId,
+              handleUpdate,
+              isEnquiriesError,
+              enquiriesError,
+              setEnquiryId,
+            }}
+          />
+        </TabsContent>
+        <TabsContent value="follow-ups">
+          <FollowUps />
+        </TabsContent>
+      </Tabs>
+
       <Modal isOpen={isReviewModal} onClose={closeReviewModal}>
         <ReviewForm tutorId={tutorId} enquiryId={enquiryId} />
       </Modal>

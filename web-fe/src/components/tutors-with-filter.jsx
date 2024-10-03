@@ -5,15 +5,35 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Tutors from "./tutors";
 import Image from "next/image";
-import { H1, Small } from "./ui/typography";
+import { H1, Large, Muted, Small } from "./ui/typography";
 import { useForm } from "react-hook-form";
 import SubCategorySelect from "./select/sub-category-select";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import PaginationControl from "./pagination";
 import LanguageSelect from "./select/language-select";
 import GenderSelect from "./select/gender-select";
 import RatingSelect from "./select/rating-select";
+import { Input } from "./ui/input";
+import useMapLoader from "@/hooks/useMapLoader";
+import { useAutocomplete } from "@/hooks/useAutoComplete";
+import DemoClassSelect from "./select/demo-class-select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
+import { Filter, X } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { Button, buttonVariants } from "./ui/button";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -24,21 +44,84 @@ const fetchTutors = async (params) => {
 };
 
 export default function TutorsWithFilter() {
-  const searchParams = useSearchParams();
-  const page = parseInt(searchParams.get("page"), 10);
-  const limit = parseInt(searchParams.get("limit"), 10);
-  const router = useRouter();
-
   const {
     control,
     formState: { errors },
     handleSubmit,
   } = useForm();
 
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page") ?? 1);
+  const limit = Number(searchParams.get("limit") ?? 10);
+  const router = useRouter();
+  const allowedFilterKeys = [
+    "category",
+    "language",
+    "gender",
+    "demo",
+    "rating",
+    "addr",
+  ];
+
+  const arrayFilterKeys = useMemo(() => ["category", "language", "rating"], []);
+
+  const filters = useCallback(() => {
+    const obj = {};
+
+    for (const [key, value] of searchParams.entries()) {
+      if (!allowedFilterKeys.includes(key)) continue;
+
+      if (arrayFilterKeys.includes(key)) {
+        obj[key] = obj[key]
+          ? [...obj[key], ...value.split(" ")]
+          : value.split(" ");
+      } else {
+        obj[key] = value;
+      }
+    }
+
+    return obj;
+  }, [searchParams, router]);
+
+  const selectedFilters = filters();
+
+  const deleteSearchParam = useCallback(
+    (name, eleToDelete = null) => {
+      const urlSearchParam = new URLSearchParams(searchParams.toString());
+      const param = urlSearchParam.get(name);
+
+      if (param) {
+        let valueToSet = "";
+
+        if (arrayFilterKeys.includes(name)) {
+          const values = param.split(" ").filter((el) => el !== eleToDelete);
+          valueToSet = values.join(" ");
+          console.log({ valueToSet });
+          if (valueToSet) {
+            urlSearchParam.set(name, valueToSet);
+          } else {
+            urlSearchParam.delete(name);
+          }
+        } else {
+          if (name === "addr") {
+            urlSearchParam.delete("addr");
+            urlSearchParam.delete("lat");
+            urlSearchParam.delete("lng");
+          } else {
+            urlSearchParam.delete(name);
+          }
+        }
+        router.push(`?${urlSearchParam.toString()}`);
+      }
+    },
+    [searchParams, arrayFilterKeys, router],
+  );
+
   const { data, isLoading } = useQuery({
     queryFn: () => fetchTutors(searchParams.toString()),
     queryKey: ["tutors", searchParams.toString()],
   });
+  const paginationCount = Math.ceil(data?.total / limit);
 
   const createQueryString = useCallback(
     (name, value) => {
@@ -58,71 +141,210 @@ export default function TutorsWithFilter() {
     console.log({ data });
   };
 
-  const paginationCount = Math.ceil(data?.total / limit);
-
   useEffect(() => {
     if (!page) {
       router.push(`?${createQueryString("page", 1)}`);
     }
     if (!limit) {
-      router.push(`?${createQueryString("limit", 2)}`);
+      router.push(`?${createQueryString("limit", 10)}`);
     }
   }, [page, limit, createQueryString, router]);
 
   return (
-    <div>
-      <div className="relative h-80 before:absolute before:inset-0 before:bg-black/50">
-        <Image
-          src={"/images/search-banner.jpg"}
-          width={2000}
-          height={2000}
-          alt="learn"
-          className="h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
-          <H1>Find the Perfect Tutor for You</H1>
-          <Small className={"text-center font-normal"}>
-            Search and filter through expert tutors based on your learning
-            needs, subject, experience, and availability.
-          </Small>
-        </div>
-        <div className="absolute -bottom-14 left-0 -mt-4 w-full p-4">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-wrap items-center justify-start gap-2 rounded bg-white p-4 shadow-lg">
-              <div className="flex-grow">
-                <SubCategorySelect isMulti={true} searchParams={searchParams} />
-              </div>
-
-              <div className="flex-grow">
-                <LanguageSelect searchParams={searchParams} />
-              </div>
-
-              <div className="flex-grow">
-                <GenderSelect searchParams={searchParams} />
-              </div>
-
-              <div className="flex-grow">
-                <RatingSelect searchParams={searchParams} />
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div className="container mt-32">
-        <Tutors
-          tutors={data?.data ?? []}
-          isLoading={isLoading}
-          className={"grid gap-2 lg:grid-cols-2"}
-        />
-        {paginationCount > 1 && (
-          <div className="mt-10">
-            <PaginationControl
-              {...{ page, paginationCount, createQueryString }}
-            />
+    <div className="bg-gray-100">
+      <div className="container space-y-4 py-8">
+        <div className="relative h-80 overflow-hidden rounded-lg before:absolute before:inset-0 before:bg-black/50">
+          <Image
+            src={"/images/search-banner.jpg"}
+            width={2000}
+            height={2000}
+            alt="learn"
+            className="h-full w-full object-cover object-center"
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
+            <H1 className={"text-center"}>Find the Perfect Tutor for You</H1>
+            <Small className={"text-center font-normal"}>
+              Search and filter through expert tutors based on your learning
+              needs, subject, experience, and availability.
+            </Small>
           </div>
-        )}
+        </div>
+
+        {/* selected filters */}
+        {/* <SelectedFilters {...{ selectedFilters, deleteSearchParam }} /> */}
+        <div className="inline-block md:hidden">
+          <MobileFilter {...{ searchParams, handleSubmit, onSubmit }} />
+        </div>
+
+        <div className="text-2xl">{data?.total ?? 0} Tutors found.</div>
+
+        <div className="grid grid-cols-12 gap-4">
+          <div className="hidden w-full md:col-span-5 md:block lg:col-span-4">
+            <FilterForm {...{ searchParams, handleSubmit, onSubmit }} />
+          </div>
+
+          <div className="col-span-12 rounded-md md:col-span-7 lg:col-span-8">
+            <Tutors
+              tutors={data?.data ?? []}
+              isLoading={isLoading}
+              className={"grid gap-2"}
+            />
+            {paginationCount > 1 && (
+              <div className="mt-10">
+                <PaginationControl
+                  {...{ page, paginationCount, createQueryString }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
+  const tabs = [
+    {
+      name: "Location?",
+      comp: <FilterAddress searchParams={searchParams} />,
+    },
+    {
+      name: "Course?",
+      comp: <SubCategorySelect isMulti={true} searchParams={searchParams} />,
+    },
+    {
+      name: "Languages?",
+      comp: <LanguageSelect searchParams={searchParams} />,
+    },
+    {
+      name: "Gender?",
+      comp: <GenderSelect searchParams={searchParams} />,
+    },
+    {
+      name: "Rating?",
+      comp: <RatingSelect searchParams={searchParams} />,
+    },
+    {
+      name: "Demo Classes?",
+      comp: <DemoClassSelect searchParams={searchParams} />,
+    },
+  ];
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="space-y-4 rounded border border-gray-200 bg-white p-4">
+        <Accordion type="multiple" className="space-y-2">
+          {tabs.map((item, ind) => (
+            <AccordionItem
+              value={`item-${ind + 1}`}
+              key={ind}
+              className="rounded-lg border-b-0 bg-gray-100 "
+            >
+              <AccordionTrigger className="border-b-0 p-3">
+                {item.name}
+              </AccordionTrigger>
+              <AccordionContent className="px-4">{item.comp}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </form>
+  );
+};
+
+export const FilterAddress = ({ searchParams }) => {
+  const { isLoaded } = useMapLoader();
+  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
+  const router = useRouter();
+  useEffect(() => {
+    const addr = searchParams.get("addr");
+    addr ? (inputRef.current.value = addr) : (inputRef.current.value = null);
+  }, [searchParams, inputRef]);
+
+  useEffect(() => {
+    if (!selectedPlace) return;
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    const addressToSet = selectedPlace.address;
+    const lat = selectedPlace?.location?.lat();
+    const lng = selectedPlace?.location?.lng();
+
+    if (searchParams.get("addr")) {
+      newSearchParams.set("addr", addressToSet);
+      newSearchParams.set("lat", lat);
+      newSearchParams.set("lng", lng);
+    } else {
+      newSearchParams.append("addr", addressToSet);
+      newSearchParams.append("lat", lat);
+      newSearchParams.append("lng", lng);
+    }
+
+    if (!addressToSet) {
+      newSearchParams.delete("addr");
+      newSearchParams.delete("lat");
+      newSearchParams.delete("lng");
+    }
+
+    router.push(`?${newSearchParams.toString()}`);
+  }, [selectedPlace, searchParams, router]);
+
+  return <Input ref={inputRef} className="w-full" />;
+};
+
+export const SelectedFilters = ({ selectedFilters, deleteSearchParam }) => {
+  const Badge = ({ children, ...args }) => {
+    return (
+      <div
+        className="flex cursor-pointer items-center gap-2 rounded-xl bg-primary-200 px-3 py-1 text-xs font-medium text-black"
+        {...args}
+      >
+        <span>{children}</span>
+        <span>
+          <X size={15} />
+        </span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-wrap items-center justify-start gap-2">
+      {Object.keys(selectedFilters)?.map((key, ind) => (
+        <div key={ind} className="rounded bg-white/50 p-2">
+          <Muted className={"text-xs capitalize"}>{key}</Muted>
+          <div className="flex space-x-1">
+            {Array.isArray(selectedFilters[key]) ? (
+              selectedFilters[key].map((filter) => (
+                <Badge
+                  key={filter}
+                  onClick={() => deleteSearchParam(key, filter)}
+                >
+                  {filter}
+                </Badge>
+              ))
+            ) : (
+              <Badge onClick={() => deleteSearchParam(key)}>
+                {selectedFilters[key]}
+              </Badge>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const MobileFilter = ({ searchParams, handleSubmit, onSubmit }) => {
+  return (
+    <Sheet>
+      <SheetTrigger className={buttonVariants({ variant: "outline" })}>
+        <Filter size={15} /> &nbsp; Filter
+      </SheetTrigger>
+      <SheetContent side="left">
+        <SheetHeader>
+          <SheetTitle>Select filteration</SheetTitle>
+          <FilterForm {...{ searchParams, handleSubmit, onSubmit }} />
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  );
+};
