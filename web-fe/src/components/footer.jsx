@@ -140,8 +140,8 @@ export const Courses = ({ courses = [], sliceCount = 5 }) => {
       {slice.map(([from, to]) => (
         <ul className="list-disc marker:text-white">
           {courses?.map(({ id, name, slug }) => (
-            <>
-              <li key={id}>
+            <div key={id}>
+              <li>
                 <Link
                   href={`/tutors?category=${slug}`}
                   className="text-sm font-medium capitalize transition-colors hover:text-primary"
@@ -149,7 +149,7 @@ export const Courses = ({ courses = [], sliceCount = 5 }) => {
                   {name}
                 </Link>
               </li>
-              <li key={id}>
+              <li>
                 <Link
                   href={`/tutors?category=${slug}`}
                   className="text-sm font-medium capitalize transition-colors hover:text-primary"
@@ -157,7 +157,7 @@ export const Courses = ({ courses = [], sliceCount = 5 }) => {
                   {name}
                 </Link>
               </li>
-            </>
+            </div>
           ))}
         </ul>
       ))}
