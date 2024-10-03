@@ -133,12 +133,10 @@ export const Courses = ({ courses = [], sliceCount = 5 }) => {
     [4 * sliceCount, 5 * sliceCount],
   ];
 
-  console.log({ slice });
-
   return (
     <div className="grid grid-cols-2 gap-5 pl-4 md:grid-cols-3 lg:grid-cols-5">
-      {slice.map(([from, to]) => (
-        <ul className="list-disc marker:text-white">
+      {slice.map(([from, to], ind) => (
+        <ul className="list-disc marker:text-white" key={ind}>
           {courses?.map(({ id, name, slug }) => (
             <div key={id}>
               <li>
