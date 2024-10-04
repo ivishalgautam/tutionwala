@@ -6,7 +6,7 @@ import React from "react";
 import Loading from "./loading";
 import { H4 } from "./ui/typography";
 import { useSearchParams } from "next/navigation";
-import { Courses } from "./footer";
+import { Courses } from "./courses";
 
 const fetchCourses = async (slug, page = 1) => {
   return await http().get(
@@ -27,12 +27,13 @@ export default function CoursesByCategorySlug({ slug }) {
 
   if (isLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
+
   return (
     <div className="space-y-6">
       <H4 className={"text-center"}>{categoryName}</H4>
 
       <div>
-        <Courses courses={data?.data} sliceCount={20} />
+        <Courses courses={data?.data} sliceCount={20} totalSlices={3} />
       </div>
     </div>
   );

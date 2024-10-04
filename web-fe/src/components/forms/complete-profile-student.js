@@ -202,7 +202,7 @@ export default function CompleteProfileStudent({
       const selectedFiles = event.target.files[0];
       const formData = new FormData();
       formData.append("file", selectedFiles);
-      console.log("formData=>", formData);
+      // console.log("formData=>", formData);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}${endpoints.files.upload}`,
         formData,
@@ -232,7 +232,7 @@ export default function CompleteProfileStudent({
         ? setImages((prev) => ({ ...prev, profile_picture: "" }))
         : setImages((prev) => ({ ...prev, adhaar: "" }));
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return toast.error(error?.message ?? "Error deleting image");
     }
   };

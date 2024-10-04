@@ -50,7 +50,6 @@ export default function CreateCourse({ handleCreate }) {
 
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
-  // console.log(watch());
   const { data, isLoading: isSubCatLoading } = useQuery({
     queryKey: [`subCategory-${categorySlug}`, categorySlug],
     queryFn: () => fetchSubCategory(categorySlug),

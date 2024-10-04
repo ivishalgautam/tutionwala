@@ -91,7 +91,6 @@ export default function SignUpStudentForm() {
       localStorage.setItem("refreshToken", response.refresh_token);
       router.replace("/complete-profile/student");
     } catch (error) {
-      console.log({ error });
       toast.error(
         error?.response?.data?.message ??
           error?.message ??

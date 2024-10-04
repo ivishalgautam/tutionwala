@@ -96,8 +96,8 @@ export default function CompleteProfileTutor({
     video: "",
   });
   const [progress, setProgress] = useState(0);
-  const [coords, setCoords] = useState([0, 0]);
   const [isLoading, setIsLoading] = useState(false);
+  const [coords, setCoords] = useState([0, 0]);
   const { token } = useLocalStorage("token");
 
   const {
@@ -215,7 +215,6 @@ export default function CompleteProfileTutor({
       const selectedFiles = event.target.files[0];
       const formData = new FormData();
       formData.append("file", selectedFiles);
-      console.log("formData=>", formData);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}${endpoints.files.upload}`,
         formData,
@@ -276,7 +275,7 @@ export default function CompleteProfileTutor({
         setValue("video", "");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return toast.error(error?.message ?? "Error deleting image");
     }
   };

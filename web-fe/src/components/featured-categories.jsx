@@ -42,7 +42,7 @@ export default function FeaturedCategories() {
   });
 
   if (isLoading) return <Loading />;
-  if (isError) return error.message ?? "Error";
+  if (isError) return error?.message ?? "Error";
 
   return (
     <div className="bg-patterns px-4 py-20 md:px-10 lg:p-16">

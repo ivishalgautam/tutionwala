@@ -18,10 +18,10 @@ export default function Map({
   setCoordinates,
   getCurrentLatLng,
   handleUpdate,
+  setSelectedPlace,
 }) {
   const [map, setMap] = useState(null);
   const [autoComplete, setAutoComplete] = useState(null);
-  const [selectedPlace, setSelectedPlace] = useState(null);
   const markersRef = useRef([]);
   const mapRef = useRef(null);
   const geocoderRef = useRef(null);

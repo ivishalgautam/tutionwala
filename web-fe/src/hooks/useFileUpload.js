@@ -41,7 +41,6 @@ export default function useFileUpload() {
       setFilePath((prev) => prev.filter((i) => i !== filePath));
       toast.success(resp.message);
     } catch (error) {
-      console.log(error);
       toast.error("error deleting image");
     }
   };

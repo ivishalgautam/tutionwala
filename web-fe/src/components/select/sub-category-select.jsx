@@ -17,6 +17,7 @@ const searchCategory = async (q) => {
 export default function SubCategorySelect({ isMulti = false, searchParams }) {
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
+  const [defaultOptions, setDefaultOptions] = useState([]);
   const router = useRouter();
   const debounceTimeoutRef = useRef(null);
   const { data, isLoading, isFetching } = useQuery({
@@ -69,15 +70,28 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
     router.push(`?${newSearchParams.toString()}`);
   }, [selectedOption, router, searchParams]);
 
+  useEffect(() => {
+    const categoryValues = searchParams.get("category");
+    if (categoryValues) {
+      const categoryArray = categoryValues.split(" ");
+      const formattedOptions = categoryArray.map((value) => ({
+        label: value.replace(/-/g, " "),
+        value,
+      }));
+      setDefaultOptions(formattedOptions);
+      setSelectedOption(formattedOptions);
+    }
+  }, []);
+
   return (
     <ReactSelect
-      // value={}
       loadOptions={handleInputChange}
       placeholder={"Search..."}
       isLoading={isFetching && isLoading}
       onChange={setSelectedOption}
       isMulti={isMulti}
-      className="relative z-20"
+      defaultOptions={defaultOptions}
+      value={selectedOption}
       menuPortalTarget={document.body}
     />
   );

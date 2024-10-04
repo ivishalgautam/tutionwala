@@ -1,45 +1,49 @@
+"use client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Marquee from "./marquee";
 import { H2, Muted, Small } from "./ui/typography";
 import { Lightbulb } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
 
 const reviews = [
   {
-    tutor_name: "Jack",
+    tutor_name: "Sanjay Singhania",
     body: "I've never seen anything like this before. It's amazing. I love it.",
     img: "/images/not-found.png",
-    student_name: "Student Name",
+    student_name: "Rohit Sharma",
   },
   {
-    tutor_name: "Jill",
+    tutor_name: "Tirtha Sagar",
     body: "I don't know what to say. I'm speechless. This is amazing.",
     img: "/images/not-found.png",
-    student_name: "Student Name",
+    student_name: "Sonu Singh",
   },
   {
-    tutor_name: "John",
+    tutor_name: "Kamlesh Sarkar",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "/images/not-found.png",
-    student_name: "Student Name",
+    student_name: "Akash Kumar",
   },
   {
-    tutor_name: "Jane",
+    tutor_name: "Rahul Verma",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "/images/not-found.png",
-    student_name: "Student Name",
+    student_name: "Yash Singh",
   },
   {
-    tutor_name: "Jenny",
+    tutor_name: "Vijay Gupta",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "/images/not-found.png",
-    student_name: "Student Name",
+    student_name: "Hemant Sharma",
   },
   {
-    tutor_name: "James",
+    tutor_name: "Santosh Singh",
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "/images/not-found.png",
-    student_name: "Student Name",
+    student_name: "Rahul Kapoor",
   },
 ];
 
@@ -81,7 +85,15 @@ const ReviewCard = ({ img, tutor_name, student_name, body }) => {
   );
 };
 
-export default async function StudentReviewCards() {
+export default function StudentReviewCards() {
+  const { data } = useQuery({
+    queryKey: [`feedbacks`],
+    queryFn: async () => {
+      return [];
+      const { data } = await http().get(endpoints.reviews.getAll);
+      return data;
+    },
+  });
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center gap-12 overflow-x-hidden rounded-lg border bg-background py-20">
       <div className="space-y-4">

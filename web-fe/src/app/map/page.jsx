@@ -44,8 +44,6 @@ export default function AutoComplete() {
   const geocoderRef = useRef(null);
   const placeAutoCompleteRef = useRef(null);
 
-  console.log({ selectedPlace });
-
   const clearMarkers = useCallback(() => {
     markersRef.current.forEach((marker) => {
       marker.setMap(null);

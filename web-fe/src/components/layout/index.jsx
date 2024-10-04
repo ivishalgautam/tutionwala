@@ -54,8 +54,6 @@ export default function Layout({ children }) {
       getStudentDetails(user.id);
     }
 
-    // console.log({ currentRoute });
-
     // If the current route is not found in the array or the user's role is not allowed for this route
     if (
       currentRoute &&

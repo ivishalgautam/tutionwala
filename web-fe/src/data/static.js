@@ -5,21 +5,23 @@ import {
   TwitterLogo,
 } from "phosphor-react";
 
+let iconSize = 25;
+
 export const socialLinks = [
   {
-    icon: <LinkedinLogo size={20} />,
-    href: "https://www.linkedin.com/company/next-codez/",
+    icon: <LinkedinLogo size={iconSize} />,
+    href: "https://www.linkedin.com/company/tutionwala/",
   },
   {
-    icon: <TwitterLogo size={20} />,
+    icon: <TwitterLogo size={iconSize} />,
     href: "https://twitter.com/NextCodez",
   },
   {
-    icon: <InstagramLogo size={20} />,
+    icon: <InstagramLogo size={iconSize} />,
     href: "https://www.instagram.com/nextcodez/",
   },
   {
-    icon: <FacebookLogo size={20} />,
+    icon: <FacebookLogo size={iconSize} />,
     href: "https://www.facebook.com/nextcodezz",
   },
 ];

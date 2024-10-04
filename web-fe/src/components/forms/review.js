@@ -25,7 +25,6 @@ export default function ReviewForm({ tutorId, enquiryId }) {
       toast.success("Review submitted.");
     },
     onError: (error) => {
-      console.log({ error });
       toast.error(
         (error?.response?.data?.message || error.message) ?? "Error occured!",
       );
@@ -46,8 +45,6 @@ export default function ReviewForm({ tutorId, enquiryId }) {
 
     handleCreate(payload);
   };
-
-  console.log(errors);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

@@ -14,7 +14,6 @@ export default function PaginationControl({
   paginationCount,
   createQueryString,
 }) {
-  console.log({ paginationCount });
   return (
     <Pagination>
       <PaginationContent>

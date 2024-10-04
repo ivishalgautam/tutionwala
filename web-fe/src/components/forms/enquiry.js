@@ -15,7 +15,6 @@ export default function EnquiryForm({ tutorId }) {
   const { user } = useContext(MainContext);
   const { mutate, isLoading } = useMutation(enquiry, {
     onSuccess: (data) => {
-      console.log({ data });
       toast.success(data.message ?? "Enquiry submit.");
     },
     onError: (error) => {

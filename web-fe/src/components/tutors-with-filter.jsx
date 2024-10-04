@@ -96,7 +96,6 @@ export default function TutorsWithFilter() {
         if (arrayFilterKeys.includes(name)) {
           const values = param.split(" ").filter((el) => el !== eleToDelete);
           valueToSet = values.join(" ");
-          console.log({ valueToSet });
           if (valueToSet) {
             urlSearchParam.set(name, valueToSet);
           } else {
@@ -138,7 +137,7 @@ export default function TutorsWithFilter() {
   );
 
   const onSubmit = (data) => {
-    console.log({ data });
+    // console.log({ data });
   };
 
   useEffect(() => {

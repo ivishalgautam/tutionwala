@@ -94,7 +94,6 @@ export default function SignUpTutorForm() {
       localStorage.setItem("refreshToken", response.refresh_token);
       router.replace("/complete-profile/tutor");
     } catch (error) {
-      console.log({ error });
       toast.error(
         error?.response?.data?.message ??
           error?.message ??
@@ -127,7 +126,6 @@ export default function SignUpTutorForm() {
       setRemainingTime(60 * minute);
       setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message ?? "error");
     }
   }

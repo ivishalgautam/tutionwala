@@ -1,5 +1,6 @@
 "use client";
 import PersonalInfoForm from "@/components/forms/personal-info";
+import TutorProfileForm from "@/components/forms/tutor-profile";
 import Loading from "@/components/loading";
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,9 @@ export default function Page() {
   const tab = searchParams.get("tab") ?? "details";
   const stab = searchParams.get("stab");
   const [coordinates, setCoordinates] = useState([0, 0]);
-  const { user } = useContext(MainContext);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+
+  const { user, setUser } = useContext(MainContext);
   const getCurrentLatLng = async () => {
     try {
       const coords = await getCurrentCoords();
@@ -80,16 +83,17 @@ export default function Page() {
   };
 
   const handleUpdateLocation = () => {
-    updateMutation.mutate({ coords: coordinates, id: tutor.id });
+    updateMutation.mutate({
+      coords: coordinates,
+      id: tutor.id,
+      location: selectedPlace,
+    });
   };
-
   useEffect(() => {
     if (tutor) {
       setCoordinates(tutor.coords);
     }
   }, [tutor]);
-
-  console.log(user);
 
   if (isLoading) return <Loading />;
   if (isError) return error.message ?? "error";
@@ -108,9 +112,9 @@ export default function Page() {
         <TabsContent value="details">
           {stab ? (
             stab === "personal-information" ? (
-              <PersonalInfoForm fullname={user?.fullname} email={user?.email} />
+              <PersonalInfoForm user={user} setUser={setUser} />
             ) : (
-              ""
+              <TutorProfileForm user={user} />
             )
           ) : (
             <div className="space-y-2">
@@ -134,6 +138,7 @@ export default function Page() {
             setCoordinates={setCoordinates}
             getCurrentLatLng={getCurrentLatLng}
             handleUpdate={handleUpdate}
+            setSelectedPlace={setSelectedPlace}
           />
           <div className="text-end">
             <Button type="button" onClick={handleUpdateLocation}>
