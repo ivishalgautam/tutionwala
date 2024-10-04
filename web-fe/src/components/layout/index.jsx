@@ -40,6 +40,7 @@ export default function Layout({ children }) {
         if (!data.is_profile_completed) {
           return router.replace("/complete-profile/tutor");
         } else {
+          if (pathname.includes("dashboard")) return;
           return router.replace("/dashboard/enquiries");
         }
       }
