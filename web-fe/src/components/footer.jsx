@@ -6,6 +6,7 @@ import useFetchFeaturedCourses from "@/hooks/useFetchFeaturedCourses";
 import { socialLinks } from "@/data/static";
 import Loading from "./loading";
 import { Courses } from "./courses";
+import config from "@/config";
 
 export const Footer = () => {
   const {
@@ -72,13 +73,16 @@ export const FooterOne = () => {
         <Large>Feel free to share your question</Large>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Phone size={20} /> <span>+91 98113 18314</span>
+            <Phone size={20} />
+            <span>{config.phone}</span>
           </div>
           <div className="flex items-center gap-2">
-            <EnvelopeSimple size={20} /> <span>tech.tutionwala@gmail.com</span>
+            <EnvelopeSimple size={20} />
+            <span>{config.email}</span>
           </div>
           <div className="flex items-center gap-2">
-            <WhatsappLogo size={20} /> <span>+91 98113 18314</span>
+            <WhatsappLogo size={20} />
+            <span>{config.phone}</span>
           </div>
         </div>
       </div>

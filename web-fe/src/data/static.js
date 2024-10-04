@@ -1,3 +1,4 @@
+import config from "@/config";
 import {
   FacebookLogo,
   InstagramLogo,
@@ -10,18 +11,14 @@ let iconSize = 25;
 export const socialLinks = [
   {
     icon: <LinkedinLogo size={iconSize} />,
-    href: "https://www.linkedin.com/company/tutionwala/",
-  },
-  {
-    icon: <TwitterLogo size={iconSize} />,
-    href: "https://twitter.com/NextCodez",
+    href: config.linkedin_url,
   },
   {
     icon: <InstagramLogo size={iconSize} />,
-    href: "https://www.instagram.com/nextcodez/",
+    href: config.instagram_url,
   },
   {
     icon: <FacebookLogo size={iconSize} />,
-    href: "https://www.facebook.com/nextcodezz",
+    href: config.facebook_url,
   },
 ];

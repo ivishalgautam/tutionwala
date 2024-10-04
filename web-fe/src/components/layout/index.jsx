@@ -37,8 +37,11 @@ export default function Layout({ children }) {
         const { data } = await http().get(
           `${endpoints.tutor.getAll}/getByUser/${id}`,
         );
-        if (!data.is_profile_completed)
+        if (!data.is_profile_completed) {
           return router.replace("/complete-profile/tutor");
+        } else {
+          return router.replace("/dashboard/enquiries");
+        }
       }
       getTutorDetails(user.id);
     }

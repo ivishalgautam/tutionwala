@@ -39,19 +39,19 @@ export default function NavbarComponent() {
                 />
               </figure>
             </Link>
-            <div>
-              <CategoryMenu />
-            </div>
+            <div>{user?.role !== "tutor" && <CategoryMenu />}</div>
           </div>
         </NavbarBrand>
-        <NavbarList>
-          <NavbarItem active={pathname === "/"}>
-            <Link href={"/"}>Home</Link>
-          </NavbarItem>
-          <NavbarItem active={pathname === "/tutors"}>
-            <Link href={"/tutors"}>Tutors</Link>
-          </NavbarItem>
-        </NavbarList>
+        {user?.role !== "tutor" && (
+          <NavbarList>
+            <NavbarItem active={pathname === "/"}>
+              <Link href={"/"}>Home</Link>
+            </NavbarItem>
+            <NavbarItem active={pathname === "/tutors"}>
+              <Link href={"/tutors"}>Tutors</Link>
+            </NavbarItem>
+          </NavbarList>
+        )}
         {isUserLoading ? (
           <Loader />
         ) : user ? (
@@ -115,6 +115,16 @@ export default function NavbarComponent() {
             </>
           ) : (
             <>
+              {user?.role !== "tutor" && (
+                <>
+                  <NavbarItem active={pathname === "/"}>
+                    <Link href={"/"}>Home</Link>
+                  </NavbarItem>
+                  <NavbarItem active={pathname === "/tutors"}>
+                    <Link href={"/tutors"}>Tutors</Link>
+                  </NavbarItem>
+                </>
+              )}
               <NavbarItem>
                 <Link href={"/login"}>Login</Link>
               </NavbarItem>
