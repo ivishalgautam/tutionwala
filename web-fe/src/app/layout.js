@@ -17,6 +17,7 @@ const montserrat = Montserrat({
 
 export const metadata = {
   // metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL)
+  title: "TutionWala",
 };
 
 export default function RootLayout({ children }) {
@@ -26,23 +27,12 @@ export default function RootLayout({ children }) {
         className={`${montserrat.className}`}
         suppressHydrationWarning={true}
       >
-        {process.env.NEXT_PUBLIC_COMING_SOON == 1 ? (
-          <div className="flex h-screen items-center justify-center">
-            <Image
-              src={"/images/coming-soon.jpeg"}
-              width={500}
-              height={500}
-              alt="coming soon"
-            />
-          </div>
-        ) : (
-          <Context>
-            <Toaster richColors />
-            <QueryProvider>
-              <Layout>{children}</Layout>
-            </QueryProvider>
-          </Context>
-        )}
+        <Context>
+          <Toaster richColors />
+          <QueryProvider>
+            <Layout>{children}</Layout>
+          </QueryProvider>
+        </Context>
       </body>
     </html>
   );
