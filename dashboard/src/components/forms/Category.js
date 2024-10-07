@@ -158,7 +158,7 @@ export function CategoryForm({
                 {...register("image")}
                 onChange={(e) => handleFileChange(e, "image")}
                 multiple={false}
-                accept="image/png, image/jpeg, image/jpg"
+                accept="image/png, image/jpeg, image/jpg, image/webp"
                 className={`max-w-56 bg-primary text-white`}
               />
               {errors.image && (
