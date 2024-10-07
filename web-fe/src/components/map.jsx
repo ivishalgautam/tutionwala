@@ -132,13 +132,20 @@ export default function Map({
     if (autoComplete) {
       autoComplete.addListener("place_changed", () => {
         const place = autoComplete.getPlace();
+        console.log({ place });
+
         if (place.formatted_address) {
           placeAutoCompleteRef.current.value = place.formatted_address; // Fill the input with the selected address
           setSelectedPlace(place.formatted_address);
         }
         const position = place.geometry?.location;
+        const lat = position.lat();
+        const lng = position.lng();
         if (position) {
           setMarker(position, place.formatted_address);
+        }
+        if (lat && lng) {
+          setCoordinates([lat, lng]);
         }
       });
     }
