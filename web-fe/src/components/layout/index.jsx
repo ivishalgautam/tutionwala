@@ -31,7 +31,7 @@ export default function Layout({ children }) {
     const currentRoute = allRoutes?.find(
       (route) => route.link.replace("[slug]", slug) === pathname,
     );
-
+    console.log({ currentRoute });
     if (user?.role === "tutor") {
       async function getTutorDetails(id) {
         const { data } = await http().get(
@@ -40,6 +40,7 @@ export default function Layout({ children }) {
         if (!data.is_profile_completed) {
           return router.replace("/complete-profile/tutor");
         } else {
+          if (currentRoute?.roles.includes("tutor")) return;
           if (pathname.includes("dashboard")) return;
           return router.replace("/dashboard/enquiries");
         }

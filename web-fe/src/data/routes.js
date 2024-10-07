@@ -23,6 +23,10 @@ export const allRoutes = [
     roles: [ROLES.TUTOR],
   },
   {
+    link: "/course/add",
+    roles: [ROLES.TUTOR],
+  },
+  {
     link: "/tutors",
     roles: [],
   },
