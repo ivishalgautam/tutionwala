@@ -149,12 +149,12 @@ export function CategoryForm({
           }
         />
         <div className="space-y-4 p-6">
-          <H5 className={"text-center"}>Adhaar</H5>
+          <H5 className={"text-center"}>Image</H5>
           <div className="space-y-4">
             <div className="flex flex-col items-center justify-center">
               <Input
                 type="file"
-                placeholder="Select Adhaar Card"
+                placeholder="Select Image"
                 {...register("image")}
                 onChange={(e) => handleFileChange(e, "image")}
                 multiple={false}
