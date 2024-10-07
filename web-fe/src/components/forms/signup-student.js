@@ -19,6 +19,8 @@ import { Edit } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { formatTime } from "@/utils/time";
 import { useRouter } from "next/navigation";
+import useMapLoader from "@/hooks/useMapLoader";
+import { useAutocomplete } from "@/hooks/useAutoComplete";
 
 const defaultValues = {
   type: "",
@@ -49,6 +51,8 @@ export default function SignUpStudentForm() {
   const [remainingTime, setRemainingTime] = useState(0);
   const [minute] = useState(5);
   const router = useRouter();
+  const { isLoaded } = useMapLoader();
+  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
 
   const {
     register,
@@ -156,6 +160,12 @@ export default function SignUpStudentForm() {
       return () => clearInterval(interval);
     }
   }, [isResendDisabled]);
+
+  useEffect(() => {
+    if (selectedPlace) {
+      setValue("location", selectedPlace.address);
+    }
+  }, [selectedPlace]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
@@ -298,13 +308,13 @@ export default function SignUpStudentForm() {
               {/* location */}
               <div>
                 <Label className="text-sm">Location</Label>
-                <Input
-                  type="text"
-                  {...register("location", {
-                    required: "required*",
-                  })}
-                  placeholder="Enter Your location"
-                  className="rounded-lg bg-gray-100"
+                <Controller
+                  control={control}
+                  name="location"
+                  rules={{ required: "required*" }}
+                  render={({ field: { onChange, value } }) => (
+                    <Input ref={inputRef} />
+                  )}
                 />
                 {errors.location && (
                   <span className="text-sm text-rose-500">

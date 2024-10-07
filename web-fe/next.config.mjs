@@ -14,7 +14,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "api.tutionwala.in",
+        hostname: "api.tutionwala.com",
         port: "",
       },
     ],

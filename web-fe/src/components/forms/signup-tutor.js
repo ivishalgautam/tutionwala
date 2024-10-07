@@ -391,14 +391,6 @@ export default function SignUpTutorForm() {
                     <Input ref={inputRef} />
                   )}
                 />
-                {/* <Input
-                  type="text"
-                  {...register("location", {
-                    required: "required*",
-                  })}
-                  placeholder="Enter Your location"
-                  className="rounded-lg bg-gray-100"
-                /> */}
                 {errors.location && (
                   <span className="text-sm text-rose-500">
                     {errors.location.message}

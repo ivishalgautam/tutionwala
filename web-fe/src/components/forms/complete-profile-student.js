@@ -42,6 +42,8 @@ import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import NextImage from "../next-image";
 import { getCurrentCoords } from "@/lib/get-current-coords";
+import { FilterAddress } from "../tutors-with-filter";
+import { useSearchParams } from "next/navigation";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -78,6 +80,9 @@ export default function CompleteProfileStudent({
     trigger,
   } = useForm({
     defaultValues: {
+      addr: "",
+      lat: "",
+      lng: "",
       fields: [],
       boards: [],
       languages: [],
@@ -86,7 +91,10 @@ export default function CompleteProfileStudent({
   const [filteredTutors, setFilteredTutors] = useState({ found: 0, data: [] });
   const [totalSteps, setTotalSteps] = useState(0);
   const [coords, setCoords] = useState([0, 0]);
-
+  const searchParams = useSearchParams();
+  const addr = searchParams.get("addr");
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
   const [images, setImages] = useState({
     profile_picture: "",
     adhaar: "",
@@ -176,8 +184,6 @@ export default function CompleteProfileStudent({
       coords: coords,
     };
 
-    // console.log({ formData });
-
     handleCreate({
       ...payload,
       student_id: data.student_id,
@@ -239,14 +245,14 @@ export default function CompleteProfileStudent({
 
   const handlePrev = () => {
     setCurrStep((prev) => prev - 1);
-    tutors.mutate(watch());
+    tutors.mutate({ ...watch(), lat, lng });
   };
 
   const handleNext = async () => {
     if (!(await trigger())) return;
 
     setCurrStep((prev) => prev + 1);
-    tutors.mutate(watch());
+    tutors.mutate({ ...watch(), lat, lng });
   };
 
   useEffect(() => {
@@ -257,6 +263,14 @@ export default function CompleteProfileStudent({
 
     getCoords();
   }, []);
+
+  useEffect(() => {
+    if (addr) {
+      setValue("location", addr);
+      setValue("lat", lat);
+      setValue("lng", lng);
+    }
+  }, [addr, lat, lng]);
 
   if (isLoading) return <Loading />;
   return (
@@ -285,17 +299,16 @@ export default function CompleteProfileStudent({
                             {errors?.location.message}
                           </span>
                         )}
-                        <div className="">
-                          <div className="">
-                            <Label className="capitalize">Location</Label>
-                            <Input
-                              type="text"
-                              {...register(`location`, {
-                                required: "required*",
-                              })}
-                              placeholder="Enter location"
-                            />
-                          </div>
+                        <div>
+                          <Label className="capitalize">Location</Label>
+                          <Controller
+                            control={control}
+                            name="location"
+                            rules={{ required: "required*" }}
+                            render={({ field }) => (
+                              <FilterAddress searchParams={searchParams} />
+                            )}
+                          />
                         </div>
                       </div>
                     </div>
