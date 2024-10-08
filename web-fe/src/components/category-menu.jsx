@@ -46,11 +46,9 @@ export function CategoryMenu() {
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] lg:grid-cols-3">
-              {data.map((category) =>
-                Array.from({ length: 10 }).map((_, ind) => (
-                  <ListItem key={category.id} category={category}></ListItem>
-                )),
-              )}
+              {data.map((category) => (
+                <ListItem key={category.id} category={category}></ListItem>
+              ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

@@ -219,9 +219,15 @@ export default function CompleteProfileStudent({
           },
         },
       );
-      type === "profile_picture"
-        ? setImages((prev) => ({ ...prev, profile_picture: response.data[0] }))
-        : setImages((prev) => ({ ...prev, adhaar: response.data[0] }));
+      const file = response.data[0];
+      if (type === "adhaar") {
+        setImages((prev) => ({ ...prev, adhaar: file }));
+        localStorage.setItem("adhaar", file);
+      }
+      if (type === "profile_picture") {
+        setImages((prev) => ({ ...prev, profile_picture: file }));
+        localStorage.setItem("profile_picture", file);
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
@@ -234,9 +240,16 @@ export default function CompleteProfileStudent({
       );
       toast.success(resp?.message);
 
-      type === "profile_picture"
-        ? setImages((prev) => ({ ...prev, profile_picture: "" }))
-        : setImages((prev) => ({ ...prev, adhaar: "" }));
+      if (type === "adhaar") {
+        setImages((prev) => ({ ...prev, adhaar: "" }));
+        localStorage.removeItem("adhaar");
+        setValue("adhaar", "");
+      }
+      if (type === "profile_picture") {
+        setImages((prev) => ({ ...prev, profile_picture: "" }));
+        localStorage.removeItem("profile_picture");
+        setValue("profile_picture", "");
+      }
     } catch (error) {
       // console.log(error);
       return toast.error(error?.message ?? "Error deleting image");
@@ -437,8 +450,8 @@ export default function CompleteProfileStudent({
                       currStep === (data.is_boards ? 2 + key + 3 : key + 3) && (
                         <div className="space-y-4" key={key}>
                           <div className="mt-3 space-y-4">
-                            <div className="text-sm font-medium">
-                              {field.question}
+                            <div className="text-sm font-medium capitalize">
+                              {field.questionForStudent}
                             </div>
                             <div>
                               {field.fieldType === "checkbox" && (
@@ -609,41 +622,42 @@ export default function CompleteProfileStudent({
           {/* form 2 */}
           {profileStep === 2 && (
             <div className="space-y-4 rounded-lg bg-white p-6">
-              <H5 className={"text-center"}>Adhaar</H5>
-              <div className="space-y-4">
+              <div className="flex-1 space-y-4">
+                <H5 className={"text-center"}>Profile Picture</H5>
                 <div className="flex flex-col items-center justify-center">
                   <Input
                     type="file"
-                    placeholder="Select Adhaar Card"
-                    {...register("adhaar", {
+                    placeholder="Select Profile Picture"
+                    {...register("profile_picture", {
                       required: "Required*",
                     })}
-                    onChange={(e) => handleFileChange(e, "adhaar")}
+                    onChange={(e) => handleFileChange(e, "profile_picture")}
                     multiple={false}
-                    accept="image/png, image/jpeg, image/jpg"
-                    className={`max-w-56 bg-primary text-white`}
+                    accept="image/png, image/webp, image/jpg, image/jpeg"
                   />
-                  {errors.adhaar && (
+                  {errors.profile_picture && (
                     <span className="text-sm text-red-500">
-                      {errors.adhaar.message}
+                      {errors.profile_picture.message}
                     </span>
                   )}
                 </div>
+
                 <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                  {images.adhaar ? (
-                    <figure className="relative size-32">
+                  {images.profile_picture ? (
+                    <figure className="relative aspect-square size-32">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.adhaar}`}
-                        width={500}
-                        height={500}
-                        alt="adhaar"
+                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.profile_picture}`}
                         className="h-full w-full"
-                        multiple={false}
-                      />
+                        width={200}
+                        height={200}
+                        alt="profile"
+                      ></Image>
                       <Button
                         type="button"
                         variant="destructive"
-                        onClick={() => deleteFile(images.adhaar, "adhaar")}
+                        onClick={() =>
+                          deleteFile(images.profile_picture, "profile_picture")
+                        }
                         className="absolute -right-2 -top-2"
                         size="icon"
                       >
@@ -655,8 +669,56 @@ export default function CompleteProfileStudent({
                   )}
                 </div>
               </div>
-              <div className="text-end">
-                <Button>Submit</Button>
+              <div className="">
+                <H5 className={"text-center"}>Adhaar</H5>
+                <div className="space-y-4">
+                  <div className="flex flex-col items-center justify-center">
+                    <Input
+                      type="file"
+                      placeholder="Select Adhaar Card"
+                      {...register("adhaar", {
+                        required: "Required*",
+                      })}
+                      onChange={(e) => handleFileChange(e, "adhaar")}
+                      multiple={false}
+                      accept="image/png, image/jpeg, image/jpg"
+                      className={`max-w-56 bg-primary text-white`}
+                    />
+                    {errors.adhaar && (
+                      <span className="text-sm text-red-500">
+                        {errors.adhaar.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
+                    {images.adhaar ? (
+                      <figure className="relative size-32">
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.adhaar}`}
+                          width={500}
+                          height={500}
+                          alt="adhaar"
+                          className="h-full w-full"
+                          multiple={false}
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() => deleteFile(images.adhaar, "adhaar")}
+                          className="absolute -right-2 -top-2"
+                          size="icon"
+                        >
+                          <Trash size={20} />
+                        </Button>
+                      </figure>
+                    ) : (
+                      <div>No file selected</div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-end">
+                  <Button>Submit</Button>
+                </div>
               </div>
             </div>
           )}

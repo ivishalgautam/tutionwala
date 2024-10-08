@@ -19,6 +19,9 @@ export default function FollowUpCard({
   openModal,
   setFollowUpId,
 }) {
+  const nextFollowUp = moment(followup.date).isBefore(moment())
+    ? "Expired"
+    : moment(followup.date).fromNow();
   return (
     <div
       key={followup.id}
@@ -36,7 +39,7 @@ export default function FollowUpCard({
         <span>
           <Timer size={20} />
         </span>
-        <span>Next follow up {moment(followup.date).fromNow()}</span>
+        <span>Next follow up {nextFollowUp}</span>
       </div>
       <div className="text-sm text-gray-400">
         Created at: {moment(followup.created_at).fromNow()}

@@ -31,7 +31,6 @@ export default function Layout({ children }) {
     const currentRoute = allRoutes?.find(
       (route) => route.link.replace("[slug]", slug) === pathname,
     );
-    console.log({ currentRoute });
     if (user?.role === "tutor") {
       async function getTutorDetails(id) {
         const { data } = await http().get(

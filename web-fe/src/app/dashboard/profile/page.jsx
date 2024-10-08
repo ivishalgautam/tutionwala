@@ -23,10 +23,12 @@ const subTabs = [
   {
     label: "Personal Information",
     href: "?tab=details&stab=personal-information",
+    roles: ["tutor", "student"],
   },
   {
     label: "Tutor Profile",
     href: "?tab=details&stab=tutor-profile",
+    roles: ["tutor"],
   },
   // {
   //   label: "Address",
@@ -118,17 +120,19 @@ export default function Page() {
             )
           ) : (
             <div className="space-y-2">
-              {subTabs.map((tab, ind) => (
-                <div
-                  key={tab.label}
-                  className="flex items-center justify-between rounded border p-4 text-sm font-medium"
-                >
-                  <Link href={tab.href} className="flex-shrink-0 flex-grow">
-                    {ind + 1}.&nbsp;{tab.label}
-                  </Link>
-                  <ChevronRight />
-                </div>
-              ))}
+              {subTabs
+                .filter((ele) => ele.roles.includes(user?.role))
+                .map((tab, ind) => (
+                  <div
+                    key={tab.label}
+                    className="flex items-center justify-between rounded border p-4 text-sm font-medium"
+                  >
+                    <Link href={tab.href} className="flex-shrink-0 flex-grow">
+                      {ind + 1}.&nbsp;{tab.label}
+                    </Link>
+                    <ChevronRight />
+                  </div>
+                ))}
             </div>
           )}
         </TabsContent>

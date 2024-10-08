@@ -18,6 +18,7 @@ const tabs = [
 export default function DashboardLayout({ children }) {
   const { user, isUserLoading } = useContext(MainContext);
 
+  console.log({ user });
   return (
     <div className="min-h-screen bg-gray-200 py-4">
       <div className="container grid grid-cols-12 gap-4">

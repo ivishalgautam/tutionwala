@@ -64,15 +64,13 @@ export default function FeaturedCategories() {
       <section className="embla">
         <div className="embla__viewport" ref={emblaRef}>
           <div className="embla__container">
-            {data.map((category) =>
-              Array.from({ length: 20 }).map((_, index) => (
-                <div className="embla__slide" key={index}>
-                  <div className="embla__slide__number">
-                    <CategoryCard category={category} />
-                  </div>
+            {data.map((category) => (
+              <div className="embla__slide" key={category.id}>
+                <div className="embla__slide__number">
+                  <CategoryCard category={category} />
                 </div>
-              )),
-            )}
+              </div>
+            ))}
           </div>
         </div>
 

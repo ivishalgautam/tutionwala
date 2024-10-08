@@ -1,5 +1,4 @@
 "use client";
-import DashboardLayout from "@/components/layout/dashboard-layout";
 import Loading from "@/components/loading";
 import React, { useContext, useState } from "react";
 
@@ -18,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import FollowUps from "@/components/tutor-follow-ups";
+import { cn } from "@/lib/utils";
 
 async function fetchEnquiries() {
   const { data } = await http().get(endpoints.enquiries.getAll);
@@ -92,12 +92,17 @@ export default function Page() {
     <>
       <Tabs defaultValue={tab} className="w-full">
         <TabsList className="w-full">
-          <TabsTrigger value="enquiries" className="w-1/2">
+          <TabsTrigger
+            value="enquiries"
+            className={cn("w-full", { "w-1/2": user?.role == "tutor" })}
+          >
             <Link href={`?tab=enquiries`}>Enquiries</Link>
           </TabsTrigger>
-          <TabsTrigger value="follow-ups" className="w-1/2">
-            <Link href={`?tab=follow-ups`}>Follow Ups</Link>
-          </TabsTrigger>
+          {user?.role == "tutor" && (
+            <TabsTrigger value="follow-ups" className="w-1/2">
+              <Link href={`?tab=follow-ups`}>Follow Ups</Link>
+            </TabsTrigger>
+          )}
         </TabsList>
         <TabsContent value="enquiries">
           <Enquiries
@@ -116,9 +121,11 @@ export default function Page() {
             }}
           />
         </TabsContent>
-        <TabsContent value="follow-ups">
-          <FollowUps />
-        </TabsContent>
+        {user?.role == "tutor" && (
+          <TabsContent value="follow-ups">
+            <FollowUps />
+          </TabsContent>
+        )}
       </Tabs>
 
       <Modal isOpen={isReviewModal} onClose={closeReviewModal}>
