@@ -33,6 +33,7 @@ import NextImage from "@/components/next-image";
 import "@smastrom/react-rating/style.css";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
 import useMapLoader from "@/hooks/useMapLoader";
+import Image from "next/image";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}/${id}`);
@@ -631,7 +632,7 @@ export default function Page({ params: { subCatSlug } }) {
                           <Plus size={10} /> {filteredTutors.total - limit}
                         </div>
                       )}
-                    <NextImage
+                    <Image
                       src={item.profile_picture}
                       width={100}
                       height={100}

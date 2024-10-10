@@ -24,9 +24,6 @@ export default function Page() {
     onSuccess: (data) => {
       toast.success("submitted");
       queryClient.invalidateQueries([`subCategory-${id}`]);
-      if (currStep === 3) {
-        router.replace("/");
-      }
     },
     onError: (error) => {
       console.log({ error });

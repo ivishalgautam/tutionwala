@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Muted, Small } from "@/components/ui/typography";
 
@@ -47,17 +47,25 @@ export default function DashboardLayout({ children }) {
 }
 
 export const Profile = ({ isUserLoading, user }) => {
+  const [imageError, setImageError] = useState(false);
+  useEffect(() => {
+    if (imageError) {
+      setImageError(true);
+    }
+  }, [imageError]);
+
   return isUserLoading ? (
     "loading..."
   ) : (
     <div className="flex items-start justify-start gap-2">
       <figure className="size-20">
         <Image
-          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${user?.profile_picture}`}
+          src={imageError ? "/images/not-found.png" : user?.profile_picture}
           width={100}
           height={100}
           alt={user?.fullname}
           className="h-full w-full rounded"
+          onError={() => setImageError(true)}
         />
       </figure>
       <div>

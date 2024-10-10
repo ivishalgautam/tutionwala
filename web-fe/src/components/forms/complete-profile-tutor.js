@@ -44,6 +44,7 @@ import { Progress } from "../ui/progress";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 import { Checkbox } from "../ui/checkbox";
+import { useRouter } from "next/navigation";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -123,6 +124,8 @@ export default function CompleteProfileTutor({
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
+  const router = useRouter();
+
   const setBoards = (board, subject) => {
     const prevBoards = watch("boards") ?? [];
 
@@ -180,7 +183,7 @@ export default function CompleteProfileTutor({
     }
   };
 
-  const onSubmit = (formData) => {
+  const onSubmit = async (formData) => {
     // console.log({ formData });
     const payload =
       currStep === 1
@@ -207,43 +210,50 @@ export default function CompleteProfileTutor({
             : null;
 
     handleCreate({ ...payload, tutor_id: data.tutor_id, curr_step: currStep });
+    if (currStep === 3) {
+      router.replace("/");
+    }
   };
 
   const handleFileChange = async (event, type) => {
     setIsLoading(true);
     try {
-      const selectedFiles = event.target.files[0];
-      const formData = new FormData();
-      formData.append("file", selectedFiles);
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}${endpoints.files.upload}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = parseInt(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total),
-            );
-            setProgress(progress);
-          },
+      const file = event.target.files[0];
+      // const formData = new FormData();
+      // formData.append("file", selectedFiles);
+      const fileMetaData = {
+        file: {
+          type: file.type,
+          size: file.size,
+          name: file.name,
         },
+      };
+      const { url } = await http().post(
+        endpoints.files.preSignedUrl,
+        fileMetaData,
       );
 
-      const file = response.data[0];
+      const resp = await axios.put(url, file, {
+        onUploadProgress: (progressEvent) => {
+          const progress = parseInt(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total),
+          );
+          setProgress(progress);
+        },
+      });
+
+      const fileurl = url.split("?")[0];
       if (type === "adhaar") {
-        setMedia((prev) => ({ ...prev, adhaar: file }));
-        localStorage.setItem("adhaar", file);
+        setMedia((prev) => ({ ...prev, adhaar: fileurl }));
+        localStorage.setItem("adhaar", fileurl);
       }
       if (type === "profile_picture") {
-        setMedia((prev) => ({ ...prev, profile_picture: file }));
-        localStorage.setItem("profile_picture", file);
+        setMedia((prev) => ({ ...prev, profile_picture: fileurl }));
+        localStorage.setItem("profile_picture", fileurl);
       }
       if (type === "video") {
-        setMedia((prev) => ({ ...prev, video: file }));
-        localStorage.setItem("video", file);
+        setMedia((prev) => ({ ...prev, video: fileurl }));
+        localStorage.setItem("video", fileurl);
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -253,9 +263,11 @@ export default function CompleteProfileTutor({
     }
   };
   const deleteFile = async (filePath, type) => {
+    // let key = filePath
+    const key = filePath.split(".com/")[1];
     try {
       const resp = await http().delete(
-        `${endpoints.files.getFiles}?file_path=${filePath}`,
+        `${endpoints.files.deleteKey}?key=${key}`,
       );
       toast.success(resp?.message);
 
@@ -297,6 +309,27 @@ export default function CompleteProfileTutor({
 
     getCoords();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const adhaar = window.localStorage.getItem("adhaar");
+    const profile = window.localStorage.getItem("profile_picture");
+    const video = window.localStorage.getItem("video");
+
+    if (adhaar) {
+      setValue("adhaar", adhaar);
+      setMedia((prev) => ({ ...prev, adhaar: adhaar }));
+    }
+    if (profile) {
+      setValue("profile_picture", profile);
+      setMedia((prev) => ({ ...prev, profile_picture: profile }));
+    }
+    if (video) {
+      setValue("intro_video", video);
+      setMedia((prev) => ({ ...prev, video: video }));
+    }
+  }, []);
+
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
 
@@ -847,29 +880,31 @@ export default function CompleteProfileTutor({
                 {/* profile pic */}
                 <div className="flex-1 space-y-4">
                   <H5 className={"text-center"}>Profile Picture</H5>
-                  <div className="flex flex-col items-center justify-center">
-                    <Input
-                      type="file"
-                      placeholder="Select Profile Picture"
-                      {...register("profile_picture", {
-                        required: "Required*",
-                      })}
-                      onChange={(e) => handleFileChange(e, "profile_picture")}
-                      multiple={false}
-                      accept="image/png, image/webp, image/jpg, image/jpeg"
-                    />
-                    {errors.profile_picture && (
-                      <span className="text-sm text-red-500">
-                        {errors.profile_picture.message}
-                      </span>
-                    )}
-                  </div>
+                  {!media.profile_picture && (
+                    <div className="flex flex-col items-center justify-center">
+                      <Input
+                        type="file"
+                        placeholder="Select Profile Picture"
+                        {...register("profile_picture", {
+                          required: "Required*",
+                        })}
+                        onChange={(e) => handleFileChange(e, "profile_picture")}
+                        multiple={false}
+                        accept="image/png, image/webp, image/jpg, image/jpeg"
+                      />
+                      {errors.profile_picture && (
+                        <span className="text-sm text-red-500">
+                          {errors.profile_picture.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
                     {media.profile_picture ? (
                       <figure className="relative aspect-square size-32">
                         <Image
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.profile_picture}`}
+                          src={media.profile_picture}
                           className="h-full w-full"
                           width={200}
                           height={200}
@@ -896,23 +931,23 @@ export default function CompleteProfileTutor({
                 {/* intro video */}
                 <div className="flex-1 space-y-4">
                   <H5 className={"text-center"}>Intro Video</H5>
-                  <div className="flex flex-col items-center justify-center">
-                    <Input
-                      type="file"
-                      placeholder="Select Intro video"
-                      {...register("video", {
-                        required: "Required*",
-                      })}
-                      onChange={(e) => handleFileChange(e, "video")}
-                      multiple={false}
-                      accept=".mp4, .mkv"
-                    />
-                    {errors.video && (
-                      <span className="text-sm text-red-500">
-                        {errors.video.message}
-                      </span>
-                    )}
-                  </div>
+                  {!media.video && (
+                    <div className="flex flex-col items-center justify-center">
+                      <Input
+                        type="file"
+                        placeholder="Select Intro video"
+                        {...register("video")}
+                        onChange={(e) => handleFileChange(e, "video")}
+                        multiple={false}
+                        accept=".mp4, .mkv"
+                      />
+                      {errors.video && (
+                        <span className="text-sm text-red-500">
+                          {errors.video.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
                     {isLoading && (
@@ -925,7 +960,7 @@ export default function CompleteProfileTutor({
                     {media.video ? (
                       <div className="relative w-max">
                         <video
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.video}`}
+                          src={media.video}
                           autoPlay
                           loop
                           muted
@@ -958,30 +993,32 @@ export default function CompleteProfileTutor({
             <div className="space-y-4 p-6">
               <H5 className={"text-center"}>Adhaar</H5>
               <div className="space-y-4">
-                <div className="flex flex-col items-center justify-center">
-                  <Input
-                    type="file"
-                    placeholder="Select Adhaar Card"
-                    {...register("adhaar", {
-                      required: "Required*",
-                    })}
-                    onChange={(e) => handleFileChange(e, "adhaar")}
-                    multiple={false}
-                    accept="image/png, image/jpeg, image/jpg"
-                    className={`max-w-56 bg-primary text-white`}
-                  />
-                  {errors.adhaar && (
-                    <span className="text-sm text-red-500">
-                      {errors.adhaar.message}
-                    </span>
-                  )}
-                </div>
+                {!media.adhaar && (
+                  <div className="flex flex-col items-center justify-center">
+                    <Input
+                      type="file"
+                      placeholder="Select Adhaar Card"
+                      {...register("adhaar", {
+                        required: "Required*",
+                      })}
+                      onChange={(e) => handleFileChange(e, "adhaar")}
+                      multiple={false}
+                      accept="image/png, image/jpeg, image/jpg, image/webp"
+                      className={`max-w-56 bg-primary text-white`}
+                    />
+                    {errors.adhaar && (
+                      <span className="text-sm text-red-500">
+                        {errors.adhaar.message}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
                   {media.adhaar ? (
                     <figure className="relative size-32">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.adhaar}`}
+                        src={media.adhaar}
                         width={500}
                         height={500}
                         alt="adhaar"

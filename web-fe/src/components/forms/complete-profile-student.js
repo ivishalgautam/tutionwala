@@ -44,6 +44,7 @@ import NextImage from "../next-image";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 import { FilterAddress } from "../tutors-with-filter";
 import { useSearchParams } from "next/navigation";
+import { Progress } from "../ui/progress";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -88,6 +89,12 @@ export default function CompleteProfileStudent({
       languages: [],
     },
   });
+  const [isLoading, setIsLoading] = useState({ adhaar: false, profile: false });
+  const [progress, setProgress] = useState({ adhaar: 0, profile: 0 });
+  const [media, setMedia] = useState({
+    profile_picture: "",
+    adhaar: "",
+  });
   const [filteredTutors, setFilteredTutors] = useState({ found: 0, data: [] });
   const [totalSteps, setTotalSteps] = useState(0);
   const [coords, setCoords] = useState([0, 0]);
@@ -95,13 +102,10 @@ export default function CompleteProfileStudent({
   const addr = searchParams.get("addr");
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
-  const [images, setImages] = useState({
-    profile_picture: "",
-    adhaar: "",
-  });
+
   const { token } = useLocalStorage("token");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading: categoryLoading } = useQuery({
     queryKey: [`subCategory-${id}`],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
@@ -204,51 +208,79 @@ export default function CompleteProfileStudent({
   }, [data]);
 
   const handleFileChange = async (event, type) => {
+    setIsLoading((prev) => ({
+      ...prev,
+      ...(type === "adhaar" ? { adhaar: true } : { profile: true }),
+    }));
     try {
-      const selectedFiles = event.target.files[0];
-      const formData = new FormData();
-      formData.append("file", selectedFiles);
-      // console.log("formData=>", formData);
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}${endpoints.files.upload}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
+      const file = event.target.files[0];
+      const fileMetaData = {
+        file: {
+          type: file.type,
+          size: file.size,
+          name: file.name,
         },
+      };
+      const { url } = await http().post(
+        endpoints.files.preSignedUrl,
+        fileMetaData,
       );
-      const file = response.data[0];
-      if (type === "adhaar") {
-        setImages((prev) => ({ ...prev, adhaar: file }));
-        localStorage.setItem("adhaar", file);
-      }
+
+      const resp = await axios.put(url, file, {
+        onUploadProgress: (progressEvent) => {
+          const progress = parseInt(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total),
+          );
+          setProgress((prev) => ({
+            ...prev,
+            ...(type === "adhaar"
+              ? { adhaar: progress }
+              : { profile: progress }),
+          }));
+        },
+      });
+
+      const fileurl = url.split("?")[0];
       if (type === "profile_picture") {
-        setImages((prev) => ({ ...prev, profile_picture: file }));
-        localStorage.setItem("profile_picture", file);
+        setMedia((prev) => ({ ...prev, profile_picture: fileurl }));
+        localStorage.setItem("profile_picture", fileurl);
+      } else {
+        setMedia((prev) => ({ ...prev, adhaar: fileurl }));
+        localStorage.setItem("adhaar", fileurl);
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading image: ", error);
     } finally {
+      setIsLoading((prev) => ({
+        ...prev,
+        ...(type === "adhaar" ? { adhaar: false } : { profile: false }),
+      }));
+      setProgress((prev) => ({
+        ...prev,
+        ...(type === "adhaar" ? { adhaar: 0 } : { profile: 0 }),
+      }));
     }
   };
+
+  console.log({ progress, isLoading });
   const deleteFile = async (filePath, type) => {
+    const key = filePath.split(".com/")[1];
     try {
       const resp = await http().delete(
-        `${endpoints.files.getFiles}?file_path=${filePath}`,
+        `${endpoints.files.deleteKey}?key=${key}`,
       );
       toast.success(resp?.message);
 
-      if (type === "adhaar") {
-        setImages((prev) => ({ ...prev, adhaar: "" }));
-        localStorage.removeItem("adhaar");
-        setValue("adhaar", "");
-      }
       if (type === "profile_picture") {
-        setImages((prev) => ({ ...prev, profile_picture: "" }));
+        setMedia((prev) => ({ ...prev, profile_picture: "" }));
         localStorage.removeItem("profile_picture");
         setValue("profile_picture", "");
+      }
+
+      if (type === "adhaar") {
+        setMedia((prev) => ({ ...prev, adhaar: "" }));
+        localStorage.removeItem("adhaar");
+        setValue("adhaar", "");
       }
     } catch (error) {
       // console.log(error);
@@ -285,7 +317,23 @@ export default function CompleteProfileStudent({
     }
   }, [addr, lat, lng]);
 
-  if (isLoading) return <Loading />;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const adhaar = window.localStorage.getItem("adhaar");
+    const profile = window.localStorage.getItem("profile_picture");
+
+    if (adhaar) {
+      setValue("adhaar", adhaar);
+      setMedia((prev) => ({ ...prev, adhaar: adhaar }));
+    }
+    if (profile) {
+      setValue("profile_picture", profile);
+      setMedia((prev) => ({ ...prev, profile_picture: profile }));
+    }
+  }, []);
+
+  if (categoryLoading) return <Loading />;
+
   return (
     <div className={"space-y-4 p-8"}>
       <div className="mx-auto max-w-2xl space-y-2 rounded-lg">
@@ -624,29 +672,38 @@ export default function CompleteProfileStudent({
             <div className="space-y-4 rounded-lg bg-white p-6">
               <div className="flex-1 space-y-4">
                 <H5 className={"text-center"}>Profile Picture</H5>
-                <div className="flex flex-col items-center justify-center">
-                  <Input
-                    type="file"
-                    placeholder="Select Profile Picture"
-                    {...register("profile_picture", {
-                      required: "Required*",
-                    })}
-                    onChange={(e) => handleFileChange(e, "profile_picture")}
-                    multiple={false}
-                    accept="image/png, image/webp, image/jpg, image/jpeg"
-                  />
-                  {errors.profile_picture && (
-                    <span className="text-sm text-red-500">
-                      {errors.profile_picture.message}
-                    </span>
-                  )}
-                </div>
+                {!media.profile_picture && (
+                  <div className="flex flex-col items-center justify-center">
+                    <Input
+                      type="file"
+                      placeholder="Select Profile Picture"
+                      {...register("profile_picture", {
+                        required: "Required*",
+                      })}
+                      onChange={(e) => handleFileChange(e, "profile_picture")}
+                      multiple={false}
+                      accept="image/png, image/webp, image/jpg, image/jpeg"
+                    />
+                    {errors.profile_picture && (
+                      <span className="text-sm text-red-500">
+                        {errors.profile_picture.message}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                  {images.profile_picture ? (
+                  {isLoading.profile && (
+                    <Progress
+                      id="file"
+                      value={progress.profile}
+                      max="100"
+                    >{`${progress.profile}%`}</Progress>
+                  )}
+                  {media.profile_picture ? (
                     <figure className="relative aspect-square size-32">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.profile_picture}`}
+                        src={media.profile_picture}
                         className="h-full w-full"
                         width={200}
                         height={200}
@@ -656,7 +713,7 @@ export default function CompleteProfileStudent({
                         type="button"
                         variant="destructive"
                         onClick={() =>
-                          deleteFile(images.profile_picture, "profile_picture")
+                          deleteFile(media.profile_picture, "profile_picture")
                         }
                         className="absolute -right-2 -top-2"
                         size="icon"
@@ -669,32 +726,41 @@ export default function CompleteProfileStudent({
                   )}
                 </div>
               </div>
-              <div className="">
+              <div className="space-y-4">
                 <H5 className={"text-center"}>Adhaar</H5>
                 <div className="space-y-4">
-                  <div className="flex flex-col items-center justify-center">
-                    <Input
-                      type="file"
-                      placeholder="Select Adhaar Card"
-                      {...register("adhaar", {
-                        required: "Required*",
-                      })}
-                      onChange={(e) => handleFileChange(e, "adhaar")}
-                      multiple={false}
-                      accept="image/png, image/jpeg, image/jpg"
-                      className={`max-w-56 bg-primary text-white`}
-                    />
-                    {errors.adhaar && (
-                      <span className="text-sm text-red-500">
-                        {errors.adhaar.message}
-                      </span>
-                    )}
-                  </div>
+                  {!media.adhaar && (
+                    <div className="flex flex-col items-center justify-center">
+                      <Input
+                        type="file"
+                        placeholder="Select Adhaar Card"
+                        {...register("adhaar", {
+                          required: "Required*",
+                        })}
+                        onChange={(e) => handleFileChange(e, "adhaar")}
+                        multiple={false}
+                        accept="image/png, image/jpeg, image/jpg"
+                        className={`max-w-56 bg-primary text-white`}
+                      />
+                      {errors.adhaar && (
+                        <span className="text-sm text-red-500">
+                          {errors.adhaar.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                    {images.adhaar ? (
+                    {isLoading.adhaar && (
+                      <Progress
+                        id="file"
+                        value={progress.adhaar}
+                        max="100"
+                      >{`${progress.adhaar}%`}</Progress>
+                    )}
+                    {media.adhaar ? (
                       <figure className="relative size-32">
                         <Image
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${images.adhaar}`}
+                          src={media.adhaar}
                           width={500}
                           height={500}
                           alt="adhaar"
@@ -704,7 +770,7 @@ export default function CompleteProfileStudent({
                         <Button
                           type="button"
                           variant="destructive"
-                          onClick={() => deleteFile(images.adhaar, "adhaar")}
+                          onClick={() => deleteFile(media.adhaar, "adhaar")}
                           className="absolute -right-2 -top-2"
                           size="icon"
                         >
@@ -745,7 +811,7 @@ export default function CompleteProfileStudent({
                           <Plus size={10} /> {filteredTutors.found - limit}
                         </div>
                       )}
-                    <NextImage
+                    <Image
                       src={image.profile_picture}
                       width={100}
                       height={100}

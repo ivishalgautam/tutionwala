@@ -17,6 +17,10 @@ const nextConfig = {
         hostname: "api.tutionwala.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "tutionwala.s3.ap-south-1.amazonaws.com",
+      },
     ],
   },
 };

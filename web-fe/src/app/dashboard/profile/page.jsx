@@ -116,7 +116,7 @@ export default function Page() {
             stab === "personal-information" ? (
               <PersonalInfoForm user={user} setUser={setUser} />
             ) : (
-              <TutorProfileForm user={user} />
+              <TutorProfileForm user={user} setUser={setUser} />
             )
           ) : (
             <div className="space-y-2">

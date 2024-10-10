@@ -45,6 +45,9 @@ export const endpoints = {
   files: {
     upload: "/upload/files",
     getFiles: "/upload",
+    deleteKey: "/upload/s3",
+    preSignedUrl: "/upload/presigned-url",
+    preSignedUrls: "/upload/presigned-urls",
   },
   cart: {
     getAll: "/carts",

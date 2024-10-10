@@ -33,13 +33,17 @@ const fetchProfile = async (id) => {
   return data;
 };
 
-export default function TutorProfileForm({ user }) {
+export default function TutorProfileForm({ user, setUser }) {
+  const [mediaError, setMediaError] = useState({
+    video: false,
+    profile: false,
+  });
   const [media, setMedia] = useState({
     profile_picture: "",
     video: "",
   });
-  const [progress, setProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState({ profile: 0, video: 0 });
+  const [isLoading, setIsLoading] = useState({ profile: false, video: false });
   const router = useRouter();
   const [token] = useLocalStorage("token");
 
@@ -69,7 +73,6 @@ export default function TutorProfileForm({ user }) {
     queryFn: () => fetchProfile(user.id),
     enabled: !!user.id,
   });
-  console.log({ tutor });
   const {
     fields: languages,
     append: appendLang,
@@ -85,7 +88,6 @@ export default function TutorProfileForm({ user }) {
     },
     onSuccess: (data) => {
       toast.success(data?.message ?? "Updated successfully.");
-      router.push("/dashboard/profile");
     },
     onError: (error) => {
       toast.error(error?.message ?? "error");
@@ -93,69 +95,84 @@ export default function TutorProfileForm({ user }) {
   });
 
   const handleFileChange = async (event, type) => {
-    setIsLoading(true);
+    setIsLoading((prev) => ({
+      ...prev,
+      ...(type === "video" ? { video: true } : { profile: true }),
+    }));
     try {
-      const selectedFiles = event.target.files[0];
-      const formData = new FormData();
-      formData.append("file", selectedFiles);
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}${endpoints.files.upload}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = parseInt(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total),
-            );
-            setProgress(progress);
-          },
+      const file = event.target.files[0];
+      const fileMetaData = {
+        file: {
+          type: file.type,
+          size: file.size,
+          name: file.name,
         },
+      };
+      const { url } = await http().post(
+        endpoints.files.preSignedUrl,
+        fileMetaData,
       );
 
-      const file = response.data[0];
-      if (type === "adhaar") {
-        setMedia((prev) => ({ ...prev, adhaar: file }));
-        localStorage.setItem("adhaar", file);
-      }
+      const resp = await axios.put(url, file, {
+        onUploadProgress: (progressEvent) => {
+          const progress = parseInt(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total),
+          );
+          setProgress((prev) => ({
+            ...prev,
+            ...(type === "video" ? { video: progress } : { profile: progress }),
+          }));
+        },
+      });
+
+      const fileurl = url.split("?")[0];
+
       if (type === "profile_picture") {
-        setMedia((prev) => ({ ...prev, profile_picture: file }));
-        localStorage.setItem("profile_picture", file);
-      }
-      if (type === "video") {
-        setMedia((prev) => ({ ...prev, video: file }));
-        localStorage.setItem("video", file);
+        setMedia((prev) => ({ ...prev, profile_picture: fileurl }));
+        localStorage.setItem("profile_picture", fileurl);
+        updateMutation.mutate({ profile_picture: fileurl });
+        setUser({ ...user, profile_picture: fileurl });
+      } else {
+        setMedia((prev) => ({ ...prev, video: fileurl }));
+        localStorage.setItem("video", fileurl);
+        updateMutation.mutate({ intro_video: fileurl });
+        setUser({ ...user, video: fileurl });
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading image: ", error);
     } finally {
-      setIsLoading(false);
-      setProgress(0);
+      setIsLoading((prev) => ({
+        ...prev,
+        ...(type === "video" ? { video: false } : { profile: false }),
+      }));
+      setProgress((prev) => ({
+        ...prev,
+        ...(type === "video" ? { video: 0 } : { profile: 0 }),
+      }));
     }
   };
   const deleteFile = async (filePath, type) => {
+    const key = filePath.split(".com/")[1];
     try {
       const resp = await http().delete(
-        `${endpoints.files.getFiles}?file_path=${filePath}`,
+        `${endpoints.files.deleteKey}?key=${key}`,
       );
       toast.success(resp?.message);
 
-      if (type === "adhaar") {
-        setMedia((prev) => ({ ...prev, adhaar: "" }));
-        localStorage.removeItem("adhaar");
-        setValue("adhaar", "");
-      }
       if (type === "profile_picture") {
         setMedia((prev) => ({ ...prev, profile_picture: "" }));
         localStorage.removeItem("profile_picture");
         setValue("profile_picture", "");
+        setUser({ ...user, profile_picture: "" });
+        updateMutation.mutate({ profile_picture: "" });
       }
+
       if (type === "video") {
         setMedia((prev) => ({ ...prev, video: "" }));
         localStorage.removeItem("video");
         setValue("video", "");
+        setUser({ ...user, video: "" });
+        updateMutation.mutate({ intro_video: "" });
       }
     } catch (error) {
       // console.log(error);
@@ -186,6 +203,7 @@ export default function TutorProfileForm({ user }) {
     };
 
     updateMutation.mutate(payload);
+    router.push("/dashboard/profile");
   };
 
   return (
@@ -194,10 +212,10 @@ export default function TutorProfileForm({ user }) {
         <H5>Personal Information</H5>
         <div className="space-y-4 divide-y *:py-4">
           {/* media */}
-          <div className="flex items-start justify-center gap-4">
+          <div className="space-y-4">
             {/* profile pic */}
-            <div className="flex-1 space-y-4">
-              <H5 className={"text-center"}>Profile Picture</H5>
+            <div className="space-y-4">
+              <H5>Profile Picture</H5>
               {!media.profile_picture && (
                 <div className="flex flex-col items-center justify-center">
                   <Input
@@ -219,14 +237,25 @@ export default function TutorProfileForm({ user }) {
               )}
 
               <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
+                {isLoading.profile && (
+                  <Progress
+                    id="file"
+                    value={progress.profile}
+                    max="100"
+                  >{`${progress.profile}%`}</Progress>
+                )}
                 {media.profile_picture ? (
                   <figure className="relative aspect-square size-32">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.profile_picture}`}
-                      className="h-full w-full"
+                      src={media.profile_picture}
+                      className="h-full w-full rounded-md"
                       width={200}
                       height={200}
                       alt="profile"
+                      onError={(err) => {
+                        setMediaError((prev) => ({ ...prev, profile: true }));
+                        setMedia((prev) => ({ ...prev, profile: "" }));
+                      }}
                     ></Image>
                     <Button
                       type="button"
@@ -247,8 +276,8 @@ export default function TutorProfileForm({ user }) {
             </div>
 
             {/* intro video */}
-            <div className="flex-1 space-y-4">
-              <H5 className={"text-center"}>Intro Video</H5>
+            <div className="space-y-4">
+              <H5>Intro Video</H5>
               {!media.video && (
                 <div className="flex flex-col items-center justify-center">
                   <Input
@@ -270,21 +299,25 @@ export default function TutorProfileForm({ user }) {
               )}
 
               <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                {isLoading && (
+                {isLoading.video && (
                   <Progress
                     id="file"
-                    value={progress}
+                    value={progress.video}
                     max="100"
-                  >{`${progress}%`}</Progress>
+                  >{`${progress.video}%`}</Progress>
                 )}
-                {media.video ? (
+                {!mediaError.video && media.video ? (
                   <div className="relative w-max">
                     <video
-                      src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${media.video}`}
-                      autoPlay
+                      src={media.video}
                       loop
                       muted
-                      className="aspect-video w-44"
+                      controls
+                      className="aspect-video w-96 rounded-md"
+                      onError={(error) => {
+                        setMediaError((prev) => ({ ...prev, video: true }));
+                        setMedia((prev) => ({ ...prev, video: "" }));
+                      }}
                     ></video>
                     <Button
                       type="button"
