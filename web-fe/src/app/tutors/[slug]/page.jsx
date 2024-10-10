@@ -57,11 +57,7 @@ export default async function Page({ params: { slug: tutorId } }) {
           <H3 className={"border-b-2 border-primary/10 py-2"}>
             About {tutor.fullname}
           </H3>
-          <video
-            src={`${process.env.NEXT_PUBLIC_API_URL}/upload?file_path=${tutor.intro_video}`}
-            autoPlay
-            controls
-          ></video>
+          <video src={tutor.intro_video} controls></video>
           <Muted className={"!mt-2"}>{tutor.experience}</Muted>
         </div>
       </div>
