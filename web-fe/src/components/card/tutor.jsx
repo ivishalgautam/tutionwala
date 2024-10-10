@@ -6,13 +6,14 @@ import NextImage from "../next-image";
 import { Badge } from "../ui/badge";
 
 import Review from "../review";
+import Image from "next/image";
 
 export default function TutorCard({ tutor, ratings, totalReviews }) {
   return (
     <div className="w-full space-y-2 rounded border border-gray-200 bg-white p-4">
       <div className="flex items-start justify-start gap-4">
         <figure className="size-32 flex-shrink-0">
-          <NextImage
+          <Image
             src={tutor.profile_picture}
             width={100}
             height={100}
