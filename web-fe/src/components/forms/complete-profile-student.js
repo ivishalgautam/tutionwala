@@ -263,6 +263,10 @@ export default function CompleteProfileStudent({
   };
 
   console.log({ progress, isLoading });
+  // const fileMetaData = Array.from(data.file).map((file) => ({
+  //   type: file.type,
+  //   size: file.size,
+  // }));
   const deleteFile = async (filePath, type) => {
     const key = filePath.split(".com/")[1];
     try {

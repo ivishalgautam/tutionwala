@@ -60,7 +60,11 @@ export const Profile = ({ isUserLoading, user }) => {
     <div className="flex items-start justify-start gap-2">
       <figure className="size-20">
         <Image
-          src={imageError ? "/images/not-found.png" : user?.profile_picture}
+          src={
+            imageError || !user?.profile_picture
+              ? "/images/not-found.png"
+              : user?.profile_picture
+          }
           width={100}
           height={100}
           alt={user?.fullname}

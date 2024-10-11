@@ -113,13 +113,13 @@ export default function StudentReviewCards() {
 
       <div>
         <Marquee pauseOnHover className="[--duration:20s]">
-          {firstRow.map((review) => (
-            <ReviewCard key={review.username} {...review} />
+          {firstRow.map((review, key) => (
+            <ReviewCard key={key} {...review} />
           ))}
         </Marquee>
         <Marquee reverse pauseOnHover className="[--duration:20s]">
-          {secondRow.map((review) => (
-            <ReviewCard key={review.username} {...review} />
+          {secondRow.map((review, key) => (
+            <ReviewCard key={key} {...review} />
           ))}
         </Marquee>
       </div>
