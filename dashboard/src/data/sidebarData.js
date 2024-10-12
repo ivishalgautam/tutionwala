@@ -22,7 +22,13 @@ export const ALLROUTES = [
   },
   {
     title: "Users",
-    path: "/users/create",
+    path: "/users/create/tutor",
+    roles: [ROLES.ADMIN],
+    icon: <Users size={size} />,
+  },
+  {
+    title: "Users",
+    path: "/users/create/student",
     roles: [ROLES.ADMIN],
     icon: <Users size={size} />,
   },

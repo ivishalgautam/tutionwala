@@ -17,6 +17,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
 import useMapLoader from "@/hooks/useMapLoader";
+import ReactSelect from "react-select/async";
 
 import PhoneInputWithCountrySelect, {
   isValidPhoneNumber,
@@ -24,6 +25,7 @@ import PhoneInputWithCountrySelect, {
 } from "react-phone-number-input";
 
 import "react-phone-number-input/style.css";
+import { useRef } from "react";
 
 const defaultValues = {
   type: "",
@@ -39,14 +41,17 @@ const defaultValues = {
   role: "tutor",
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-const fetchSubcategories = async () => {
-  const { data } = await axios.get(
-    `${baseUrl}${endpoints.subCategories.getAll}`,
-  );
-  return data.data;
+const searchCategory = async (q) => {
+  const { data } = await http().get(`${endpoints.subCategories.getAll}?q=${q}`);
+  const filteredData = data?.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  }));
+  return filteredData;
 };
-export default function UserForm() {
+export default function TutorForm() {
+  const { isLoaded } = useMapLoader();
+  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {
@@ -58,26 +63,42 @@ export default function UserForm() {
     setValue,
   } = useForm({ defaultValues });
 
-  const { isLoaded } = useMapLoader();
-  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
-
-  const { data: subCategories } = useQuery({
-    queryKey: ["sub-categories"],
-    queryFn: fetchSubcategories,
+  const [subCatInputVal, setSubCatInputVal] = useState("");
+  const debounceTimeoutRef = useRef(null);
+  const { data, isLoading, isFetching } = useQuery({
+    queryFn: () => searchCategory(subCatInputVal),
+    queryKey: [`search-${subCatInputVal}`, subCatInputVal],
+    enabled: !!subCatInputVal,
   });
 
-  const formattedSubCategories = useCallback(() => {
-    return (
-      subCategories?.map(({ id: value, name: label }) => ({
-        label,
-        value,
-      })) ?? []
-    );
-  }, [subCategories]);
+  const handleInputChange = useCallback((inputValue) => {
+    return new Promise((resolve) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+
+      debounceTimeoutRef.current = setTimeout(async () => {
+        if (!inputValue.trim()) return resolve([]);
+
+        try {
+          const formattedInput = inputValue.replace(/\s+/g, "-");
+          setSubCatInputVal(formattedInput);
+          const options = await searchCategory(formattedInput);
+          resolve(options);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          resolve([]);
+        }
+      }, 300);
+    });
+  }, []);
 
   async function signUp(data) {
     try {
-      const response = await http().post(`${endpoints.auth.verifyOtp}`, data);
+      const response = await http().post(
+        `${endpoints.users.getAll}/tutor`,
+        data,
+      );
       toast.success(response.message ?? "Signed up succesfully.");
       localStorage.setItem("user", JSON.stringify(response.user_data));
       localStorage.setItem("token", response.token);
@@ -109,7 +130,6 @@ export default function UserForm() {
       mobile_number: nationalNumber,
       gender: data.gender,
       sub_categories: data.sub_category_id,
-      otp: data.otp,
       role: data.role,
       location: data.location,
     };
@@ -126,10 +146,10 @@ export default function UserForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center justify-start">
         <div className="w-full space-y-6">
-          <H4>Create User</H4>
+          <H4>Create Tutor</H4>
           <div className="space-y-2">
             <div>
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-center gap-4">
                 {[
                   { value: "individual", label: "Individual" },
                   { value: "institute", label: "Institute" },
@@ -223,6 +243,7 @@ export default function UserForm() {
                   </span>
                 )}
               </div>
+
               {/* gender */}
               <div className="flex flex-col justify-start p-1">
                 <Label className="text-sm">Gender</Label>
@@ -252,67 +273,70 @@ export default function UserForm() {
               </div>
             </div>
 
-            {/* email */}
-            <div>
-              <Label className="text-sm">Email</Label>
-              <Input
-                type="text"
-                {...register("email", {
-                  required: "required*",
-                })}
-                placeholder="Enter Your email"
-                className="rounded-lg bg-gray-100"
-              />
-              {errors.email && (
-                <span className="text-sm text-rose-500">
-                  {errors.email.message}
-                </span>
-              )}
-            </div>
-
-            {/* phone */}
-            <div>
-              <Label>Phone</Label>
-              <Controller
-                control={control}
-                name="mobile_number"
-                rules={{
-                  required: "required*",
-                  validate: (value) =>
-                    isValidPhoneNumber(value) || "Invalid phone number",
-                }}
-                render={({ field }) => (
-                  <PhoneInputWithCountrySelect
-                    placeholder="Enter phone number"
-                    value={field.value}
-                    onChange={field.onChange}
-                    defaultCountry="IN"
-                  />
+            <div className="grid grid-cols-2 gap-4">
+              {/* email */}
+              <div className="md:col-span-1">
+                <Label className="text-sm">Email</Label>
+                <Input
+                  type="text"
+                  {...register("email", {
+                    required: "required*",
+                  })}
+                  placeholder="Enter Your email"
+                  className="rounded-lg bg-gray-100"
+                />
+                {errors.email && (
+                  <span className="text-sm text-rose-500">
+                    {errors.email.message}
+                  </span>
                 )}
-              />
+              </div>
 
-              {errors.mobile_number && (
-                <span className="text-red-500">
-                  {errors.mobile_number.message}
-                </span>
-              )}
+              {/* phone */}
+              <div className="md:col-span-1">
+                <Label>Phone</Label>
+                <Controller
+                  control={control}
+                  name="mobile_number"
+                  rules={{
+                    required: "required*",
+                    validate: (value) =>
+                      isValidPhoneNumber(value) || "Invalid phone number",
+                  }}
+                  render={({ field }) => (
+                    <PhoneInputWithCountrySelect
+                      placeholder="Enter phone number"
+                      value={field.value}
+                      onChange={field.onChange}
+                      defaultCountry="IN"
+                    />
+                  )}
+                />
+
+                {errors.mobile_number && (
+                  <span className="text-red-500">
+                    {errors.mobile_number.message}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* main category you teach */}
-            <div className="flex flex-col justify-center">
-              <Label className="text-sm">Category you teach</Label>
+            {/* main category */}
+            <div className="flex flex-col justify-center md:col-span-1">
+              <Label className="text-sm">Category</Label>
               <Controller
                 control={control}
                 name="sub_category_id"
                 rules={{ required: "required*" }}
                 render={({ field }) => (
-                  <ShadcnSelect
-                    field={field}
-                    setValue={setValue}
-                    name={"sub_category_id"}
-                    placeholder="Category"
-                    options={formattedSubCategories()}
-                    width={"min-w-full"}
+                  <ReactSelect
+                    loadOptions={handleInputChange}
+                    placeholder={"Search..."}
+                    isLoading={isFetching && isLoading}
+                    onChange={field.onChange}
+                    isMulti={false}
+                    value={field.value}
+                    menuPortalTarget={document.body}
                   />
                 )}
               />
@@ -342,26 +366,13 @@ export default function UserForm() {
             </div>
           </div>
 
-          <div>
-            <Button
-              className="w-full"
-              type="button"
-              onClick={() => handleSendOtp()}
-            >
+          <div className="text-end">
+            <Button className="w-full sm:w-auto">
               {loading && (
                 <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
               )}
               Sign Up
             </Button>
-          </div>
-
-          <div className="">
-            <P className={"text-center text-sm font-medium tracking-wide"}>
-              Already have an account?{" "}
-              <Link href={"/login"} className="text-primary">
-                Login
-              </Link>
-            </P>
           </div>
         </div>
       </div>

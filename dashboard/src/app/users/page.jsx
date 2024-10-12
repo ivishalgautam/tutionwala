@@ -12,6 +12,15 @@ import { endpoints } from "../../utils/endpoints.js";
 import { toast } from "sonner";
 import { isObject } from "@/utils/object";
 import { useRouter } from "next/navigation.js";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DotsHorizontalIcon, DotsVerticalIcon } from "@radix-ui/react-icons";
 
 async function deleteCustomer(data) {
   return http().delete(`${endpoints.users.getAll}/${data.id}`);
@@ -83,9 +92,27 @@ export default function Users() {
     <div className="">
       <div className="flex items-center justify-between">
         <Title text={"Users"} />
-        <Button variant="outline" asChild>
-          <Link href={"/users/create"}>Create</Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="">
+              <DotsVerticalIcon className="h-3 w-3" />
+              <span className="ml-1">Create</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => handleNavigate("/users/create/student")}
+            >
+              Student
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => handleNavigate("/users/create/tutor")}
+            >
+              Tutor
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div>
