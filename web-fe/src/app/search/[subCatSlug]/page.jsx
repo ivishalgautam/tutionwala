@@ -50,8 +50,9 @@ const fetchTutors = async (formData, limit) => {
 
 export default function Page({ params: { subCatSlug } }) {
   const { isLoaded } = useMapLoader();
-
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
+  console.log({ inputRef, isLoaded, selectedPlace });
+
   const storedFilteration =
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem(subCatSlug))
@@ -93,6 +94,7 @@ export default function Page({ params: { subCatSlug } }) {
       setFilteredTutors(data);
     },
   });
+
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoard = watch("selected_board");
@@ -155,6 +157,7 @@ export default function Page({ params: { subCatSlug } }) {
   };
 
   const onSubmit = (formData) => {
+    console.log({ formData });
     setIsFilterationComplete(true);
     tutors.mutate({ ...formData, subCatSlug });
   };
@@ -225,7 +228,11 @@ export default function Page({ params: { subCatSlug } }) {
 
   useEffect(() => {
     if (selectedPlace) {
-      setValue("location", selectedPlace.address);
+      const { address, location } = selectedPlace;
+      const { lat, lng } = location;
+      setValue("location", address);
+      setValue("lat", lat());
+      setValue("lng", lng());
     }
   }, [selectedPlace]);
 

@@ -38,10 +38,11 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
         try {
           const formattedInput = inputValue.replace(/\s+/g, "-");
           const options = await searchCategory(formattedInput);
+          console.log({ options });
           resolve(options);
         } catch (error) {
           console.error("Error fetching categories:", error);
-          resolve([]); // Resolve with an empty array in case of error
+          resolve([]);
         }
       }, 300);
     });

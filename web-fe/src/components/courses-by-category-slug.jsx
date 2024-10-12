@@ -33,7 +33,7 @@ export default function CoursesByCategorySlug({ slug }) {
       <H4 className={"text-center"}>{categoryName}</H4>
 
       <div>
-        <Courses courses={data?.data} sliceCount={20} totalSlices={3} />
+        <Courses courses={data?.data} sliceCount={5} totalSlices={3} />
       </div>
     </div>
   );

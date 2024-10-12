@@ -569,6 +569,7 @@ export default function CompleteProfileTutor({
                   />
                 </div>
 
+                {/* radius */}
                 <div className="relative">
                   <Label>Enquiry radius under</Label>
                   <Input
@@ -595,6 +596,7 @@ export default function CompleteProfileTutor({
                   )}
                 </div>
 
+                {/* board */}
                 {data?.is_boards && (
                   <div>
                     <div className="text-sm font-medium">
@@ -678,7 +680,7 @@ export default function CompleteProfileTutor({
 
                 {/* custom fields */}
                 <div className="space-y-4 divide-y *:pt-4">
-                  {data.fields.map((item, ind) => (
+                  {data?.fields.map((item, ind) => (
                     <div key={ind} className="mt-3 space-y-4">
                       <div className="text-sm font-medium capitalize">
                         {item.questionForTutor}

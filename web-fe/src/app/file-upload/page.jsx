@@ -1,56 +1,57 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { endpoints } from "@/utils/endpoints";
-import http from "@/utils/http";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+
+import "react-phone-number-input/style.css";
+import PhoneInput, {
+  isValidPhoneNumber,
+  parsePhoneNumber,
+} from "react-phone-number-input";
 
 export default function Page() {
-  const [file, setFile] = useState("");
-  const { handleSubmit, register, watch } = useForm();
+  const {
+    handleSubmit,
+    register,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm();
   const onSubmit = async (data) => {
-    const file = data.file?.[0];
-    console.log({ file });
-    const fileMetaData = {
-      file: {
-        type: file.type,
-        size: file.size,
-        name: file.name,
-      },
-    };
-
-    const { url } = await http().post(
-      endpoints.files.preSignedUrl,
-      fileMetaData,
-    );
-    const resp = await axios.put(url, file, {
-      onUploadProgress: (progress) => {
-        console.log({ progress });
-      },
-    });
-    if (resp.statusText === "OK") {
-      const filePath = url.split("?")[0];
-      setFile(filePath);
-    }
+    const phoneNumber = parsePhoneNumber(data.mobile_number);
+    console.log({ phoneNumber });
   };
+
+  console.log({ errors });
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-lg">
         <div>
-          <Label>Select file</Label>
-          <Input
-            type="file"
-            {...register("file", { required: "required*" })}
-            multiple
+          <Label>Phone</Label>
+          <Controller
+            control={control}
+            name="mobile_number"
+            rules={{
+              required: "required*",
+              validate: (value) =>
+                isValidPhoneNumber(value) || "Invalid phone number",
+            }}
+            render={({ field }) => (
+              <PhoneInput
+                placeholder="Enter phone number"
+                value={field.value}
+                onChange={field.onChange}
+                defaultCountry="IN"
+              />
+            )}
           />
-        </div>
 
-        {file && <video src={file} autoPlay controls></video>}
+          {errors.mobile_number && (
+            <span className="text-red-500">{errors.mobile_number.message}</span>
+          )}
+        </div>
 
         <Button>Submit</Button>
       </form>

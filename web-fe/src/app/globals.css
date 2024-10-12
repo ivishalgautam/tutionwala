@@ -139,3 +139,11 @@
   height: var(--slide-height);
   user-select: none;
 }
+
+.PhoneInput {
+  @apply rounded-lg border bg-white p-2 px-3;
+}
+
+.PhoneInputInput {
+  @apply outline-none;
+}

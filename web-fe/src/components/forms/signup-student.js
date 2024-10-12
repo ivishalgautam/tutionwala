@@ -1,6 +1,6 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { H1, H2, H3, H4, H5, P } from "../ui/typography";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { H2, H4, P } from "../ui/typography";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -10,9 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import ShadcnSelect from "../ui/shadcn-select";
-import { countries } from "@/data/countries";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Edit } from "lucide-react";
@@ -21,6 +19,11 @@ import { formatTime } from "@/utils/time";
 import { useRouter } from "next/navigation";
 import useMapLoader from "@/hooks/useMapLoader";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
+import PhoneInputWithCountrySelect, {
+  isValidPhoneNumber,
+  parsePhoneNumber,
+} from "react-phone-number-input";
+import ReactSelect from "react-select/async";
 
 const defaultValues = {
   type: "",
@@ -31,17 +34,20 @@ const defaultValues = {
   country_code: "",
   mobile_number: "",
   gender: "",
-  sub_category_id: "",
+  sub_category: "",
   otp: "",
   role: "student",
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-const fetchSubcategories = async () => {
-  const { data } = await axios.get(
-    `${baseUrl}${endpoints.subCategories.getAll}`,
-  );
-  return data.data;
+
+const searchCategory = async (q) => {
+  const { data } = await http().get(`${endpoints.subCategories.getAll}?q=${q}`);
+  const filteredData = data?.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  }));
+  return filteredData;
 };
 
 export default function SignUpStudentForm() {
@@ -49,6 +55,8 @@ export default function SignUpStudentForm() {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [subCatInputVal, setSubCatInputVal] = useState("");
+  const debounceTimeoutRef = useRef(null);
   const [minute] = useState(5);
   const router = useRouter();
   const { isLoaded } = useMapLoader();
@@ -66,24 +74,32 @@ export default function SignUpStudentForm() {
     setFocus,
   } = useForm({ defaultValues });
 
-  const { data: subCategories } = useQuery({
-    queryKey: ["sub-categories"],
-    queryFn: fetchSubcategories,
+  const { data, isLoading, isFetching } = useQuery({
+    queryFn: () => searchCategory(subCatInputVal),
+    queryKey: [`search-${subCatInputVal}`, subCatInputVal],
+    enabled: !!subCatInputVal,
   });
-  const formattedSubCategories = useCallback(() => {
-    return (
-      subCategories?.map(({ id: value, name: label }) => ({
-        label,
-        value,
-      })) ?? []
-    );
-  }, [subCategories]);
 
-  const formattedCountries = useCallback(() => {
-    return countries.map(({ value, label }) => ({
-      value,
-      label: `${value} ${label}`,
-    }));
+  const handleInputChange = useCallback((inputValue) => {
+    return new Promise((resolve) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+
+      debounceTimeoutRef.current = setTimeout(async () => {
+        if (!inputValue.trim()) return resolve([]);
+
+        try {
+          const formattedInput = inputValue.replace(/\s+/g, "-");
+          setSubCatInputVal(formattedInput);
+          const options = await searchCategory(formattedInput);
+          resolve(options);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          resolve([]);
+        }
+      }, 300);
+    });
   }, []);
 
   async function signUp(data) {
@@ -111,9 +127,13 @@ export default function SignUpStudentForm() {
     }
 
     try {
-      const mobile_number = getValues("mobile_number");
-      const country_code = getValues("country_code");
+      const { nationalNumber, countryCallingCode } = parsePhoneNumber(
+        getValues("mobile_number"),
+      );
+      const mobile_number = nationalNumber;
+      const country_code = countryCallingCode;
       const email = getValues("email");
+
       const { statusText, data } = await axios.post(
         `${baseUrl}${endpoints.auth.sendOtp}`,
         {
@@ -135,16 +155,20 @@ export default function SignUpStudentForm() {
   }
 
   const onSubmit = async (data) => {
+    const { nationalNumber, countryCallingCode } = parsePhoneNumber(
+      data.mobile_number,
+    );
+
     const payload = {
       type: data.type,
       institute_name: data.institute_name,
       institute_contact_name: data.institute_contact_name,
       fullname: data.fullname,
       email: data.email,
-      country_code: data.country_code,
-      mobile_number: data.mobile_number,
+      country_code: countryCallingCode,
+      mobile_number: nationalNumber,
       gender: data.gender,
-      sub_categories: [data.sub_category_id],
+      sub_categories: [data.sub_category.value],
       otp: data.otp,
       role: data.role,
       location: data.location,
@@ -240,67 +264,55 @@ export default function SignUpStudentForm() {
               </div>
 
               {/* phone */}
-              <div className="flex gap-2">
-                <div className="flex flex-col justify-start p-1">
-                  <Label className="text-sm">Country</Label>
-                  <Controller
-                    control={control}
-                    name="country_code"
-                    rules={{ required: "required*" }}
-                    render={({ field }) => (
-                      <ShadcnSelect
-                        field={field}
-                        setValue={setValue}
-                        name={"country_code"}
-                        placeholder="Country"
-                        options={formattedCountries()}
-                      />
-                    )}
-                  />
-                  {errors.country_code && (
-                    <span className="text-sm text-rose-500">
-                      {errors.country_code.message}
-                    </span>
+              <div>
+                <Label>Phone</Label>
+                <Controller
+                  control={control}
+                  name="mobile_number"
+                  rules={{
+                    required: "required*",
+                    validate: (value) =>
+                      isValidPhoneNumber(value) || "Invalid phone number",
+                  }}
+                  render={({ field }) => (
+                    <PhoneInputWithCountrySelect
+                      placeholder="Enter phone number"
+                      value={field.value}
+                      onChange={field.onChange}
+                      defaultCountry="IN"
+                    />
                   )}
-                </div>
-                <div className="flex-grow">
-                  <Label className="text-sm">Phone</Label>
-                  <Input
-                    {...register("mobile_number", {
-                      required: "required*",
-                    })}
-                    placeholder="Enter your phone number"
-                    className="rounded-lg bg-gray-100"
-                  />
-                  {errors.mobile_number && (
-                    <span className="text-sm text-rose-500">
-                      {errors.mobile_number.message}
-                    </span>
-                  )}
-                </div>
+                />
+
+                {errors.mobile_number && (
+                  <span className="text-red-500">
+                    {errors.mobile_number.message}
+                  </span>
+                )}
               </div>
 
               {/* main category you teach */}
               <div className="flex flex-col justify-center">
-                <Label className="text-sm">Category you teach</Label>
+                <Label className="text-sm">Select Category</Label>
                 <Controller
                   control={control}
-                  name="sub_category_id"
+                  name="sub_category"
                   rules={{ required: "required*" }}
                   render={({ field }) => (
-                    <ShadcnSelect
-                      field={field}
-                      setValue={setValue}
-                      name={"sub_category_id"}
-                      placeholder="Category"
-                      options={formattedSubCategories()}
-                      width={"min-w-full"}
+                    <ReactSelect
+                      loadOptions={handleInputChange}
+                      placeholder={"Search..."}
+                      isLoading={isFetching && isLoading}
+                      onChange={field.onChange}
+                      isMulti={false}
+                      value={field.value}
+                      menuPortalTarget={document.body}
                     />
                   )}
                 />
-                {errors.sub_category_id && (
+                {errors.sub_category && (
                   <span className="text-sm text-rose-500">
-                    {errors.sub_category_id.message}
+                    {errors.sub_category.message}
                   </span>
                 )}
               </div>
@@ -313,7 +325,7 @@ export default function SignUpStudentForm() {
                   name="location"
                   rules={{ required: "required*" }}
                   render={({ field: { onChange, value } }) => (
-                    <Input ref={inputRef} />
+                    <Input ref={inputRef} value={value} />
                   )}
                 />
                 {errors.location && (
@@ -351,64 +363,50 @@ export default function SignUpStudentForm() {
             <H2 className={"text-center"}>Verify OTP</H2>
             <div className="space-y-2">
               {/* phone */}
-              <div className="flex gap-2">
-                <div className="flex flex-col justify-center p-1">
-                  <Label className="text-sm">Country</Label>
+              <div>
+                <Label>Phone</Label>
+                <div className="relative">
                   <Controller
                     control={control}
-                    name="country_code"
-                    rules={{ required: "required*" }}
+                    name="mobile_number"
+                    rules={{
+                      required: "required*",
+                      validate: (value) =>
+                        isValidPhoneNumber(value) || "Invalid phone number",
+                    }}
                     render={({ field }) => (
-                      <ShadcnSelect
-                        field={field}
-                        setValue={setValue}
-                        name={"country_code"}
-                        placeholder="Country"
-                        options={formattedCountries()}
+                      <PhoneInputWithCountrySelect
+                        placeholder="Enter phone number"
+                        value={field.value}
+                        onChange={field.onChange}
+                        defaultCountry="IN"
+                        disabled
                       />
                     )}
                   />
-                  {errors.country_code && (
-                    <span className="text-sm text-rose-500">
-                      {errors.country_code.message}
-                    </span>
-                  )}
+                  <Button
+                    className="absolute right-0 top-0 z-10 text-primary hover:bg-transparent"
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsOtpSent(false);
+                      setTimeout(() => {
+                        setFocus("mobile_number");
+                      }, 0);
+                    }}
+                  >
+                    <Edit size={20} />
+                  </Button>
                 </div>
 
-                <div className="flex-grow">
-                  <Label className="text-sm">Phone</Label>
-                  <div className="relative">
-                    <Input
-                      {...register("mobile_number", {
-                        required: "required*",
-                      })}
-                      disabled
-                      placeholder="Enter your phone"
-                      className="rounded-lg bg-gray-100"
-                    />
-                    <Button
-                      className="absolute right-0 top-0 z-10 text-primary hover:bg-transparent"
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => {
-                        setIsOtpSent(false);
-                        setTimeout(() => {
-                          setFocus("mobile_number");
-                        }, 0);
-                      }}
-                    >
-                      <Edit size={20} />
-                    </Button>
-                  </div>
-
-                  {errors.phone && (
-                    <span className="text-sm text-rose-500">
-                      {errors.phone.message}
-                    </span>
-                  )}
-                </div>
+                {errors.mobile_number && (
+                  <span className="text-red-500">
+                    {errors.mobile_number.message}
+                  </span>
+                )}
               </div>
+
               {/* otp */}
               <div className="flex items-end gap-2">
                 <div>
