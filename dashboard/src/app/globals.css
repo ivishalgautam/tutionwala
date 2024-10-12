@@ -21,3 +21,11 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-500;
 }
+
+.PhoneInput {
+  @apply rounded-lg border bg-white p-2 px-3;
+}
+
+.PhoneInputInput {
+  @apply outline-none;
+}

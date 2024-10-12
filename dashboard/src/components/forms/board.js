@@ -72,7 +72,6 @@ export function BoardForm({ type, handleCreate, handleUpdate, boardId }) {
       fetchData();
     }
   }, [boardId, type, setValue]);
-  console.log(watch("subjects"));
   if (isLoading) return <Spinner />;
 
   return (

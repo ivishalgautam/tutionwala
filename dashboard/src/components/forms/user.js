@@ -1,305 +1,367 @@
 "use client";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useCallback, useEffect, useState } from "react";
+import { H1, H2, H3, H4, H5, P } from "../ui/typography";
+import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useMutation } from "@tanstack/react-query";
+
+import Link from "next/link";
+import { Controller, useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import { FaRegEye } from "react-icons/fa";
 import { toast } from "sonner";
-import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import Title from "../Title";
+import { cn } from "@/lib/utils";
+import ShadcnSelect from "../ui/shadcn-select";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAutocomplete } from "@/hooks/useAutoComplete";
+import useMapLoader from "@/hooks/useMapLoader";
 
-async function createCustomer(data) {
-  return http().post(endpoints.users.getAll, data);
-}
+import PhoneInputWithCountrySelect, {
+  isValidPhoneNumber,
+  parsePhoneNumber,
+} from "react-phone-number-input";
 
-export function UserForm() {
+import "react-phone-number-input/style.css";
+
+const defaultValues = {
+  type: "",
+  institute_name: "",
+  institute_contact_name: "",
+  fullname: "",
+  email: "",
+  country_code: "",
+  mobile_number: "",
+  gender: "",
+  sub_category_id: "",
+  otp: "",
+  role: "tutor",
+};
+
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const fetchSubcategories = async () => {
+  const { data } = await axios.get(
+    `${baseUrl}${endpoints.subCategories.getAll}`,
+  );
+  return data.data;
+};
+export default function UserForm() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const {
     register,
-    control,
     handleSubmit,
-    watch,
-    reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      fullname: "",
-      mobile_number: "",
-      email: "",
-      username: "",
-      password: "",
-      role: "",
-      trainer_type: "",
-    },
-  });
-  const [showPasswords, setShowPasswords] = useState({
-    password: false,
-    cpassword: false,
-  });
-  const router = useRouter();
+    watch,
+    control,
+    setValue,
+  } = useForm({ defaultValues });
 
-  const createMutation = useMutation({
-    mutationFn: createCustomer,
-    onSuccess: (data) => {
-      reset();
-      toast.message(data?.message ?? "User created");
-      router.push("/users");
-    },
-    onError: (error) => {
-      toast.error(error?.message ?? "Error creating user!");
-    },
+  const { isLoaded } = useMapLoader();
+  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
+
+  const { data: subCategories } = useQuery({
+    queryKey: ["sub-categories"],
+    queryFn: fetchSubcategories,
   });
 
-  const handleCreate = async (data) => {
-    createMutation.mutate(data);
-  };
+  const formattedSubCategories = useCallback(() => {
+    return (
+      subCategories?.map(({ id: value, name: label }) => ({
+        label,
+        value,
+      })) ?? []
+    );
+  }, [subCategories]);
 
-  const onSubmit = (data) => {
+  async function signUp(data) {
+    try {
+      const response = await http().post(`${endpoints.auth.verifyOtp}`, data);
+      toast.success(response.message ?? "Signed up succesfully.");
+      localStorage.setItem("user", JSON.stringify(response.user_data));
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("refreshToken", response.refresh_token);
+      router.replace("/complete-profile/tutor");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ??
+          error?.message ??
+          "Unable to complete your request!",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const onSubmit = async (data) => {
+    const { nationalNumber, countryCallingCode } = parsePhoneNumber(
+      data.mobile_number,
+    );
+
     const payload = {
+      type: data.type,
+      institute_name: data.institute_name,
+      institute_contact_name: data.institute_contact_name,
       fullname: data.fullname,
-      mobile_number: data.mobile_number,
       email: data.email,
-      username: data.username,
-      password: data.password,
+      country_code: countryCallingCode,
+      mobile_number: nationalNumber,
+      gender: data.gender,
+      sub_categories: data.sub_category_id,
+      otp: data.otp,
       role: data.role,
-      trainer_type: data.trainer_type,
+      location: data.location,
     };
-
-    handleCreate(payload);
+    await signUp(payload);
   };
+
+  useEffect(() => {
+    if (selectedPlace) {
+      setValue("location", selectedPlace.address);
+    }
+  }, [selectedPlace]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center justify-start">
         <div className="w-full space-y-6">
-          <div className="space-y-4">
-            {/* title */}
-            <div className="">
-              <Title text={"Create user"} />
+          <H4>Create User</H4>
+          <div className="space-y-2">
+            <div>
+              <div className="flex items-center justify-center gap-2">
+                {[
+                  { value: "individual", label: "Individual" },
+                  { value: "institute", label: "Institute" },
+                ].map((type) => (
+                  <div
+                    key={type.value}
+                    className={cn("flex-1 rounded-lg border transition-all", {
+                      "border-primary bg-primary/10":
+                        type.value === watch("type"),
+                    })}
+                  >
+                    <Label
+                      className={
+                        "relative flex h-full w-full cursor-pointer items-center justify-start p-3"
+                      }
+                    >
+                      <Input
+                        type="radio"
+                        className="size-4"
+                        {...register("type", {
+                          required: "Please select a type*",
+                        })}
+                        value={type.value}
+                      />
+                      <span className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center text-sm">
+                        {type.label}
+                      </span>
+                    </Label>
+                  </div>
+                ))}
+              </div>
+              {errors.type && (
+                <span className="text-sm text-rose-500">
+                  {errors.type?.message}
+                </span>
+              )}
             </div>
 
-            {/* user info */}
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-              {/* avatar */}
-              <div className="sm:col-span-2 md:col-span-3">
-                <Label htmlFor="avatar">Avatar</Label>
-                <div className="flex items-center justify-center">
-                  <Input type="file" />
-                </div>
-              </div>
-
-              {/* role */}
-              <div>
-                <Label htmlFor="role">Role</Label>
-                <Controller
-                  control={control}
-                  name="role"
-                  rules={{ required: "required*" }}
-                  render={({ field: { onChange, value } }) => (
-                    <Select onValueChange={onChange} defaultValue={value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Roles</SelectLabel>
-                          <SelectItem value="sales_person">
-                            Sales Person
-                          </SelectItem>
-                          <SelectItem value="trainer">Trainer</SelectItem>
-                          <SelectItem value="customer">Customer</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.role && (
-                  <span className="text-red-500">{errors.role.message}</span>
-                )}
-              </div>
-
-              {/* TRAINER TYPE */}
-              {watch("role") === "trainer" && (
+            {/* institute */}
+            {watch("type") === "institute" && (
+              <div className="grid gap-2 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="trainer_type">Trainer Type</Label>
-                  <Controller
-                    control={control}
-                    name="trainer_type"
-                    rules={{ required: "required*" }}
-                    render={({ field: { onChange, value } }) => (
-                      <Select onValueChange={onChange} defaultValue={value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a Trainer Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Types</SelectLabel>
-                            <SelectItem value="general">General</SelectItem>
-                            <SelectItem value="personal">Personal</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    )}
+                  <Label className="text-sm">Institute name</Label>
+                  <Input
+                    {...register("institute_name", {
+                      required: "required*",
+                    })}
+                    placeholder="Enter institute name"
+                    className="rounded-lg bg-gray-100"
                   />
-                  {errors.trainer_type && (
-                    <span className="text-red-500">
-                      {errors.trainer_type.message}
+                  {errors.institute_name && (
+                    <span className="text-sm text-rose-500">
+                      {errors.institute_name.message}
                     </span>
                   )}
                 </div>
-              )}
 
+                <div>
+                  <Label className="text-sm">Contact person&apos;s name</Label>
+                  <Input
+                    {...register("institute_contact_name", {
+                      required: "required*",
+                    })}
+                    placeholder="Enter institute name"
+                    className="rounded-lg bg-gray-100"
+                  />
+                  {errors.institute_contact_name && (
+                    <span className="text-sm text-rose-500">
+                      {errors.institute_contact_name.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-2">
               {/* fullname */}
               <div>
-                <Label htmlFor="fullname">Fullname</Label>
+                <Label className="text-sm">Fullname</Label>
                 <Input
                   type="text"
-                  placeholder="Fullname"
                   {...register("fullname", {
-                    required: "required",
+                    required: "required*",
                   })}
+                  placeholder="Enter Your Fullname"
+                  className="rounded-lg bg-gray-100"
                 />
                 {errors.fullname && (
-                  <span className="text-red-600">
+                  <span className="text-sm text-rose-500">
                     {errors.fullname.message}
                   </span>
                 )}
               </div>
-
-              {/* mobile number */}
-              <div>
-                <Label htmlFor="mobile_number">Mobile number</Label>
-                <Input
-                  {...register("mobile_number", {
-                    required: "required",
-                  })}
-                  placeholder="Enter mobile number"
+              {/* gender */}
+              <div className="flex flex-col justify-start p-1">
+                <Label className="text-sm">Gender</Label>
+                <Controller
+                  control={control}
+                  name="gender"
+                  rules={{ required: "required*" }}
+                  render={({ field }) => (
+                    <ShadcnSelect
+                      field={field}
+                      setValue={setValue}
+                      name={"gender"}
+                      placeholder="Gender"
+                      options={[
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                      ]}
+                      width={"min-w-full"}
+                    />
+                  )}
                 />
-                {errors.mobile_number && (
-                  <span className="text-red-600">
-                    {errors.mobile_number.message}
-                  </span>
-                )}
-              </div>
-
-              {/* email */}
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  type="text"
-                  placeholder="Email"
-                  {...register("email", {
-                    required: "required",
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: "Entered value does not match email format",
-                    },
-                  })}
-                />
-                {errors.email && (
-                  <span className="text-red-600">{errors.email.message}</span>
-                )}
-              </div>
-
-              {/* username */}
-              <div>
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  type="text"
-                  placeholder="Username"
-                  {...register("username", {
-                    required: "required",
-                  })}
-                />
-                {errors.username && (
-                  <span className="text-red-600">
-                    {errors.username.message}
-                  </span>
-                )}
-              </div>
-
-              {/* passwords */}
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    type={showPasswords.password ? "text" : "password"}
-                    placeholder="Password"
-                    {...register("password", {
-                      required: "required",
-                    })}
-                  />
-                  <div
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                    onClick={() =>
-                      setShowPasswords((prev) => ({
-                        ...prev,
-                        password: !prev.password,
-                      }))
-                    }
-                  >
-                    <FaRegEye />
-                  </div>
-                </div>
-                {errors.password && (
-                  <span className="text-red-600">
-                    {errors.password.message}
-                  </span>
-                )}
-              </div>
-
-              {/* confirm password */}
-              <div className="relative">
-                <Label htmlFor="confirm_password">Confirm password</Label>
-                <div className="relative">
-                  <Input
-                    type={showPasswords.cpassword ? "text" : "password"}
-                    placeholder="Confirm password"
-                    {...register("confirm_password", {
-                      required: "required",
-                      validate: (val) => {
-                        if (watch("password") != val) {
-                          return "Your passwords do no match";
-                        }
-                      },
-                    })}
-                  />
-                  <div
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                    onClick={() =>
-                      setShowPasswords((prev) => ({
-                        ...prev,
-                        cpassword: !showPasswords.cpassword,
-                      }))
-                    }
-                  >
-                    <FaRegEye />
-                  </div>
-                </div>
-                {errors.confirm_password && (
-                  <span className="text-red-600">
-                    {errors.confirm_password.message}
+                {errors.gender && (
+                  <span className="text-sm text-rose-500">
+                    {errors.gender.message}
                   </span>
                 )}
               </div>
             </div>
+
+            {/* email */}
+            <div>
+              <Label className="text-sm">Email</Label>
+              <Input
+                type="text"
+                {...register("email", {
+                  required: "required*",
+                })}
+                placeholder="Enter Your email"
+                className="rounded-lg bg-gray-100"
+              />
+              {errors.email && (
+                <span className="text-sm text-rose-500">
+                  {errors.email.message}
+                </span>
+              )}
+            </div>
+
+            {/* phone */}
+            <div>
+              <Label>Phone</Label>
+              <Controller
+                control={control}
+                name="mobile_number"
+                rules={{
+                  required: "required*",
+                  validate: (value) =>
+                    isValidPhoneNumber(value) || "Invalid phone number",
+                }}
+                render={({ field }) => (
+                  <PhoneInputWithCountrySelect
+                    placeholder="Enter phone number"
+                    value={field.value}
+                    onChange={field.onChange}
+                    defaultCountry="IN"
+                  />
+                )}
+              />
+
+              {errors.mobile_number && (
+                <span className="text-red-500">
+                  {errors.mobile_number.message}
+                </span>
+              )}
+            </div>
+
+            {/* main category you teach */}
+            <div className="flex flex-col justify-center">
+              <Label className="text-sm">Category you teach</Label>
+              <Controller
+                control={control}
+                name="sub_category_id"
+                rules={{ required: "required*" }}
+                render={({ field }) => (
+                  <ShadcnSelect
+                    field={field}
+                    setValue={setValue}
+                    name={"sub_category_id"}
+                    placeholder="Category"
+                    options={formattedSubCategories()}
+                    width={"min-w-full"}
+                  />
+                )}
+              />
+              {errors.sub_category_id && (
+                <span className="text-sm text-rose-500">
+                  {errors.sub_category_id.message}
+                </span>
+              )}
+            </div>
+
+            {/* location */}
+            <div>
+              <Label className="text-sm">Location</Label>
+              <Controller
+                control={control}
+                name="location"
+                rules={{ required: "required*" }}
+                render={({ field: { onChange, value } }) => (
+                  <Input ref={inputRef} value={value} />
+                )}
+              />
+              {errors.location && (
+                <span className="text-sm text-rose-500">
+                  {errors.location.message}
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* submit */}
-          <div className="text-right">
-            <Button variant={"primary"}>Create</Button>
+          <div>
+            <Button
+              className="w-full"
+              type="button"
+              onClick={() => handleSendOtp()}
+            >
+              {loading && (
+                <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
+              )}
+              Sign Up
+            </Button>
+          </div>
+
+          <div className="">
+            <P className={"text-center text-sm font-medium tracking-wide"}>
+              Already have an account?{" "}
+              <Link href={"/login"} className="text-primary">
+                Login
+              </Link>
+            </P>
           </div>
         </div>
       </div>

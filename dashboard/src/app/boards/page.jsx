@@ -59,7 +59,8 @@ export default function Categories() {
   });
 
   const updateMutation = useMutation(updateBoard, {
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log({ data });
       toast.success("Board updated.");
       queryClient.invalidateQueries({ queryKey: ["boards"] });
       closeModal();

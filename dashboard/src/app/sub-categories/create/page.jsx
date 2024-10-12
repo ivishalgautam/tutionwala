@@ -18,11 +18,13 @@ export default function Page() {
 
   const createMutation = useMutation(postSubCategory, {
     onSuccess: (data) => {
+      console.log({ data });
       toast.success("New sub category added.");
       queryClient.invalidateQueries("sub-categories");
       router.push("/sub-categories");
     },
     onError: (error) => {
+      console.log({ error });
       toast.error(error.message ?? "Error creating sub category");
     },
   });

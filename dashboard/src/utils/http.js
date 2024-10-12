@@ -83,12 +83,7 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
   }
 
   async function post(path, payload) {
-    return client
-      .post(path, payload)
-      .then((response) => {
-        return response.data;
-      })
-      .catch((error) => error);
+    return client.post(path, payload).then((response) => response.data);
   }
 
   async function put(path, payload) {

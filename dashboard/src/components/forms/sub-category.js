@@ -81,9 +81,8 @@ export function SubCategoryForm({
       })),
     [isCategoryLoading, subCategoryId],
   );
-
+  console.log({ image });
   const onSubmit = (data) => {
-    console.log(data.fields);
     const payload = {
       name: data?.name,
       category_id: data?.category_id,
@@ -129,7 +128,7 @@ export function SubCategoryForm({
           },
         },
       );
-
+      console.log({ data });
       setImage(data[0]);
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -324,6 +323,7 @@ export function SubCategoryForm({
                 multiple
                 onChange={handleFileChange}
                 disabled={type === "view" || type === "delete"}
+                accept="image/jpeg, image/jpg, image/png, image/webp"
               />
               {errors.image && (
                 <span className="text-sm text-red-600">
