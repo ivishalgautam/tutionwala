@@ -25,7 +25,7 @@ export default function Page() {
 
       {/* main */}
       <div className="container py-10 pb-20">
-        <div className="mx-auto grid max-w-5xl gap-4 rounded-lg bg-white p-8 md:grid-cols-2">
+        <div className="mx-auto grid max-w-5xl gap-8 rounded-lg bg-white p-8 md:grid-cols-2">
           <div className="grid grid-rows-3 gap-3">
             <div className="order-2 row-span-2 overflow-hidden rounded-lg shadow-lg md:order-1">
               <MapIFrame />
