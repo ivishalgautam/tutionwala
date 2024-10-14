@@ -50,6 +50,12 @@ export default function NavbarComponent() {
             <NavbarItem active={pathname === "/tutors"}>
               <Link href={"/tutors"}>Tutors</Link>
             </NavbarItem>
+            <NavbarItem active={pathname === "/about"}>
+              <Link href={"/about"}>About Us</Link>
+            </NavbarItem>
+            <NavbarItem active={pathname === "/contact"}>
+              <Link href={"/contact"}>Contact Us</Link>
+            </NavbarItem>
           </NavbarList>
         )}
         {isUserLoading ? (
@@ -122,6 +128,12 @@ export default function NavbarComponent() {
                   </NavbarItem>
                   <NavbarItem active={pathname === "/tutors"}>
                     <Link href={"/tutors"}>Tutors</Link>
+                  </NavbarItem>
+                  <NavbarItem active={pathname === "/about"}>
+                    <Link href={"/about"}>About Us</Link>
+                  </NavbarItem>
+                  <NavbarItem active={pathname === "/contact"}>
+                    <Link href={"/contact"}>Contact Us</Link>
                   </NavbarItem>
                 </>
               )}
