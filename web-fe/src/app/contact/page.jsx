@@ -34,7 +34,7 @@ export default function Page() {
               <MeetUs />
             </div>
           </div>
-          <div className="pt-10 md:pt-0">
+          <div className="rounded-lg bg-primary p-10 py-6 md:-mt-12">
             <ContactForm />
           </div>
         </div>

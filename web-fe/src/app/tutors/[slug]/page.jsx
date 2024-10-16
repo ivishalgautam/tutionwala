@@ -5,6 +5,7 @@ import { H1, H3, H4, Muted, P } from "@/components/ui/typography";
 import { endpoints } from "@/utils/endpoints";
 import { Rating } from "@smastrom/react-rating";
 import axios from "axios";
+import Image from "next/image";
 import React from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -20,17 +21,20 @@ export default async function Page({ params: { slug: tutorId } }) {
     avg_ratings,
     total_reviews,
   } = await fetchTutor(tutorId);
+
   return (
     <div className="">
       <div className="container my-4 space-y-8 rounded-xl bg-white p-4 lg:p-8">
         <div className="flex items-start justify-start gap-4">
-          <figure>
-            <NextImage
+          <figure className="h-[150px] w-[150px]">
+            <Image
               src={tutor.profile_picture}
               width={150}
               height={150}
               alt={tutor.fullname}
-              className={"rounded-lg shadow-lg"}
+              className={
+                "h-full w-full rounded-lg object-cover object-center shadow-lg"
+              }
             />
           </figure>
           <div className="space-y-1">
@@ -53,12 +57,19 @@ export default async function Page({ params: { slug: tutorId } }) {
             </div>
           </div>
         </div>
-        <div>
+        <div className="space-y-10">
           <H3 className={"border-b-2 border-primary/10 py-2"}>
             About {tutor.fullname}
           </H3>
-          <video src={tutor.intro_video} controls></video>
-          <Muted className={"!mt-2"}>{tutor.experience}</Muted>
+          {tutor.intro_video && (
+            <video
+              src={tutor.intro_video}
+              controls
+              className="mx-auto w-96 rounded-lg"
+              muted
+            ></video>
+          )}
+          <Muted className={"!mt-10"}>{tutor.experience}</Muted>
         </div>
       </div>
     </div>
