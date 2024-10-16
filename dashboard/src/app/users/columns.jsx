@@ -111,6 +111,7 @@ export const columns = (handleDelete, handleUserStatus, handleNavigate) => [
     enableHiding: false,
     cell: ({ row }) => {
       const id = row.original.id;
+      const role = row.original.role;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -121,15 +122,8 @@ export const columns = (handleDelete, handleUserStatus, handleNavigate) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => handleNavigate(`/users/${id}/view`)}
-            >
-              View
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => handleNavigate(`/users/${id}/edit`)}
-            >
+            <DropdownMenuItem onClick={() => handleNavigate(`/users/${id}`)}>
               Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />

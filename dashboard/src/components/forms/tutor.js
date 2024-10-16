@@ -49,7 +49,7 @@ const searchCategory = async (q) => {
   }));
   return filteredData;
 };
-export default function TutorForm() {
+export default function TutorForm({ type, handleUpdate, tutorId }) {
   const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
   const [loading, setLoading] = useState(false);
@@ -69,6 +69,18 @@ export default function TutorForm() {
     queryFn: () => searchCategory(subCatInputVal),
     queryKey: [`search-${subCatInputVal}`, subCatInputVal],
     enabled: !!subCatInputVal,
+  });
+
+  const { data: tutor } = useQuery({
+    queryFn: async () => {
+      const { record } = await http().get(
+        `${endpoints.users.getAll}/${tutorId}`,
+      );
+      console.log({ record });
+      return record;
+    },
+    queryKey: [`tutor-${tutorId}`],
+    enabled: !!tutorId && !!(type === "edit"),
   });
 
   const handleInputChange = useCallback((inputValue) => {
@@ -133,7 +145,17 @@ export default function TutorForm() {
       role: data.role,
       location: data.location,
     };
-    await signUp(payload);
+    if (type === "edit") {
+      handleUpdate({
+        fullname: data.fullname,
+        email: data.email,
+        gender: data.gender,
+        country_code: countryCallingCode,
+        mobile_number: nationalNumber,
+      });
+    } else {
+      await signUp(payload);
+    }
   };
 
   useEffect(() => {
@@ -142,51 +164,62 @@ export default function TutorForm() {
     }
   }, [selectedPlace]);
 
+  useEffect(() => {
+    if (tutor) {
+      setValue("fullname", tutor.fullname);
+      setValue("gender", tutor.gender);
+      setValue("email", tutor.email);
+      setValue("mobile_number", `+${tutor.country_code}${tutor.mobile_number}`);
+    }
+  }, [tutor]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center justify-start">
         <div className="w-full space-y-6">
-          <H4>Create Tutor</H4>
+          <H4>{type === "edit" ? "Edit Tutor" : "Create Tutor"}</H4>
           <div className="space-y-2">
-            <div>
-              <div className="flex items-center justify-center gap-4">
-                {[
-                  { value: "individual", label: "Individual" },
-                  { value: "institute", label: "Institute" },
-                ].map((type) => (
-                  <div
-                    key={type.value}
-                    className={cn("flex-1 rounded-lg border transition-all", {
-                      "border-primary bg-primary/10":
-                        type.value === watch("type"),
-                    })}
-                  >
-                    <Label
-                      className={
-                        "relative flex h-full w-full cursor-pointer items-center justify-start p-3"
-                      }
+            {type !== "edit" && (
+              <div>
+                <div className="flex items-center justify-center gap-4">
+                  {[
+                    { value: "individual", label: "Individual" },
+                    { value: "institute", label: "Institute" },
+                  ].map((type) => (
+                    <div
+                      key={type.value}
+                      className={cn("flex-1 rounded-lg border transition-all", {
+                        "border-primary bg-primary/10":
+                          type.value === watch("type"),
+                      })}
                     >
-                      <Input
-                        type="radio"
-                        className="size-4"
-                        {...register("type", {
-                          required: "Please select a type*",
-                        })}
-                        value={type.value}
-                      />
-                      <span className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center text-sm">
-                        {type.label}
-                      </span>
-                    </Label>
-                  </div>
-                ))}
+                      <Label
+                        className={
+                          "relative flex h-full w-full cursor-pointer items-center justify-start p-3"
+                        }
+                      >
+                        <Input
+                          type="radio"
+                          className="size-4"
+                          {...register("type", {
+                            required: "Please select a type*",
+                          })}
+                          value={type.value}
+                        />
+                        <span className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center text-sm">
+                          {type.label}
+                        </span>
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                {errors.type && (
+                  <span className="text-sm text-rose-500">
+                    {errors.type?.message}
+                  </span>
+                )}
               </div>
-              {errors.type && (
-                <span className="text-sm text-rose-500">
-                  {errors.type?.message}
-                </span>
-              )}
-            </div>
+            )}
 
             {/* institute */}
             {watch("type") === "institute" && (
@@ -322,48 +355,52 @@ export default function TutorForm() {
             </div>
 
             {/* main category */}
-            <div className="flex flex-col justify-center md:col-span-1">
-              <Label className="text-sm">Category</Label>
-              <Controller
-                control={control}
-                name="sub_category_id"
-                rules={{ required: "required*" }}
-                render={({ field }) => (
-                  <ReactSelect
-                    loadOptions={handleInputChange}
-                    placeholder={"Search..."}
-                    isLoading={isFetching && isLoading}
-                    onChange={field.onChange}
-                    isMulti={false}
-                    value={field.value}
-                    menuPortalTarget={document.body}
-                  />
+            {type !== "edit" && (
+              <div className="flex flex-col justify-center md:col-span-1">
+                <Label className="text-sm">Category</Label>
+                <Controller
+                  control={control}
+                  name="sub_category_id"
+                  rules={{ required: "required*" }}
+                  render={({ field }) => (
+                    <ReactSelect
+                      loadOptions={handleInputChange}
+                      placeholder={"Search..."}
+                      isLoading={isFetching && isLoading}
+                      onChange={field.onChange}
+                      isMulti={false}
+                      value={field.value}
+                      menuPortalTarget={document.body}
+                    />
+                  )}
+                />
+                {errors.sub_category_id && (
+                  <span className="text-sm text-rose-500">
+                    {errors.sub_category_id.message}
+                  </span>
                 )}
-              />
-              {errors.sub_category_id && (
-                <span className="text-sm text-rose-500">
-                  {errors.sub_category_id.message}
-                </span>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* location */}
-            <div>
-              <Label className="text-sm">Location</Label>
-              <Controller
-                control={control}
-                name="location"
-                rules={{ required: "required*" }}
-                render={({ field: { onChange, value } }) => (
-                  <Input ref={inputRef} value={value} />
+            {type !== "edit" && (
+              <div>
+                <Label className="text-sm">Location</Label>
+                <Controller
+                  control={control}
+                  name="location"
+                  rules={{ required: "required*" }}
+                  render={({ field: { onChange, value } }) => (
+                    <Input ref={inputRef} value={value} />
+                  )}
+                />
+                {errors.location && (
+                  <span className="text-sm text-rose-500">
+                    {errors.location.message}
+                  </span>
                 )}
-              />
-              {errors.location && (
-                <span className="text-sm text-rose-500">
-                  {errors.location.message}
-                </span>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           <div className="text-end">
@@ -371,7 +408,7 @@ export default function TutorForm() {
               {loading && (
                 <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
               )}
-              Sign Up
+              Submit
             </Button>
           </div>
         </div>

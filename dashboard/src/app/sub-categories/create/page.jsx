@@ -20,7 +20,7 @@ export default function Page() {
     onSuccess: (data) => {
       console.log({ data });
       toast.success("New sub category added.");
-      queryClient.invalidateQueries("sub-categories");
+      queryClient.invalidateQueries(["sub-categories"]);
       router.push("/sub-categories");
     },
     onError: (error) => {

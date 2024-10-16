@@ -16,6 +16,12 @@ export const ALLROUTES = [
   },
   {
     title: "Users",
+    path: "/users/[id]",
+    roles: [ROLES.ADMIN],
+    icon: <Users size={size} />,
+  },
+  {
+    title: "Users",
     path: "/users",
     roles: [ROLES.ADMIN],
     icon: <Users size={size} />,
