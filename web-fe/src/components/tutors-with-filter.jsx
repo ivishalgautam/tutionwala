@@ -217,16 +217,16 @@ export default function TutorsWithFilter() {
 
 export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
   const tabs = [
-    {
-      name: "Address?",
-      comp: <FilterAddress searchParams={searchParams} />,
-      className: "block lg:hidden",
-    },
-    {
-      name: "Category?",
-      comp: <SubCategorySelect searchParams={searchParams} />,
-      className: "block lg:hidden",
-    },
+    // {
+    //   name: "Address?",
+    //   comp: <FilterAddress searchParams={searchParams} />,
+    //   className: "block lg:hidden",
+    // },
+    // {
+    //   name: "Category?",
+    //   comp: <SubCategorySelect searchParams={searchParams} />,
+    //   className: "block lg:hidden",
+    // },
     {
       name: "Languages?",
       comp: <LanguageSelect searchParams={searchParams} />,
