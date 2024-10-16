@@ -10,9 +10,9 @@ import Image from "next/image";
 
 export default function TutorCard({ tutor, ratings, totalReviews }) {
   return (
-    <div className="w-full space-y-2 rounded border border-gray-200 bg-white p-4">
+    <div className="w-full max-w-full space-y-2 rounded-lg border border-gray-200 bg-white p-4">
       <div className="flex items-start justify-start gap-4">
-        <figure className="size-32 flex-shrink-0">
+        <figure className="size-24 flex-shrink-0">
           <Image
             src={tutor.profile_picture}
             width={100}
@@ -21,7 +21,7 @@ export default function TutorCard({ tutor, ratings, totalReviews }) {
             alt={tutor.fullname}
           />
         </figure>
-        <div className="space-y-2">
+        <div className="flex-grow space-y-2">
           <div className="flex items-center justify-between">
             <Link href={`/tutors/${tutor.tutor_id}`}>
               <H4 className={"transition-colors hover:text-primary"}>
@@ -32,7 +32,7 @@ export default function TutorCard({ tutor, ratings, totalReviews }) {
               <Review rating={ratings} reviews={totalReviews} />
             </div>
           </div>
-          <Muted className={"line-clamp-4"}>{tutor.experience}</Muted>
+          <Muted className={"line-clamp-4 break-all"}>{tutor.experience}</Muted>
           <div className="grid grid-cols-2">
             {tutor.languages?.length && (
               <div className="space-y-1">

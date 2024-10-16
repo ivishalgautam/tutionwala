@@ -147,3 +147,8 @@
 .PhoneInputInput {
   @apply outline-none;
 }
+
+.css-13cymwt-control,
+.css-13cymwt-control:focus-visible {
+  @apply !border-none !outline-none;
+}
