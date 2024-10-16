@@ -87,7 +87,7 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
   return (
     <ReactSelect
       loadOptions={handleInputChange}
-      placeholder={"Select Category..."}
+      placeholder={"Search Category..."}
       isLoading={isFetching && isLoading}
       onChange={setSelectedOption}
       isMulti={isMulti}
