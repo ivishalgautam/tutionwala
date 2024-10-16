@@ -6,11 +6,13 @@ import { endpoints } from "@/utils/endpoints";
 import { Rating } from "@smastrom/react-rating";
 import axios from "axios";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import React from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 async function fetchTutor(id) {
   const { data } = await axios.get(`${baseUrl}${endpoints.tutor.getAll}/${id}`);
+
   return data.data;
 }
 
