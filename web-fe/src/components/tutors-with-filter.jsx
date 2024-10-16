@@ -184,7 +184,7 @@ export default function TutorsWithFilter() {
             <FilterAddress searchParams={searchParams} />
           </div>
 
-          <div className="flex flex-1 items-center justify-start pt-2 md:pl-4 md:pt-0">
+          <div className="flex flex-1 items-center justify-start gap-1.5 pt-2 md:pl-4 md:pt-0">
             <span className="flex-grow-0 text-gray-500">
               <Layers size={20} />
             </span>
