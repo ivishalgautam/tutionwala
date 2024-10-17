@@ -64,7 +64,7 @@ export default function StudentReviewCards() {
       const { data } = await http().get(
         `${endpoints.reviews.getAll}?page=1&limit=20&minRating=4`,
       );
-      return data?.length >= 20 ? data : reviews;
+      return data?.length >= 10 ? data : reviews;
       return data;
     },
   });
