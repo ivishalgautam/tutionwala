@@ -55,34 +55,35 @@ export default function TutorsWithFilter() {
   const page = Number(searchParams.get("page") ?? 1);
   const limit = Number(searchParams.get("limit") ?? 10);
   const router = useRouter();
-  const allowedFilterKeys = [
-    "category",
-    "language",
-    "gender",
-    "demo",
-    "rating",
-    "addr",
-  ];
 
-  const arrayFilterKeys = useMemo(() => ["category", "language", "rating"], []);
+  // show filtered data
+  // const allowedFilterKeys = [
+  //   "category",
+  //   "language",
+  //   "gender",
+  //   "demo",
+  //   "rating",
+  //   "addr",
+  // ];
 
-  const filters = useCallback(() => {
-    const obj = {};
+  // const arrayFilterKeys = useMemo(() => ["category", "language", "rating"], []);
+  // const filters = useCallback(() => {
+  //   const obj = {};
 
-    for (const [key, value] of searchParams.entries()) {
-      if (!allowedFilterKeys.includes(key)) continue;
+  //   for (const [key, value] of searchParams.entries()) {
+  //     if (!allowedFilterKeys.includes(key)) continue;
 
-      if (arrayFilterKeys.includes(key)) {
-        obj[key] = obj[key]
-          ? [...obj[key], ...value.split(" ")]
-          : value.split(" ");
-      } else {
-        obj[key] = value;
-      }
-    }
+  //     if (arrayFilterKeys.includes(key)) {
+  //       obj[key] = obj[key]
+  //         ? [...obj[key], ...value.split(" ")]
+  //         : value.split(" ");
+  //     } else {
+  //       obj[key] = value;
+  //     }
+  //   }
 
-    return obj;
-  }, [searchParams, router]);
+  //   return obj;
+  // }, [searchParams, router]);
 
   // const selectedFilters = filters();
 

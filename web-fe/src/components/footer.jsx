@@ -111,7 +111,7 @@ export const FooterThree = () => {
     <div className="mt-8 items-center justify-between border-t border-black/10 py-6 sm:flex">
       <div className="mt-4 sm:mt-0">
         <span className="text-sm font-medium">
-          &copy; {new Date().getFullYear()} TUTIONWALA.IN. All Rights Reserved.
+          &copy; {new Date().getFullYear()} TUTIONWALA.COM. All Rights Reserved.
         </span>
       </div>
       <div className="mt-6 sm:mt-0">
