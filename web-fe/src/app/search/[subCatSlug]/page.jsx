@@ -31,8 +31,8 @@ import { Controller, useForm } from "react-hook-form";
 import Tutors from "@/components/tutors";
 import NextImage from "@/components/next-image";
 import "@smastrom/react-rating/style.css";
-import { useAutocomplete } from "@/hooks/useAutoComplete";
 import useMapLoader from "@/hooks/useMapLoader";
+import { useAutocomplete } from "@/hooks/useAutoComplete";
 import Image from "next/image";
 
 const fetchSubCategory = async (id) => {
@@ -51,7 +51,6 @@ const fetchTutors = async (formData, limit) => {
 export default function Page({ params: { subCatSlug } }) {
   const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
-  console.log({ inputRef, isLoaded, selectedPlace });
 
   const storedFilteration =
     typeof window !== "undefined"

@@ -7,6 +7,7 @@ export function useAutocomplete(
   const [autoComplete, setAutoComplete] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const inputRef = useRef(null);
+
   useEffect(() => {
     if (isLoaded) {
       const indiaBounds = new google.maps.LatLngBounds(
@@ -24,7 +25,7 @@ export function useAutocomplete(
       );
       setAutoComplete(gAutoComplete);
     }
-  }, [isLoaded]);
+  }, [isLoaded, componentRestrictions]);
 
   useEffect(() => {
     if (autoComplete) {

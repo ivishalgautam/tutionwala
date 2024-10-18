@@ -33,9 +33,10 @@ export default function Hero() {
             src="/images/hero.webp"
             width={500}
             height={500}
-            quality={100}
             alt="tutionwala"
             className="mx-auto w-full rounded-lg shadow-2xl sm:w-10/12 lg:w-full"
+            priority={false}
+            loading="lazy"
           />
         </div>
       </section>
