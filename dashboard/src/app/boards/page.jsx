@@ -2,7 +2,6 @@
 import Title from "@/components/Title";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import Modal from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,8 +9,12 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import Spinner from "@/components/spinner";
 import { toast } from "sonner";
-import { BoardForm } from "@/components/forms/board";
-import BoardDialog from "@/components/dialogs/board-dialog";
+import dynamic from "next/dynamic";
+
+const BoardDialog = dynamic(() => import("@/components/dialogs/board-dialog"), {
+  ssr: false,
+});
+
 //
 async function createBoard(data) {
   return http().post(`${endpoints.boards.getAll}`, data);
