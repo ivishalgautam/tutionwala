@@ -124,14 +124,16 @@ export default function Categories() {
         />
       </div>
 
-      <BoardDialog
-        type={type}
-        handleCreate={handleCreate}
-        handleUpdate={handleUpdate}
-        boardId={boardId}
-        isOpen={isModal}
-        setIsOpen={setIsModal}
-      />
+      {typeof document !== "undefined" && (
+        <BoardDialog
+          type={type}
+          handleCreate={handleCreate}
+          handleUpdate={handleUpdate}
+          boardId={boardId}
+          isOpen={isModal}
+          setIsOpen={setIsModal}
+        />
+      )}
     </div>
   );
 }

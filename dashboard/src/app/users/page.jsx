@@ -140,13 +140,15 @@ export default function Users() {
           data={data}
         />
       </div>
-      <UserDialog
-        handleUpdate={handleUpdate}
-        isOpen={isModal}
-        setIsOpen={setIsModal}
-        userId={userId}
-        type={"edit"}
-      />
+      {typeof document !== "undefined" && (
+        <UserDialog
+          handleUpdate={handleUpdate}
+          isOpen={isModal}
+          setIsOpen={setIsModal}
+          userId={userId}
+          type={"edit"}
+        />
+      )}
     </div>
   );
 }
