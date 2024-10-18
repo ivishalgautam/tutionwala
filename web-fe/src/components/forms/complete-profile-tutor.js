@@ -45,6 +45,9 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 import { Checkbox } from "../ui/checkbox";
 import { useRouter } from "next/navigation";
+import ShadcnSelect from "../ui/shadcn-select";
+import { languages as languageOptions } from "@/data/languages";
+import { courses } from "@/data/courses";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
@@ -349,7 +352,7 @@ export default function CompleteProfileTutor({
                     <H6>Add languages that you speak.</H6>
                   </div>
                   {/* language */}
-                  <div>
+                  <div className="space-y-2">
                     {languages.map((language, ind) => (
                       <div
                         key={ind}
@@ -357,13 +360,22 @@ export default function CompleteProfileTutor({
                       >
                         <div className="flex-1">
                           <Label>Language</Label>
-                          <Input
-                            type="text"
-                            {...register(`languages.${ind}.name`, {
-                              required: "required*",
-                            })}
-                            placeholder="Eg: Hindi, English"
-                          />
+                          <div className="relative">
+                            <Controller
+                              control={control}
+                              name={`languages.${ind}.name`}
+                              render={({ field }) => (
+                                <ShadcnSelect
+                                  field={field}
+                                  name={`languages.${ind}.name`}
+                                  options={languageOptions}
+                                  setValue={setValue}
+                                  placeholder="Language"
+                                  width="w-full"
+                                />
+                              )}
+                            />
+                          </div>
                           {errors?.languages?.[ind]?.name && (
                             <span className="text-sm text-red-500">
                               {errors?.languages[ind].name.message}
@@ -431,10 +443,22 @@ export default function CompleteProfileTutor({
                     {/* degree name */}
                     <div>
                       <Label>Name</Label>
-                      <Input
-                        {...register("degree.name", { required: "required*" })}
-                        placeholder="Enter your degree"
-                      />
+                      <div>
+                        <Controller
+                          control={control}
+                          name={`degree.name`}
+                          render={({ field }) => (
+                            <ShadcnSelect
+                              field={field}
+                              name={`degree.name`}
+                              options={courses}
+                              setValue={setValue}
+                              placeholder="Course"
+                              width="w-full"
+                            />
+                          )}
+                        />
+                      </div>
                       {errors.degree?.name && (
                         <span className="text-sm text-red-500">
                           {errors.degree?.name.message}

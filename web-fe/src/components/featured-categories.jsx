@@ -2,11 +2,8 @@
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "./loading";
-import NextImage from "./next-image";
-import { H2, H5, Large, Muted, Small } from "./ui/typography";
+import { H2, Muted, Small } from "./ui/typography";
 import useEmblaCarousel from "embla-carousel-react";
-import { DotButton, useDotButton } from "./carousel/EmblaCarouselDotButtons";
 import {
   NextButton,
   PrevButton,
@@ -25,9 +22,6 @@ async function fetchFeaturedCategories() {
 export default function FeaturedCategories() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
-
   const {
     prevBtnDisabled,
     nextBtnDisabled,
@@ -41,7 +35,7 @@ export default function FeaturedCategories() {
     keepPreviousData: true,
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Skeloton />;
   if (isError) return error?.message ?? "Error";
 
   return (
@@ -84,6 +78,34 @@ export default function FeaturedCategories() {
               onClick={onNextButtonClick}
               disabled={nextBtnDisabled}
             />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Skeloton() {
+  return (
+    <div class="animate-pulse bg-gray-200 p-4 md:p-10 lg:p-16">
+      <div>
+        <div class="mx-auto h-4 w-1/4 rounded bg-gray-300"></div>
+        <div class="mx-auto mt-2 h-6 w-1/2 rounded bg-gray-300"></div>
+        <div class="mx-auto mt-2 h-4 w-3/4 rounded bg-gray-300"></div>
+      </div>
+      <section class="mt-8">
+        <div>
+          <div class="flex space-x-4">
+            <div class="h-36 w-36 rounded bg-gray-300"></div>
+            <div class="h-36 w-36 rounded bg-gray-300"></div>
+            <div class="h-36 w-36 rounded bg-gray-300"></div>
+            <div class="h-36 w-36 rounded bg-gray-300"></div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center justify-end">
+          <div class="flex items-center justify-end gap-2">
+            <div class="mr-1 h-8 w-8 rounded bg-gray-300"></div>
+            <div class="h-8 w-8 rounded bg-gray-300"></div>
           </div>
         </div>
       </section>

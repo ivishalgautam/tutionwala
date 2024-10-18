@@ -7,6 +7,7 @@ import { socialLinks } from "@/data/static";
 import Loading from "./loading";
 import { Courses } from "./courses";
 import config from "@/config";
+import Link from "next/link";
 
 export const Footer = () => {
   const {
@@ -92,15 +93,22 @@ export const FooterOne = () => {
 
 export const FooterTwo = ({ isError, error, isLoading, courses }) => {
   return (
-    <div className="space-y-2 border-t border-black/10 py-5">
-      <Large>Tutors by subjects</Large>
-      <div>
-        {isError && (error?.message ?? "error")}
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <Courses {...{ courses, totalSlices: 5, sliceCount: 5 }} />
-        )}
+    <div className="grid grid-cols-12">
+      <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-5 md:col-span-4 lg:col-span-2">
+        <Large>Useful Links</Large>
+        <Navigation />
+      </div>
+
+      <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-7 md:col-span-8 lg:col-span-10">
+        <Large>Tutors By Subjects</Large>
+        <div>
+          {isError && (error?.message ?? "error")}
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <Courses {...{ courses, totalSlices: 5, sliceCount: 5 }} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -139,3 +147,37 @@ export const FooterThree = () => {
     </div>
   );
 };
+
+function Navigation() {
+  return (
+    <ul>
+      {[
+        {
+          href: "/",
+          label: "Home",
+        },
+        {
+          href: "/tutors",
+          label: "Tutors",
+        },
+        {
+          href: "/about",
+          label: "About",
+        },
+        {
+          href: "/contact",
+          label: "Contact Us",
+        },
+      ].map(({ href, label }) => (
+        <li key={label}>
+          <Link
+            href={href}
+            className="text-sm font-medium capitalize underline-offset-2 transition-colors hover:underline"
+          >
+            {label}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}

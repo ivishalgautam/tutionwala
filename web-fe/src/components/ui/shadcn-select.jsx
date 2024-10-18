@@ -38,7 +38,7 @@ export default function ShadcnSelect({
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("max-w-[200px] bg-white p-0", width)}>
+      <PopoverContent className={cn("w-full bg-white p-0", width)}>
         <Command>
           {options.length > 5 && (
             <CommandInput

@@ -35,6 +35,7 @@ import {
 } from "./ui/sheet";
 import { Button, buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import ClassConductSelect from "./select/class-conduct-select";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -246,6 +247,11 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
     {
       name: "Demo Classes?",
       comp: <DemoClassSelect searchParams={searchParams} />,
+      className: "",
+    },
+    {
+      name: "Class conduct mode?",
+      comp: <ClassConductSelect searchParams={searchParams} />,
       className: "",
     },
   ];
