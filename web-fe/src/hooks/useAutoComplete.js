@@ -20,12 +20,12 @@ export function useAutocomplete(
         {
           bounds: indiaBounds,
           fields: ["formatted_address", "geometry", "name"],
-          componentRestrictions,
+          componentRestrictions: { country: ["in"] },
         },
       );
       setAutoComplete(gAutoComplete);
     }
-  }, [isLoaded, componentRestrictions]);
+  }, [isLoaded]);
 
   useEffect(() => {
     if (autoComplete) {
