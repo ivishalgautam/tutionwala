@@ -1,5 +1,11 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { BoardForm } from "../forms/board";
 
 export default function BoardDialog({
@@ -15,7 +21,10 @@ export default function BoardDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="sr-only">User form</DialogTitle>
+          <DialogTitle className="sr-only">Board form</DialogTitle>
+          <DialogDescription className="sr-only">
+            This is board form
+          </DialogDescription>
         </DialogHeader>
         <BoardForm
           handleUpdate={handleUpdate}

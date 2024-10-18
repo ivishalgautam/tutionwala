@@ -1,5 +1,11 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import UserForm from "../forms/user";
 
 export default function UserDialog({
@@ -16,6 +22,9 @@ export default function UserDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="sr-only">User form</DialogTitle>
+          <DialogDescription className="sr-only">
+            This is user form
+          </DialogDescription>
         </DialogHeader>
         <UserForm
           handleUpdate={handleUpdate}
