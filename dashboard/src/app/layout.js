@@ -24,7 +24,10 @@ const poppins = Poppins({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} bg-gray-200`}>
+      <body
+        className={`${poppins.className} bg-gray-200`}
+        suppressHydrationWarning={true}
+      >
         <Layout>{children}</Layout>
       </body>
     </html>
