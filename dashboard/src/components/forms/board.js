@@ -119,14 +119,14 @@ export function BoardForm({ type, handleCreate, handleUpdate, boardId }) {
             </Button>
           </div>
 
-          <div className="flex flex-wrap items-center justify-start gap-2">
+          <div className="flex max-h-72 flex-wrap items-center justify-start gap-2 overflow-y-auto">
             {watch("subjects")?.map((subject, ind) => (
               <div
                 key={subject}
                 onClick={() => deleteSubject(ind)}
                 className="flex cursor-pointer items-center justify-center gap-1 rounded-md border px-2 py-1 text-sm"
               >
-                <span>{subject}</span>
+                <span className="break-all">{subject}</span>
                 <span>
                   <X size={15} />
                 </span>

@@ -11,6 +11,7 @@ import { endpoints } from "@/utils/endpoints";
 import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import { BoardForm } from "@/components/forms/board";
+import BoardDialog from "@/components/dialogs/board-dialog";
 //
 async function createBoard(data) {
   return http().post(`${endpoints.boards.getAll}`, data);
@@ -123,14 +124,14 @@ export default function Categories() {
         />
       </div>
 
-      <Modal isOpen={isModal} onClose={closeModal} className={"w-96"}>
-        <BoardForm
-          type={type}
-          handleCreate={handleCreate}
-          handleUpdate={handleUpdate}
-          boardId={boardId}
-        />
-      </Modal>
+      <BoardDialog
+        type={type}
+        handleCreate={handleCreate}
+        handleUpdate={handleUpdate}
+        boardId={boardId}
+        isOpen={isModal}
+        setIsOpen={setIsModal}
+      />
     </div>
   );
 }

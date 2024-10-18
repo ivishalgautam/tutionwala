@@ -1,23 +1,15 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { H1, H2, H3, H4, H5, P } from "../ui/typography";
+import React, { useEffect, useState } from "react";
+import { H4 } from "../ui/typography";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import ShadcnSelect from "../ui/shadcn-select";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useAutocomplete } from "@/hooks/useAutoComplete";
-import useMapLoader from "@/hooks/useMapLoader";
-import ReactSelect from "react-select/async";
 
 import PhoneInputWithCountrySelect, {
   isValidPhoneNumber,
@@ -25,7 +17,6 @@ import PhoneInputWithCountrySelect, {
 } from "react-phone-number-input";
 
 import "react-phone-number-input/style.css";
-import { useRef } from "react";
 import Loader from "../loader";
 
 const defaultValues = {
@@ -37,12 +28,10 @@ const defaultValues = {
 };
 
 export default function UserForm({ type, handleUpdate, userId }) {
-  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     control,
     setValue,
   } = useForm({ defaultValues });
@@ -52,7 +41,6 @@ export default function UserForm({ type, handleUpdate, userId }) {
       const { record } = await http().get(
         `${endpoints.users.getAll}/${userId}`,
       );
-      console.log({ record });
       return record;
     },
     queryKey: [`tutor-${userId}`],
@@ -73,17 +61,9 @@ export default function UserForm({ type, handleUpdate, userId }) {
     };
 
     if (type === "edit") {
-      setLoading(true);
-      try {
-        handleUpdate(payload);
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        setLoading(false);
-      }
+      handleUpdate(payload);
     }
   };
-
   useEffect(() => {
     if (data) {
       setValue("fullname", data.fullname);
@@ -158,6 +138,10 @@ export default function UserForm({ type, handleUpdate, userId }) {
                   type="text"
                   {...register("email", {
                     required: "required*",
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: "Entered value does not match email format",
+                    },
                   })}
                   placeholder="Enter Your email"
                   className="rounded-lg bg-gray-100"
@@ -200,12 +184,7 @@ export default function UserForm({ type, handleUpdate, userId }) {
           </div>
 
           <div className="text-end">
-            <Button className="w-full sm:w-auto">
-              {loading && (
-                <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
-              )}
-              Submit
-            </Button>
+            <Button className="w-full sm:w-auto">Submit</Button>
           </div>
         </div>
       </div>

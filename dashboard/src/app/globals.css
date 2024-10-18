@@ -9,12 +9,12 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply rounded-full bg-gray-100;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary;
+  @apply rounded-full bg-primary;
 }
 
 /* Handle on hover */

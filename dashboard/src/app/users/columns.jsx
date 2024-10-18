@@ -18,7 +18,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export const columns = (handleDelete, handleUserStatus, handleNavigate) => [
+export const columns = (
+  handleDelete,
+  handleUserStatus,
+  setUserId,
+  openModal,
+) => [
   {
     accessorKey: "fullname",
     header: ({ column }) => {
@@ -123,7 +128,12 @@ export const columns = (handleDelete, handleUserStatus, handleNavigate) => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleNavigate(`/users/${id}`)}>
+            <DropdownMenuItem
+              onClick={() => {
+                setUserId(id);
+                openModal();
+              }}
+            >
               Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />

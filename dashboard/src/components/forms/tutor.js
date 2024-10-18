@@ -111,11 +111,7 @@ export default function TutorForm({ type, handleUpdate, tutorId }) {
         `${endpoints.users.getAll}/tutor`,
         data,
       );
-      toast.success(response.message ?? "Signed up succesfully.");
-      localStorage.setItem("user", JSON.stringify(response.user_data));
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("refreshToken", response.refresh_token);
-      router.replace("/complete-profile/tutor");
+      toast.success(response.message ?? "Created.");
     } catch (error) {
       toast.error(
         error?.response?.data?.message ??
@@ -141,10 +137,11 @@ export default function TutorForm({ type, handleUpdate, tutorId }) {
       country_code: countryCallingCode,
       mobile_number: nationalNumber,
       gender: data.gender,
-      sub_categories: data.sub_category_id,
+      sub_categories: data.sub_category_id.value,
       role: data.role,
       location: data.location,
     };
+
     if (type === "edit") {
       handleUpdate({
         fullname: data.fullname,

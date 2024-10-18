@@ -1,7 +1,5 @@
 "use client";
 import Title from "@/components/Title";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import Spinner from "@/components/spinner";
 import { useState } from "react";
 import { DataTable } from "./data-table";
@@ -11,16 +9,17 @@ import http from "@/utils/http";
 import { endpoints } from "../../utils/endpoints.js";
 import { toast } from "sonner";
 import { isObject } from "@/utils/object";
-import { useRouter } from "next/navigation.js";
+import { useRouter } from "next/navigation";
+import UserDialog from "@/components/dialogs/user-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsHorizontalIcon, DotsVerticalIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
 
 async function deleteCustomer(data) {
   return http().delete(`${endpoints.users.getAll}/${data.id}`);
@@ -32,19 +31,15 @@ const fetchUsers = async () => {
 };
 
 export default function Users() {
+  const [isModal, setIsModal] = useState(false);
+  const [userId, setUserId] = useState("");
   const router = useRouter();
-
-  const [customerId, setCustomerId] = useState(null);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users"],
     queryFn: fetchUsers,
   });
-
-  function handleNavigate(href) {
-    router.push(href);
-  }
 
   const deleteMutation = useMutation(deleteCustomer, {
     onSuccess: () => {
@@ -79,6 +74,29 @@ export default function Users() {
       console.log(error);
     }
   }
+
+  const updateMutation = useMutation({
+    mutationFn: async (data) => {
+      return await http().put(`${endpoints.users.getAll}/${userId}`, data);
+    },
+    onSuccess: (data) => {
+      toast.success("Updated");
+      queryClient.invalidateQueries(["users"]);
+      setIsModal(false);
+    },
+    onError: (error) => {
+      console.log({ error });
+      toast.error(error?.response?.data?.message ?? error?.message ?? "Error");
+    },
+  });
+
+  const handleUpdate = (data) => {
+    updateMutation.mutate(data);
+  };
+
+  const handleNavigate = (href) => {
+    router.push(href);
+  };
 
   if (isLoading) {
     return <Spinner />;
@@ -117,10 +135,19 @@ export default function Users() {
 
       <div>
         <DataTable
-          columns={columns(handleDelete, handleUserStatus, handleNavigate)}
+          columns={columns(handleDelete, handleUserStatus, setUserId, () =>
+            setIsModal(true),
+          )}
           data={data}
         />
       </div>
+      <UserDialog
+        handleUpdate={handleUpdate}
+        isOpen={isModal}
+        setIsOpen={setIsModal}
+        userId={userId}
+        type={"edit"}
+      />
     </div>
   );
 }
