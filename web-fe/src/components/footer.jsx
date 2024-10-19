@@ -20,7 +20,7 @@ export const Footer = () => {
 
   return (
     <footer className="mx-auto bg-gradient-to-br from-gradient-to to-gradient-from p-2 text-black">
-      <div className="rounded-[2rem] bg-white/80 p-4 backdrop-blur-3xl">
+      <div className="rounded-[2rem] bg-white/80 p-4">
         <div className="container py-8">
           <FooterOne />
           <FooterTwo {...{ isError, error, isLoading, courses }} />
