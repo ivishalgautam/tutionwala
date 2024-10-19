@@ -1,13 +1,14 @@
 "use client";
 import Image from "next/image";
-import { Large, Small } from "./ui/typography";
+import { H5, H6, Large, Muted, Small } from "./ui/typography";
 import { EnvelopeSimple, Phone, WhatsappLogo } from "phosphor-react";
 import useFetchFeaturedCourses from "@/hooks/useFetchFeaturedCourses";
 import { socialLinks } from "@/data/static";
 import Loading from "./loading";
-import { Courses } from "./courses";
+const Courses = dynamic(() => import("./courses").then((data) => data.Courses));
 import config from "@/config";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 export const Footer = () => {
   const {
@@ -18,11 +19,13 @@ export const Footer = () => {
   } = useFetchFeaturedCourses({ limit: 25 });
 
   return (
-    <footer className="mx-auto bg-primary px-4 py-5 text-white md:px-8">
-      <div className="container">
-        <FooterOne />
-        <FooterTwo {...{ isError, error, isLoading, courses }} />
-        <FooterThree />
+    <footer className="mx-auto bg-gradient-to-br from-gradient-to to-gradient-from p-2 text-black">
+      <div className="rounded-[2rem] bg-white/80 p-4 backdrop-blur-3xl">
+        <div className="container py-8">
+          <FooterOne />
+          <FooterTwo {...{ isError, error, isLoading, courses }} />
+          <FooterThree />
+        </div>
       </div>
     </footer>
   );
@@ -43,24 +46,20 @@ export const FooterOne = () => {
             />
           </figure>
           <div className="md:flex-1">
-            <Small className={"text-pretty"}>
+            <Muted className={"text-balance text-sm text-gray-800"}>
               We provide personalized attention from experienced educators to
               strengthen fundamentals, enhance reasoning skills, and build
               self-confidence for academic success.
-            </Small>
+            </Muted>
           </div>
           <div>
             <ul className="flex gap-3">
-              {socialLinks.map(({ icon, href }) => (
+              {socialLinks?.map(({ icon, href }) => (
                 <li
                   key={href}
-                  className="rounded-full border-2 border-white/20 text-sm font-medium transition-colors hover:border-white hover:bg-white hover:text-primary"
+                  className="text-sm text-gray-600 transition-colors hover:text-gray-900"
                 >
-                  <a
-                    href={href}
-                    target="_blank"
-                    className="block h-full w-full p-2.5"
-                  >
+                  <a href={href} target="_blank" className="">
                     {icon}
                   </a>
                 </li>
@@ -71,19 +70,19 @@ export const FooterOne = () => {
       </div>
 
       <div className="flex-1 basis-1/3 items-center justify-between space-y-3 text-sm sm:text-base md:mt-0">
-        <Large>Feel free to share your question</Large>
+        <H6>Feel free to share your question</H6>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Phone size={20} />
-            <span>{config.phone}</span>
+            <Muted>{config.phone}</Muted>
           </div>
           <div className="flex items-center gap-2">
             <EnvelopeSimple size={20} />
-            <span>{config.email}</span>
+            <Muted>{config.email}</Muted>
           </div>
           <div className="flex items-center gap-2">
             <WhatsappLogo size={20} />
-            <span>{config.phone}</span>
+            <Muted>{config.phone}</Muted>
           </div>
         </div>
       </div>
@@ -95,12 +94,12 @@ export const FooterTwo = ({ isError, error, isLoading, courses }) => {
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-5 md:col-span-4 lg:col-span-2">
-        <Large>Useful Links</Large>
+        <Muted className={"font-medium"}>Useful Links</Muted>
         <Navigation />
       </div>
 
       <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-7 md:col-span-8 lg:col-span-10">
-        <Large>Tutors By Subjects</Large>
+        <Muted className={"font-medium"}>Tutors By Subjects</Muted>
         <div>
           {isError && (error?.message ?? "error")}
           {isLoading ? (
@@ -116,10 +115,10 @@ export const FooterTwo = ({ isError, error, isLoading, courses }) => {
 
 export const FooterThree = () => {
   return (
-    <div className="mt-8 items-center justify-between border-t border-black/10 py-6 sm:flex">
+    <div className="mt-8 items-center justify-between border-t border-black/10 pt-4 sm:flex">
       <div className="mt-4 sm:mt-0">
-        <span className="text-sm font-medium">
-          &copy; {new Date().getFullYear()} TUTIONWALA.COM. All Rights Reserved.
+        <span className="text-xs font-medium">
+          &copy; {new Date().getFullYear()} TUTIONWALA.COM.
         </span>
       </div>
       <div className="mt-6 sm:mt-0">

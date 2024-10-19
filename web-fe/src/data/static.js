@@ -1,10 +1,5 @@
 import config from "@/config";
-import {
-  FacebookLogo,
-  InstagramLogo,
-  LinkedinLogo,
-  TwitterLogo,
-} from "phosphor-react";
+import { FacebookLogo, InstagramLogo, LinkedinLogo } from "phosphor-react";
 
 let iconSize = 25;
 
