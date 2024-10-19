@@ -46,11 +46,11 @@ export const FooterOne = () => {
             />
           </figure>
           <div className="md:flex-1">
-            <Muted className={"text-balance text-sm text-gray-800"}>
+            <div className={"text-balance text-sm tracking-wide text-gray-900"}>
               We provide personalized attention from experienced educators to
               strengthen fundamentals, enhance reasoning skills, and build
               self-confidence for academic success.
-            </Muted>
+            </div>
           </div>
           <div>
             <ul className="flex gap-3">

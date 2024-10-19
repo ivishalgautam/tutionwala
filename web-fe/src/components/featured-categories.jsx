@@ -41,7 +41,7 @@ export default function FeaturedCategories() {
 
   return (
     <div className="bg-patterns px-4 py-20 md:px-10 lg:p-16">
-      <div>
+      <div className="space-y-4">
         <Small
           className={
             "block text-center font-medium uppercase tracking-wide text-primary"
@@ -49,7 +49,7 @@ export default function FeaturedCategories() {
         >
           Top Category
         </Small>
-        <H2 className={"border-none text-center"}>
+        <H2 className={"mx-auto w-max text-center"}>
           Explore our top categories
         </H2>
         <Muted className={"block text-center"}>

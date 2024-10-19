@@ -70,9 +70,9 @@ export default function WhyChooseUs() {
           <div className="space-y-4">
             <Small className={"flex items-center gap-1 text-primary"}>
               <Lightbulb size={20} />{" "}
-              <span className="tracking-wide">Why Choose Us</span>
+              <span className="text-xs uppercase">Why Choose Us</span>
             </Small>
-            <H2 className={"text-3xl font-extrabold md:text-4xl"}>
+            <H2 className={"text-3xl md:text-4xl"}>
               TutionWala Your Path to Excellence & Success
             </H2>
             <Muted>

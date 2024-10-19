@@ -83,9 +83,7 @@ export default function StudentReviewCards() {
           <Lightbulb size={20} />{" "}
           <span className="tracking-wide">Student Review</span>
         </Small>
-        <H2 className={"text-center text-4xl font-extrabold"}>
-          Our Students Feedback
-        </H2>
+        <H2 className={"text-center"}>Our Students Feedback</H2>
         <Muted className={"text-center"}>
           You&apos;ll find something to spark your curiosity and enhance
         </Muted>
