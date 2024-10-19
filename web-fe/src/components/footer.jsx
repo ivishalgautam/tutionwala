@@ -117,7 +117,7 @@ export const FooterThree = () => {
   return (
     <div className="mt-8 items-center justify-between border-t border-black/10 pt-4 sm:flex">
       <div className="mt-4 sm:mt-0">
-        <span className="text-xs font-medium">
+        <span className="text-sm font-medium tracking-wide">
           &copy; {new Date().getFullYear()} TUTIONWALA.COM.
         </span>
       </div>
