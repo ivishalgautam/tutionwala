@@ -25,7 +25,7 @@ export function useAutocomplete(
       );
       setAutoComplete(gAutoComplete);
     }
-  }, [isLoaded]);
+  }, [isLoaded, inputRef.current]);
 
   useEffect(() => {
     if (autoComplete) {

@@ -3,12 +3,16 @@
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Tutors from "./tutors";
+const Tutors = dynamic(() => import("./tutors"), {
+  loading: () => (
+    <div class="col-span-12 h-full rounded-md bg-gray-200 md:col-span-12 lg:col-span-8"></div>
+  ),
+});
 import Image from "next/image";
-import { H1, Large, Muted, Small } from "./ui/typography";
+import { H1, Muted, Small } from "./ui/typography";
 import { useForm } from "react-hook-form";
 import SubCategorySelect from "./select/sub-category-select";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PaginationControl from "./pagination";
 import LanguageSelect from "./select/language-select";
@@ -28,14 +32,14 @@ import { Filter, Layers, Search, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { Button, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import ClassConductSelect from "./select/class-conduct-select";
+import dynamic from "next/dynamic";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -160,6 +164,8 @@ export default function TutorsWithFilter() {
             height={2000}
             alt="learn"
             className="h-full w-full object-cover object-center"
+            priority={false}
+            loading="lazy"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
             <H1 className={"text-center"}>Find the Perfect Tutor for You</H1>

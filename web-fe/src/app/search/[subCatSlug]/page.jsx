@@ -28,12 +28,15 @@ import { CheckIcon, MoveLeft, MoveRight, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import Tutors from "@/components/tutors";
-import NextImage from "@/components/next-image";
+const Tutors = dynamic(() => import("@/components/tutors"), {
+  loading: () => <Loading />,
+});
+
 import "@smastrom/react-rating/style.css";
 import useMapLoader from "@/hooks/useMapLoader";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}/${id}`);
@@ -97,33 +100,6 @@ export default function Page({ params: { subCatSlug } }) {
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoard = watch("selected_board");
-
-  const setBoards = (board, subject) => {
-    const prevBoards = watch("boards");
-
-    const existingBoard = prevBoards.find(
-      ({ board_name }) => board_name === board,
-    );
-
-    if (existingBoard) {
-      const updatedBoards = prevBoards.map((b) =>
-        b.board_name === board
-          ? {
-              ...b,
-              subjects: b.subjects.includes(subject)
-                ? b.subjects.filter((s) => s !== subject)
-                : [...b.subjects, subject],
-            }
-          : b,
-      );
-      setValue("boards", updatedBoards);
-    } else {
-      setValue("boards", [
-        ...prevBoards,
-        { board_name: board, subjects: [subject] },
-      ]);
-    }
-  };
 
   const setFields = (fieldName, option, type) => {
     const prevFields = watch("fields") ?? [];
@@ -400,17 +376,6 @@ export default function Page({ params: { subCatSlug } }) {
                                   />
                                 )}
                               />
-                              {/* <input
-                                type="checkbox"
-                                value={subject}
-                                className="size-6 accent-primary"
-                                {...register(
-                                  `selected_subjects.${ind}.subjects`,
-                                )}
-                                onChange={() =>
-                                  setBoards(selectedBoard, subject)
-                                }
-                              /> */}
                             </Label>
                           </div>
                         ))}

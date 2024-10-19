@@ -1,5 +1,11 @@
-import TutorsWithFilter from "@/components/tutors-with-filter";
-import React from "react";
+import TutorsPageLoader from "@/components/loaders/tutors-page";
+import dynamic from "next/dynamic";
+const TutorsWithFilter = dynamic(
+  () => import("@/components/tutors-with-filter"),
+  {
+    loading: () => <TutorsPageLoader />,
+  },
+);
 
 export default function Page() {
   return (

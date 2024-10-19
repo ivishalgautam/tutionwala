@@ -1,4 +1,11 @@
-import CoursesByCategorySlug from "@/components/courses-by-category-slug";
+const CoursesByCategorySlug = dynamic(
+  () => import("@/components/courses-by-category-slug"),
+  {
+    loading: () => <Loading />,
+  },
+);
+import Loading from "@/components/loading";
+import dynamic from "next/dynamic";
 import React from "react";
 
 export default function Page({ params: { slug } }) {
