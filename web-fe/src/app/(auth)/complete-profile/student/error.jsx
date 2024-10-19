@@ -12,7 +12,7 @@ export default function Error({ error, reset }) {
 
   return (
     <ErrorDisplay
-      location={"Tutor Profile Page"}
+      location={"Complete profile student page"}
       message={message}
       reset={reset}
     />

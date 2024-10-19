@@ -11,10 +11,6 @@ export default function Error({ error, reset }) {
   }, [error]);
 
   return (
-    <ErrorDisplay
-      location={"Tutor Profile Page"}
-      message={message}
-      reset={reset}
-    />
+    <ErrorDisplay location={"Root page"} message={message} reset={reset} />
   );
 }
