@@ -9,10 +9,10 @@ export default function ErrorDisplay({
   reset,
 }) {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="container flex h-screen items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-2">
-        <H5>{location}</H5>
-        <Muted>{message}</Muted>
+        <H5 className={"text-center"}>{location}</H5>
+        <Muted className={"text-center"}>{message}</Muted>
         <div className="space-x-2">
           <Link href={"/"} className={buttonVariants()}>
             Go Home
