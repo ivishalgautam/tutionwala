@@ -1,12 +1,9 @@
-import { GeistSans } from "geist/font/sans";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryClientProvider";
 import { Toaster } from "sonner";
 import Context from "@/store/context";
 import Layout from "@/components/layout";
-import Image from "next/image";
-import next from "next";
 
 const montserrat = Montserrat({
   weight: ["300", "400", "500", "700"],

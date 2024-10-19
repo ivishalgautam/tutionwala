@@ -1,7 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import SearchModal from "./search";
+import dynamic from "next/dynamic";
+import { SearchCategoryLoader } from "./loaders/hero";
+const SearchModal = dynamic(() => import("./search"), {
+  loading: () => <SearchCategoryLoader />,
+});
 
 export default function Hero() {
   return (

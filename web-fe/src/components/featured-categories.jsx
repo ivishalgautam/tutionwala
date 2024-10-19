@@ -10,6 +10,7 @@ import {
   usePrevNextButtons,
 } from "./carousel/EmblaCarouselArrowButtons";
 import CategoryCard from "./card/category";
+import CategoryLoader from "./loaders/category";
 
 async function fetchFeaturedCategories() {
   const { data } = await http().get(
@@ -35,7 +36,7 @@ export default function FeaturedCategories() {
     keepPreviousData: true,
   });
 
-  if (isLoading) return <Skeloton />;
+  if (isLoading) return <CategoryLoader />;
   if (isError) return error?.message ?? "Error";
 
   return (
@@ -78,34 +79,6 @@ export default function FeaturedCategories() {
               onClick={onNextButtonClick}
               disabled={nextBtnDisabled}
             />
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function Skeloton() {
-  return (
-    <div className="animate-pulse bg-gray-200 p-4 md:p-10 lg:p-16">
-      <div>
-        <div className="mx-auto h-4 w-1/4 rounded bg-gray-300"></div>
-        <div className="mx-auto mt-2 h-6 w-1/2 rounded bg-gray-300"></div>
-        <div className="mx-auto mt-2 h-4 w-3/4 rounded bg-gray-300"></div>
-      </div>
-      <section className="mt-8">
-        <div>
-          <div className="flex space-x-4">
-            <div className="h-36 w-36 rounded bg-gray-300"></div>
-            <div className="h-36 w-36 rounded bg-gray-300"></div>
-            <div className="h-36 w-36 rounded bg-gray-300"></div>
-            <div className="h-36 w-36 rounded bg-gray-300"></div>
-          </div>
-        </div>
-        <div className="mt-4 flex items-center justify-end">
-          <div className="flex items-center justify-end gap-2">
-            <div className="mr-1 h-8 w-8 rounded bg-gray-300"></div>
-            <div className="h-8 w-8 rounded bg-gray-300"></div>
           </div>
         </div>
       </section>

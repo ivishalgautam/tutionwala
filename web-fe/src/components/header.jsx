@@ -9,7 +9,13 @@ import {
   NavbarList,
 } from "keep-react";
 
-import { CategoryMenu } from "./category-menu";
+const CategoryMenu = dynamic(
+  () => import("./category-menu").then((data) => data.CategoryMenu),
+  {
+    loading: () => <CategoryMenuLoader />,
+  },
+);
+
 import Link from "next/link";
 import { useContext } from "react";
 import { MainContext } from "@/store/context";
@@ -17,6 +23,9 @@ import { Button, buttonVariants } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { LucideLogOut } from "lucide-react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import Loading from "./loading";
+import CategoryMenuLoader from "./loaders/category-menu";
 
 export default function NavbarComponent() {
   const { user, setUser, isUserLoading } = useContext(MainContext);
@@ -36,6 +45,7 @@ export default function NavbarComponent() {
                   height={200}
                   alt="logo"
                   className="h-full w-full rounded-lg object-cover object-center"
+                  priority={false}
                 />
               </figure>
             </Link>

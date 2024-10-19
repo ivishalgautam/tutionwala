@@ -5,8 +5,15 @@ import { allRoutes } from "@/data/routes";
 import { MainContext } from "@/store/context";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import Header from "../header";
-import { Footer } from "../footer";
+const Header = dynamic(() => import("../header"), {
+  loading: () => <HeaderLoader />,
+});
+const Footer = dynamic(() => import("../footer").then((data) => data.Footer), {
+  loading: () => <Loading />,
+});
+import dynamic from "next/dynamic";
+import Loading from "../loading";
+import HeaderLoader from "../loaders/header";
 
 export default function Layout({ children }) {
   const pathname = usePathname();
