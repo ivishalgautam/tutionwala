@@ -1,4 +1,12 @@
-import { CalendarDays, Crown, PieChart, Users } from "lucide-react";
+import {
+  CalendarDays,
+  CircleHelp,
+  Crown,
+  Kanban,
+  PieChart,
+  Shapes,
+  Users,
+} from "lucide-react";
 
 const ROLES = {
   ADMIN: "admin",
@@ -66,7 +74,7 @@ export const ALLROUTES = [
     title: "Category",
     path: "/categories",
     roles: [ROLES.ADMIN],
-    icon: <Users size={size} />,
+    icon: <Shapes size={size} />,
   },
   {
     title: "Category",
@@ -84,13 +92,13 @@ export const ALLROUTES = [
     title: "Category",
     path: "/categories/view/[id]",
     roles: [ROLES.ADMIN],
-    icon: <Users size={size} />,
+    icon: <Shapes size={size} />,
   },
   {
     title: "Sub Category",
     path: "/sub-categories",
     roles: [ROLES.ADMIN],
-    icon: <Users size={size} />,
+    icon: <Shapes size={size} />,
   },
   {
     title: "Sub Category",
@@ -120,12 +128,18 @@ export const ALLROUTES = [
     title: "Board",
     path: "/boards",
     roles: [ROLES.ADMIN],
-    icon: <Users size={size} />,
+    icon: <Kanban size={size} />,
   },
   {
     title: "Board",
     path: "/boards/subject/[id]",
     roles: [ROLES.ADMIN],
     icon: <Users size={size} />,
+  },
+  {
+    title: "Queries",
+    path: "/queries",
+    roles: [ROLES.ADMIN],
+    icon: <CircleHelp size={size} />,
   },
 ];

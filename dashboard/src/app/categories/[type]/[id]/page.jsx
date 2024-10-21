@@ -2,7 +2,6 @@
 import Section from "@/components/section";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
-import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

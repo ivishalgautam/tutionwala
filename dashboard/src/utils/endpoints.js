@@ -22,4 +22,7 @@ export const endpoints = {
   boards: {
     getAll: "/boards",
   },
+  queries: {
+    getAll: "/queries",
+  },
 };

@@ -10,11 +10,6 @@ import { endpoints } from "../../utils/endpoints.js";
 import { toast } from "sonner";
 import { isObject } from "@/utils/object";
 import { useRouter } from "next/navigation";
-
-const UserDialog = dynamic(() => import("@/components/dialogs/user-dialog"), {
-  ssr: false,
-});
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +20,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import dynamic from "next/dynamic";
+const UserDialog = dynamic(() => import("@/components/dialogs/user-dialog"), {
+  ssr: false,
+});
 
 async function deleteCustomer(data) {
   return http().delete(`${endpoints.users.getAll}/${data.id}`);
