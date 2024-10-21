@@ -212,9 +212,9 @@ export default function TutorsWithFilter() {
             <Tutors tutors={data?.data ?? []} isLoading={isLoading} />
             {paginationCount > 1 && (
               <div className="mt-10">
-                <PaginationControl
+                {/* <PaginationControl
                   {...{ page, paginationCount, createQueryString }}
-                />
+                /> */}
 
                 <PaginationWithLinks
                   page={page}
