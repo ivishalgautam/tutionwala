@@ -24,7 +24,8 @@ import {
 } from "../ui/select";
 import axios from "axios";
 import useLocalStorage from "@/hooks/useLocalStorage";
-// import { languages } from "@/data/languages";
+import ShadcnSelect from "../ui/shadcn-select";
+import { languages as languageOptions } from "@/data/languages";
 
 const fetchProfile = async (id) => {
   const { data } = await http().get(
@@ -151,6 +152,7 @@ export default function TutorProfileForm({ user, setUser }) {
       }));
     }
   };
+
   const deleteFile = async (filePath, type) => {
     const key = filePath.split(".com/")[1];
     try {
@@ -401,13 +403,22 @@ export default function TutorProfileForm({ user, setUser }) {
               <div key={ind} className="flex items-end justify-start gap-2">
                 <div className="flex-1">
                   <Label>Language</Label>
-                  <Input
-                    type="text"
-                    {...register(`languages.${ind}.name`, {
-                      required: "required*",
-                    })}
-                    placeholder="Eg: Hindi, English"
-                  />
+                  <div className="relative">
+                    <Controller
+                      control={control}
+                      name={`languages.${ind}.name`}
+                      render={({ field }) => (
+                        <ShadcnSelect
+                          field={field}
+                          name={`languages.${ind}.name`}
+                          options={languageOptions}
+                          setValue={setValue}
+                          placeholder="Language"
+                          width="w-full"
+                        />
+                      )}
+                    />
+                  </div>
                   {errors?.languages?.[ind]?.name && (
                     <span className="text-sm text-red-500">
                       {errors?.languages[ind].name.message}

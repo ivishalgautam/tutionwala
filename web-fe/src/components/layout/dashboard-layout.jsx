@@ -8,6 +8,16 @@ import { Muted, Small } from "@/components/ui/typography";
 
 import { MainContext } from "@/store/context";
 import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { AlignLeft } from "lucide-react";
 
 const tabs = [
   { value: "enquiries", label: "Enquiries", roles: ["student", "tutor"] },
@@ -18,15 +28,15 @@ const tabs = [
 export default function DashboardLayout({ children }) {
   const { user, isUserLoading } = useContext(MainContext);
 
-  console.log({ user });
   return (
     <div className="min-h-screen bg-gray-200 py-4">
       <div className="container grid grid-cols-12 gap-4">
-        <div className="col-span-3">
-          <div className="overflow-hidden rounded bg-white shadow-sm">
+        <div className="lg:col-span-3">
+          <div className="hidden overflow-hidden rounded bg-white shadow-sm lg:block">
             <div className="border-b-2 p-3">
               <Profile isUserLoading={isUserLoading} user={user} />
             </div>
+
             <ul className="space-y-[1px]">
               {tabs.map(
                 (item, key) =>
@@ -38,7 +48,10 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
 
-        <div className="col-span-9">
+        <div className="col-span-12 space-y-3 lg:col-span-9 lg:space-y-0">
+          <div className="lg:hidden">
+            <SideSheet {...{ isUserLoading, user }} />
+          </div>
           <div className="rounded bg-white p-4">{children}</div>
         </div>
       </div>
@@ -68,7 +81,7 @@ export const Profile = ({ isUserLoading, user }) => {
           width={100}
           height={100}
           alt={user?.fullname}
-          className="h-full w-full rounded"
+          className="h-full w-full rounded object-cover object-center"
           onError={() => setImageError(true)}
         />
       </figure>
@@ -97,5 +110,37 @@ export const ListItem = ({ item }) => {
         {item.label}
       </Link>
     </li>
+  );
+};
+
+export const SideSheet = ({ isUserLoading, user }) => {
+  return (
+    <Sheet>
+      <SheetTrigger className="rounded bg-white p-3">
+        <AlignLeft size={20} />
+      </SheetTrigger>
+      <SheetContent side="left">
+        <SheetHeader>
+          <SheetTitle className="sr-only">Mobile sidebar</SheetTitle>
+          <SheetDescription className="sr-only">
+            Mobile sidebar
+          </SheetDescription>
+          <div className="overflow-hidden rounded bg-white shadow-sm">
+            <div className="border-b-2 p-3">
+              <Profile isUserLoading={isUserLoading} user={user} />
+            </div>
+
+            <ul className="space-y-[1px]">
+              {tabs.map(
+                (item, key) =>
+                  item.roles.includes(user?.role) && (
+                    <ListItem key={key} item={item} />
+                  ),
+              )}
+            </ul>
+          </div>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
   );
 };

@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -31,6 +30,34 @@ export const columns = (handleDelete, handleUpdate) => [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Fullname
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "mobile_number",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Phone
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );

@@ -351,6 +351,7 @@ export default function CompleteProfileTutor({
                   <div>
                     <H6>Add languages that you speak.</H6>
                   </div>
+
                   {/* language */}
                   <div className="space-y-2">
                     {languages.map((language, ind) => (

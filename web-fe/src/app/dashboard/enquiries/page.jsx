@@ -52,6 +52,8 @@ export default function Page() {
     queryKey: ["enquiries"],
   });
 
+  console.log({ enquiries });
+
   const updateEnqMutation = useMutation(updateEnquiry, {
     onSuccess: () => {
       toast.success("Updated");
@@ -207,6 +209,8 @@ export const StudentEnquiries = ({ enquiries, handleDelete, handleUpdate }) => {
         fullname: student[0].fullname,
         userId: student[0].user_id,
         studentId: student[0].student_id,
+        email: student[0].email,
+        mobile_number: student[0].mobile_number,
       }))}
     />
   );

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { H5, H6, Large, Muted, Small } from "./ui/typography";
+import { H6, Muted } from "./ui/typography";
 import { EnvelopeSimple, Phone, WhatsappLogo } from "phosphor-react";
 import useFetchFeaturedCourses from "@/hooks/useFetchFeaturedCourses";
 import { socialLinks } from "@/data/static";
