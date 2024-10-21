@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,8 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import UserForm from "../forms/user";
-import QueryForm from "../forms/Query";
+import QueryForm from "@/components/forms/query";
 
 export default function QueryDialog({
   isOpen,

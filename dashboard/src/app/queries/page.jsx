@@ -2,13 +2,11 @@
 import Title from "@/components/Title";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import Modal from "@/components/Modal";
 import { useState } from "react";
-import QueryForm from "@/components/Forms/Query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "../../utils/endpoints.js";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import QueryDialog from "@/components/dialogs/query-dialog";
 
