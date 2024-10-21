@@ -51,6 +51,8 @@ export default function WhyChooseUs() {
               quality={100}
               alt="teacher teaching a student"
               className="h-full w-full rounded-lg object-cover object-center shadow-xl"
+              priority={false}
+              loading="lazy"
             />
           </figure>
           <figure className="aspect-square">
@@ -61,6 +63,8 @@ export default function WhyChooseUs() {
               quality={100}
               alt="teacher teaching a student"
               className="h-full w-full rounded-lg object-cover object-center shadow-2xl"
+              priority={false}
+              loading="lazy"
             />
           </figure>
         </div>
