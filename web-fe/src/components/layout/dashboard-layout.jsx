@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 import { Muted, Small } from "@/components/ui/typography";
@@ -16,7 +16,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { AlignLeft } from "lucide-react";
 
 const tabs = [
@@ -26,31 +25,20 @@ const tabs = [
 ];
 
 export default function DashboardLayout({ children }) {
-  const { user, isUserLoading } = useContext(MainContext);
-
   return (
     <div className="min-h-screen bg-gray-200 py-4">
       <div className="container grid grid-cols-12 gap-4">
         <div className="lg:col-span-3">
-          <div className="hidden overflow-hidden rounded bg-white shadow-sm lg:block">
-            <div className="border-b-2 p-3">
-              <Profile isUserLoading={isUserLoading} user={user} />
-            </div>
-
-            <ul className="space-y-[1px]">
-              {tabs.map(
-                (item, key) =>
-                  item.roles.includes(user?.role) && (
-                    <ListItem key={key} item={item} />
-                  ),
-              )}
-            </ul>
+          <div className="hidden lg:block">
+            <Sidebar />
           </div>
         </div>
 
         <div className="col-span-12 space-y-3 lg:col-span-9 lg:space-y-0">
           <div className="lg:hidden">
-            <SideSheet {...{ isUserLoading, user }} />
+            <SideSheet>
+              <Sidebar />
+            </SideSheet>
           </div>
           <div className="rounded bg-white p-4">{children}</div>
         </div>
@@ -99,7 +87,7 @@ export const ListItem = ({ item }) => {
   return (
     <li
       className={cn(
-        "relative text-xs font-medium uppercase transition-all hover:bg-gray-100 hover:before:absolute hover:before:left-0 hover:before:top-0 hover:before:h-full hover:before:w-1 hover:before:bg-primary",
+        "relative text-start text-xs font-medium uppercase transition-all hover:bg-gray-100 hover:before:absolute hover:before:left-0 hover:before:top-0 hover:before:h-full hover:before:w-1 hover:before:bg-primary",
         {
           "bg-gray-100 before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-primary":
             currTab === item.value,
@@ -113,10 +101,31 @@ export const ListItem = ({ item }) => {
   );
 };
 
-export const SideSheet = ({ isUserLoading, user }) => {
+export const Sidebar = () => {
+  const { user, isUserLoading } = useContext(MainContext);
+
+  return (
+    <div className="overflow-hidden rounded bg-white shadow-sm">
+      <div className="border-b-2 p-3">
+        <Profile isUserLoading={isUserLoading} user={user} />
+      </div>
+
+      <ul className="space-y-[1px]">
+        {tabs.map(
+          (item, key) =>
+            item.roles.includes(user?.role) && (
+              <ListItem key={key} item={item} />
+            ),
+        )}
+      </ul>
+    </div>
+  );
+};
+
+export const SideSheet = ({ children }) => {
   return (
     <Sheet>
-      <SheetTrigger className="rounded bg-white p-3">
+      <SheetTrigger className="rounded bg-white p-2">
         <AlignLeft size={20} />
       </SheetTrigger>
       <SheetContent side="left">
@@ -125,20 +134,7 @@ export const SideSheet = ({ isUserLoading, user }) => {
           <SheetDescription className="sr-only">
             Mobile sidebar
           </SheetDescription>
-          <div className="overflow-hidden rounded bg-white shadow-sm">
-            <div className="border-b-2 p-3">
-              <Profile isUserLoading={isUserLoading} user={user} />
-            </div>
-
-            <ul className="space-y-[1px]">
-              {tabs.map(
-                (item, key) =>
-                  item.roles.includes(user?.role) && (
-                    <ListItem key={key} item={item} />
-                  ),
-              )}
-            </ul>
-          </div>
+          {children}
         </SheetHeader>
       </SheetContent>
     </Sheet>

@@ -52,8 +52,6 @@ export default function Page() {
     queryKey: ["enquiries"],
   });
 
-  console.log({ enquiries });
-
   const updateEnqMutation = useMutation(updateEnquiry, {
     onSuccess: () => {
       toast.success("Updated");
