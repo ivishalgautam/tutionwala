@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import React from "react";
 
 export function CoursesDataTable({ columns, data }) {
   const [sorting, setSorting] = React.useState([]);
