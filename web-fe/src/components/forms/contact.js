@@ -33,11 +33,11 @@ export default function ContactForm() {
   });
 
   const onSubmit = (data) => {
-    return;
     createMutation.mutate(data);
   };
 
-  const className = "border-none bg-black/10 text-white placeholder:text-white";
+  const className =
+    "border-primary focus-visible:border-white/40 bg-black/10 text-white placeholder:text-white";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -137,7 +137,9 @@ export default function ContactForm() {
       </div>
 
       <div className="mt-4">
-        <Button className="w-full bg-white text-gray-700">Submit</Button>
+        <Button className="w-full bg-white text-gray-700 transition-colors hover:bg-white/90">
+          Submit
+        </Button>
       </div>
     </form>
   );

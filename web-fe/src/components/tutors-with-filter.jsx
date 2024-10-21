@@ -40,6 +40,7 @@ import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import ClassConductSelect from "./select/class-conduct-select";
 import dynamic from "next/dynamic";
+import { PaginationWithLinks } from "./pagination-with-links";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -213,6 +214,12 @@ export default function TutorsWithFilter() {
               <div className="mt-10">
                 <PaginationControl
                   {...{ page, paginationCount, createQueryString }}
+                />
+
+                <PaginationWithLinks
+                  page={page}
+                  pageSize={limit}
+                  totalCount={data?.total}
                 />
               </div>
             )}
