@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const searchCategory = async (q) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}?q=${q}`);

@@ -1,4 +1,3 @@
-import React from "react";
 import CategoryMenuLoader from "./category-menu";
 
 export default function HeaderLoader() {

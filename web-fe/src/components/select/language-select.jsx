@@ -1,6 +1,6 @@
 import { languages } from "@/data/languages";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 export default function LanguageSelect({ searchParams }) {

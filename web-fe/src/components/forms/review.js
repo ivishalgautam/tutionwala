@@ -1,7 +1,6 @@
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Controller, useForm } from "react-hook-form";
-import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { H4 } from "../ui/typography";
 import { Button } from "../ui/button";

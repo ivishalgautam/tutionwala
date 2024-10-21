@@ -1,5 +1,4 @@
-import React from "react";
-import { H5, H6, Muted } from "./ui/typography";
+import { H5, Muted } from "./ui/typography";
 import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
 import Image from "next/image";

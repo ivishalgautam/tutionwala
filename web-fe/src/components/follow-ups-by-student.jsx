@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import FollowUpCard from "./card/follow-up";
 import { Button } from "./ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";

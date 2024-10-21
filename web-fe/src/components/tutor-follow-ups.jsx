@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import FollowUpCard from "./card/follow-up";
 import Modal from "./Modal";
 import CreateFollowUpForm from "./forms/follow-up";

@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function HeroLoader() {
   return (
     <div className="animate-pulse bg-gradient-to-b from-primary-25 to-primary-50">

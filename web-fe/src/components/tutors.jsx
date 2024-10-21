@@ -1,4 +1,3 @@
-import React from "react";
 import TutorCard from "./card/tutor";
 import { cn } from "@/lib/utils";
 import { Muted } from "./ui/typography";

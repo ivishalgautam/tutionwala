@@ -40,7 +40,6 @@ import { useEffect, useState } from "react";
 // icons
 import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import NextImage from "../next-image";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 import { FilterAddress } from "../tutors-with-filter";
 import { useSearchParams } from "next/navigation";

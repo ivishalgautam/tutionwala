@@ -1,5 +1,4 @@
 import { endpoints } from "./endpoints";
-import http from "./http";
 import axios from "axios";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;

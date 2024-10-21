@@ -1,13 +1,9 @@
 import EnquiryForm from "@/components/forms/enquiry";
-import NextImage from "@/components/next-image";
 import Review from "@/components/review";
-import { H1, H3, H4, Muted, P } from "@/components/ui/typography";
+import { H3, H4, Muted } from "@/components/ui/typography";
 import { endpoints } from "@/utils/endpoints";
-import { Rating } from "@smastrom/react-rating";
 import axios from "axios";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import React from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 async function fetchTutor(id) {

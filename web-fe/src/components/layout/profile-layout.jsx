@@ -1,8 +1,8 @@
 import Link from "next/link";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Button } from "../ui/button";
 import { CiLogout } from "react-icons/ci";
-import { IoBagHandleOutline, IoCartOutline } from "react-icons/io5";
+import { IoCartOutline } from "react-icons/io5";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { usePathname, useRouter } from "next/navigation";
 import Spinner from "../loading";

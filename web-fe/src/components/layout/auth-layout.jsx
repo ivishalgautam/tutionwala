@@ -20,7 +20,7 @@ export default function AuthLayout({ children }) {
       </div>
 
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-        <section className="from-gradient-from to-gradient-to relative flex h-32 items-end bg-gradient-to-tr lg:col-span-7 lg:h-full lg:p-4 xl:col-span-8">
+        <section className="relative flex h-32 items-end bg-gradient-to-tr from-gradient-from to-gradient-to lg:col-span-7 lg:h-full lg:p-4 xl:col-span-8">
           <figure className="absolute inset-0 h-full w-full object-contain object-center mix-blend-normal lg:p-20">
             <Image
               src={"/images/educator.svg"}

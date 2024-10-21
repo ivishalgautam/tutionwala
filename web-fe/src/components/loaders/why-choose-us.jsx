@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function WhyChooseUsLoader() {
   return (
     <div className="relative h-[600px] animate-pulse">

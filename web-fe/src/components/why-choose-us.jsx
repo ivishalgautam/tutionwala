@@ -1,6 +1,5 @@
 import Image from "next/image";
-import React from "react";
-import { H2, H6, Large, Muted, Small } from "./ui/typography";
+import { H2, Muted, Small } from "./ui/typography";
 import {
   BookOpen,
   Briefcase,

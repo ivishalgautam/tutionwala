@@ -84,6 +84,7 @@ export default function Page() {
   const openReviewModal = () => {
     setIsReviewModal(true);
   };
+
   const closeReviewModal = () => {
     setIsReviewModal(false);
   };

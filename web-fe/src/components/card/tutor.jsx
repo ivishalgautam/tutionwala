@@ -1,8 +1,6 @@
 import Link from "next/link";
-import React from "react";
 import { H4, Muted } from "../ui/typography";
 import EnquiryForm from "../forms/enquiry";
-import NextImage from "../next-image";
 import { Badge } from "../ui/badge";
 
 import Review from "../review";

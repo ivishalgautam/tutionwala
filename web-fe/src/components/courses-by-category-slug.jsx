@@ -2,7 +2,6 @@
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import Loading from "./loading";
 import { H4 } from "./ui/typography";
 import { useSearchParams } from "next/navigation";

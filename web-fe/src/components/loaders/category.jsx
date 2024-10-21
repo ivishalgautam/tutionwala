@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function CategoryLoader() {
   return (
     <div className="animate-pulse bg-gray-200 p-4 md:p-10 lg:p-16">

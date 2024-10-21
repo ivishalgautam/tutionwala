@@ -1,13 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { usePathname, useRouter } from "next/navigation";
-import { Input } from "./ui/input";
-import { MainContext } from "@/store/context";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";

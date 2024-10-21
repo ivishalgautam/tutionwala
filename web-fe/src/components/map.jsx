@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useMapLoader from "@/hooks/useMapLoader";
 import { LocateIcon } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const showInfoContent = (fullAddr) => {
   return `

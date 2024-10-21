@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { H3, H5, H6, Muted } from "@/components/ui/typography";
+import { H3, H5, H6 } from "@/components/ui/typography";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { cn } from "@/lib/utils";
 import { endpoints } from "@/utils/endpoints";

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -7,7 +6,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./ui/pagination";
-import { cn } from "@/lib/utils";
 
 export default function PaginationControl({
   page,

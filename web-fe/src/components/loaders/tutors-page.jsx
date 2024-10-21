@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function TutorsPageLoader() {
   return (
     <div class="bg-gray-100">

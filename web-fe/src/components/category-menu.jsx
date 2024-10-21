@@ -11,16 +11,14 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { DotsNine } from "phosphor-react";
 import Loading from "./loading";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
 import NextImage from "./next-image";
-import { H5, H6, Large, Muted, Small } from "./ui/typography";
+import { Muted, Small } from "./ui/typography";
 
 async function fetchCategories() {
   const { data } = await http().get(`${endpoints.categories.getAll}`);

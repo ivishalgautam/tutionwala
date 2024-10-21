@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
 import { Button } from "../ui/button";
-import { H3, H6 } from "../ui/typography";
+import { H3 } from "../ui/typography";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Controller, useForm } from "react-hook-form";
-import { CheckIcon, Plus } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import {

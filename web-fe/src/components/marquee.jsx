@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-
 export default function Marquee({
   className,
   reverse,

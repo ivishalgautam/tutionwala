@@ -1,7 +1,6 @@
 "use client";
-import { FileImage } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_IMAGE_DOMAIN;
 export default function NextImage({ width, height, alt, src, className }) {

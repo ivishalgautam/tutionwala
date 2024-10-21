@@ -16,7 +16,6 @@ const createQuery = async (data) => {
 
 export default function ContactForm() {
   const {
-    control,
     formState: { errors },
     register,
     handleSubmit,

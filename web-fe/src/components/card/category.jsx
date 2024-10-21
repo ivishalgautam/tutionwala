@@ -1,4 +1,3 @@
-import React from "react";
 import NextImage from "../next-image";
 import { Large, Muted } from "../ui/typography";
 import Link from "next/link";
