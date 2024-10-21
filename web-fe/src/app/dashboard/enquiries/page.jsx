@@ -1,6 +1,6 @@
 "use client";
 import Loading from "@/components/loading";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 
 // table imports
 import { columns as tutorColumns } from "@/components/table/enquiries/tutors/columns";

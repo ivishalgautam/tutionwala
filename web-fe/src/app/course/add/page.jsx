@@ -4,7 +4,6 @@ import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { toast } from "sonner";
 
 const createCourse = async (data) => {

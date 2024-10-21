@@ -9,7 +9,6 @@ import {
 import { H1, H2, Large, Muted, Small } from "@/components/ui/typography";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const features = [
   {

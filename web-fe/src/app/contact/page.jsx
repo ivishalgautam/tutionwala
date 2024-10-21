@@ -10,7 +10,6 @@ import {
 import { H1, Large } from "@/components/ui/typography";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 export default function Page() {
   return (

@@ -5,7 +5,7 @@ import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
 
 async function createTutorProfile(data) {

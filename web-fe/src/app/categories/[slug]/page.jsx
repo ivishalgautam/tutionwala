@@ -6,7 +6,6 @@ const CoursesByCategorySlug = dynamic(
 );
 import Loading from "@/components/loading";
 import dynamic from "next/dynamic";
-import React from "react";
 
 export default function Page({ params: { slug } }) {
   return (
