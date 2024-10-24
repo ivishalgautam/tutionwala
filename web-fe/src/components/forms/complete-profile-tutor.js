@@ -95,12 +95,16 @@ export default function CompleteProfileTutor({
     },
   });
   const [media, setMedia] = useState({
-    profile_picture: "",
+    profile: "",
     adhaar: "",
     video: "",
   });
-  const [progress, setProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState({ adhaar: 0, profile: 0, video: 0 });
+  const [isLoading, setIsLoading] = useState({
+    adhaar: false,
+    profile: false,
+    video: false,
+  });
   const [coords, setCoords] = useState([0, 0]);
   const { token } = useLocalStorage("token");
 
@@ -203,7 +207,7 @@ export default function CompleteProfileTutor({
         : currStep === 2
           ? {
               experience: formData.experience,
-              profile_picture: media.profile_picture,
+              profile_picture: media.profile,
               intro_video: media.video,
             }
           : currStep === 3
@@ -219,7 +223,7 @@ export default function CompleteProfileTutor({
   };
 
   const handleFileChange = async (event, type) => {
-    setIsLoading(true);
+    setIsLoading((prev) => ({ ...prev, [type]: true }));
     try {
       const file = event.target.files[0];
       // const formData = new FormData();
@@ -241,7 +245,7 @@ export default function CompleteProfileTutor({
           const progress = parseInt(
             Math.round((progressEvent.loaded * 100) / progressEvent.total),
           );
-          setProgress(progress);
+          setProgress((prev) => ({ ...prev, [type]: progress }));
         },
       });
 
@@ -250,9 +254,9 @@ export default function CompleteProfileTutor({
         setMedia((prev) => ({ ...prev, adhaar: fileurl }));
         localStorage.setItem("adhaar", fileurl);
       }
-      if (type === "profile_picture") {
-        setMedia((prev) => ({ ...prev, profile_picture: fileurl }));
-        localStorage.setItem("profile_picture", fileurl);
+      if (type === "profile") {
+        setMedia((prev) => ({ ...prev, profile: fileurl }));
+        localStorage.setItem("profile", fileurl);
       }
       if (type === "video") {
         setMedia((prev) => ({ ...prev, video: fileurl }));
@@ -261,8 +265,8 @@ export default function CompleteProfileTutor({
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
-      setIsLoading(false);
-      setProgress(0);
+      setIsLoading((prev) => ({ ...prev, [type]: false }));
+      setProgress((prev) => ({ ...prev, [type]: 0 }));
     }
   };
   const deleteFile = async (filePath, type) => {
@@ -279,10 +283,10 @@ export default function CompleteProfileTutor({
         localStorage.removeItem("adhaar");
         setValue("adhaar", "");
       }
-      if (type === "profile_picture") {
-        setMedia((prev) => ({ ...prev, profile_picture: "" }));
-        localStorage.removeItem("profile_picture");
-        setValue("profile_picture", "");
+      if (type === "profile") {
+        setMedia((prev) => ({ ...prev, profile: "" }));
+        localStorage.removeItem("profile");
+        setValue("profile", "");
       }
       if (type === "video") {
         setMedia((prev) => ({ ...prev, video: "" }));
@@ -907,7 +911,7 @@ export default function CompleteProfileTutor({
                 {/* profile pic */}
                 <div className="flex-1 space-y-4">
                   <H5 className={"text-center"}>Profile Picture</H5>
-                  {!media.profile_picture && (
+                  {!media.profile && (
                     <div className="flex flex-col items-center justify-center">
                       <Input
                         type="file"
@@ -915,7 +919,7 @@ export default function CompleteProfileTutor({
                         {...register("profile_picture", {
                           required: "Required*",
                         })}
-                        onChange={(e) => handleFileChange(e, "profile_picture")}
+                        onChange={(e) => handleFileChange(e, "profile")}
                         multiple={false}
                         accept="image/png, image/webp, image/jpg, image/jpeg"
                       />
@@ -928,10 +932,17 @@ export default function CompleteProfileTutor({
                   )}
 
                   <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                    {media.profile_picture ? (
+                    {isLoading.profile && (
+                      <Progress
+                        id="file"
+                        value={progress.profile}
+                        max="100"
+                      >{`${progress}%`}</Progress>
+                    )}
+                    {media.profile ? (
                       <figure className="relative aspect-square size-32">
                         <Image
-                          src={media.profile_picture}
+                          src={media.profile}
                           className="h-full w-full"
                           width={200}
                           height={200}
@@ -940,9 +951,7 @@ export default function CompleteProfileTutor({
                         <Button
                           type="button"
                           variant="destructive"
-                          onClick={() =>
-                            deleteFile(media.profile_picture, "profile_picture")
-                          }
+                          onClick={() => deleteFile(media.profile, "profile")}
                           className="absolute -right-2 -top-2"
                           size="icon"
                         >
@@ -977,12 +986,12 @@ export default function CompleteProfileTutor({
                   )}
 
                   <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                    {isLoading && (
+                    {isLoading.video && (
                       <Progress
                         id="file"
-                        value={progress}
+                        value={progress.video}
                         max="100"
-                      >{`${progress}%`}</Progress>
+                      >{`${progress.video}%`}</Progress>
                     )}
                     {media.video ? (
                       <div className="relative w-max">
@@ -1042,6 +1051,13 @@ export default function CompleteProfileTutor({
                 )}
 
                 <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
+                  {isLoading.adhaar && (
+                    <Progress
+                      id="file"
+                      value={progress.adhaar}
+                      max="100"
+                    >{`${progress.adhaar}%`}</Progress>
+                  )}
                   {media.adhaar ? (
                     <figure className="relative size-32">
                       <Image
