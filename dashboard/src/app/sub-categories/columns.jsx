@@ -1,15 +1,10 @@
 "use client";
 import { Button } from "../../components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -46,7 +41,7 @@ export const columns = (handleDelete, handleNavigate) => [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Sub category name
+          NAME
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -69,7 +64,7 @@ export const columns = (handleDelete, handleNavigate) => [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Category name
+          CATEGORY
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );

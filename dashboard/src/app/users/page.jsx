@@ -2,14 +2,13 @@
 import Title from "@/components/Title";
 import Spinner from "@/components/spinner";
 import { useState } from "react";
-import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "../../utils/endpoints.js";
 import { toast } from "sonner";
 import { isObject } from "@/utils/object";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +19,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import dynamic from "next/dynamic";
+import { DataTable } from "@/components/ui/table/data-table";
+import UserTableActions from "./_component/user-table-actions";
+import { Suspense } from "react";
+import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { serialize } from "@/lib/searchparams";
 const UserDialog = dynamic(() => import("@/components/dialogs/user-dialog"), {
   ssr: false,
 });
@@ -28,9 +32,8 @@ async function deleteCustomer(data) {
   return http().delete(`${endpoints.users.getAll}/${data.id}`);
 }
 
-const fetchUsers = async () => {
-  const { data } = await http().get(endpoints.users.getAll);
-  return data;
+const fetchUsers = async (params) => {
+  return await http().get(`${endpoints.users.getAll}?${params}`);
 };
 
 export default function Users() {
@@ -38,10 +41,13 @@ export default function Users() {
   const [userId, setUserId] = useState("");
   const router = useRouter();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const searchParamsStr = searchParams.toString();
+  const key = serialize({ ...searchParams });
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["users"],
-    queryFn: fetchUsers,
+  const { data, isLoading, isFetching, isError, error } = useQuery({
+    queryFn: () => fetchUsers(searchParamsStr),
+    queryKey: ["users", searchParamsStr],
   });
 
   const deleteMutation = useMutation(deleteCustomer, {
@@ -100,16 +106,12 @@ export default function Users() {
     router.push(href);
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   if (isError) {
     return error?.message ?? "error";
   }
 
   return (
-    <div className="">
+    <div className="border-input container mx-auto rounded-lg bg-white p-8">
       <div className="flex items-center justify-between">
         <Title text={"Users"} />
         <DropdownMenu>
@@ -136,12 +138,23 @@ export default function Users() {
       </div>
 
       <div>
-        <DataTable
-          columns={columns(handleDelete, handleUserStatus, setUserId, () =>
-            setIsModal(true),
+        <UserTableActions />
+        {isLoading ||
+          (isFetching && <DataTableSkeleton columnCount={4} rowCount={10} />)}
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+        >
+          {data && (
+            <DataTable
+              columns={columns(handleDelete, handleUserStatus, setUserId, () =>
+                setIsModal(true),
+              )}
+              data={data.data}
+              totalItems={data.total}
+            />
           )}
-          data={data}
-        />
+        </Suspense>
       </div>
       {typeof document !== "undefined" && (
         <UserDialog

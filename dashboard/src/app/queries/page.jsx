@@ -1,29 +1,35 @@
 "use client";
 import Title from "@/components/Title";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "../../utils/endpoints.js";
 import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import QueryDialog from "@/components/dialogs/query-dialog";
+import { DataTable } from "@/components/ui/table/data-table";
+import QueriesTableActions from "./_component/queries-table-actions";
+import { useSearchParams } from "next/navigation";
+import { serialize } from "@/lib/searchparams";
+import SubcatTableActions from "../sub-categories/_component/subcat-table-actions";
+import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 async function deleteQuery({ id }) {
   return await http().delete(`${endpoints.queries.getAll}/${id}`);
 }
 
-async function fetchQueries() {
-  const { data } = await http().get(endpoints.queries.getAll);
-  console.log({ data });
-  return data;
+async function fetchQueries(params) {
+  return await http().get(`${endpoints.queries.getAll}?${params}`);
 }
 
 export default function Queries() {
   const [isModal, setIsModal] = useState(false);
   const [queryId, setQueryId] = useState(null);
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const searchParamStr = searchParams.toString();
+  const key = serialize({ ...searchParams });
 
   function openModal() {
     setIsModal(true);
@@ -32,9 +38,9 @@ export default function Queries() {
     setIsModal(false);
   }
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: fetchQueries,
-    queryKey: ["queries"],
+  const { data, isLoading, isFetching, isError, error } = useQuery({
+    queryFn: () => fetchQueries(searchParamStr),
+    queryKey: ["queries", searchParamStr],
   });
 
   const deleteMutation = useMutation(deleteQuery, {
@@ -52,7 +58,6 @@ export default function Queries() {
     deleteMutation.mutate({ id });
   };
 
-  if (isLoading) return <Spinner />;
   if (isError) error?.message ?? "error";
 
   return (
@@ -61,7 +66,22 @@ export default function Queries() {
         <Title text={"Queries"} />
       </div>
       <div>
-        <DataTable columns={columns(openModal, setQueryId)} data={data} />
+        <QueriesTableActions />
+
+        {isLoading ||
+          (isFetching && <DataTableSkeleton columnCount={4} rowCount={10} />)}
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+        >
+          {data && (
+            <DataTable
+              columns={columns(openModal, setQueryId)}
+              data={data.data}
+              totalItems={data.total}
+            />
+          )}
+        </Suspense>
       </div>
 
       <QueryDialog

@@ -1,7 +1,6 @@
 "use client";
 import Title from "@/components/Title";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +9,12 @@ import { endpoints } from "@/utils/endpoints";
 import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+import { DataTable } from "@/components/ui/table/data-table";
+import BoardsTableActions from "./_component/user-table-actions";
+import { Suspense } from "react";
+import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { useSearchParams } from "next/navigation";
+import { serialize } from "@/lib/searchparams";
 
 const BoardDialog = dynamic(() => import("@/components/dialogs/board-dialog"), {
   ssr: false,
@@ -28,9 +33,8 @@ async function deleteBoard(data) {
   return http().delete(`${endpoints.boards.getAll}/${data.id}`);
 }
 
-async function fetchBoards() {
-  const { data } = await http().get(endpoints.boards.getAll);
-  return data;
+async function fetchBoards(params) {
+  return await http().get(`${endpoints.boards.getAll}?${params}`);
 }
 
 export default function Categories() {
@@ -38,6 +42,9 @@ export default function Categories() {
   const [isModal, setIsModal] = useState(false);
   const [type, setType] = useState("create");
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const searchParamStr = searchParams.toString();
+  const key = serialize({ ...searchParams });
 
   function openModal() {
     setIsModal(true);
@@ -46,9 +53,9 @@ export default function Categories() {
     setIsModal(false);
   }
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: fetchBoards,
-    queryKey: ["boards"],
+  const { data, isLoading, isFetching, isError, error } = useQuery({
+    queryFn: () => fetchBoards(searchParamStr),
+    queryKey: ["boards", searchParamStr],
   });
 
   const createMutation = useMutation(createBoard, {
@@ -96,10 +103,6 @@ export default function Categories() {
     deleteMutation.mutate({ id: id });
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   if (isError) {
     toast.error(error.message ?? "error");
     return "error";
@@ -121,10 +124,21 @@ export default function Categories() {
         </Button>
       </div>
       <div>
-        <DataTable
-          columns={columns(setType, openModal, setBoardId, handleDelete)}
-          data={data}
-        />
+        <BoardsTableActions />
+        {isLoading ||
+          (isFetching && <DataTableSkeleton columnCount={4} rowCount={10} />)}
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+        >
+          {data && (
+            <DataTable
+              columns={columns(setType, openModal, setBoardId, handleDelete)}
+              data={data?.data}
+              totalItems={data.total}
+            />
+          )}
+        </Suspense>
       </div>
 
       {typeof document !== "undefined" && (

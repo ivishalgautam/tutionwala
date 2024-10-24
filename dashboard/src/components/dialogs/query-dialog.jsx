@@ -14,7 +14,6 @@ export default function QueryDialog({
   queryId,
 }) {
   const handleSave = () => setIsOpen(false);
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>

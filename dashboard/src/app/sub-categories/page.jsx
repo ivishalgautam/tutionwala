@@ -1,34 +1,38 @@
 "use client";
 import Title from "@/components/Title";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
 import { buttonVariants } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { DataTable } from "@/components/ui/table/data-table";
+import SubcatTableActions from "./_component/subcat-table-actions";
+import { Suspense } from "react";
+import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { serialize } from "@/lib/searchparams";
 
 async function deleteSubCategory(data) {
   return http().delete(`${endpoints.subCategories.getAll}/${data.id}`);
 }
 
-async function fetchSubCategories() {
-  const { data } = await http().get(endpoints.subCategories.getAll);
-  return data;
+async function fetchSubCategories(params) {
+  return await http().get(`${endpoints.subCategories.getAll}?${params}`);
 }
 
 export default function Categories() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchParamStr = searchParams.toString();
+  const key = serialize({ ...searchParams });
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: fetchSubCategories,
-    queryKey: ["sub-categories"],
+  const { data, isLoading, isFetching, isError, error } = useQuery({
+    queryFn: () => fetchSubCategories(searchParamStr),
+    queryKey: ["sub-categories", searchParamStr],
   });
-
   const deleteMutation = useMutation(deleteSubCategory, {
     onSuccess: () => {
       toast.success("Sub category deleted.");
@@ -46,10 +50,6 @@ export default function Categories() {
   const handleNavigate = (href) => {
     router.push(href);
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   if (isError) {
     toast.error(error.message);
@@ -69,10 +69,21 @@ export default function Categories() {
         </Link>
       </div>
       <div>
-        <DataTable
-          columns={columns(handleDelete, handleNavigate)}
-          data={data}
-        />
+        <SubcatTableActions />
+        {isLoading ||
+          (isFetching && <DataTableSkeleton columnCount={4} rowCount={10} />)}
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+        >
+          {data && (
+            <DataTable
+              columns={columns(handleDelete, handleNavigate)}
+              data={data.data}
+              totalItems={data.total}
+            />
+          )}
+        </Suspense>
       </div>
     </div>
   );
