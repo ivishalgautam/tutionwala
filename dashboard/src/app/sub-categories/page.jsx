@@ -62,7 +62,7 @@ export default function Categories() {
         <Title text={"Sub Categories"} />
 
         <Link
-          className={buttonVariants("default")}
+          className={buttonVariants({ variant: "outline" })}
           href={"/sub-categories/create"}
         >
           Create

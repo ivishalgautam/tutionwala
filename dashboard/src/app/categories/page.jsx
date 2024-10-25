@@ -73,7 +73,10 @@ export default function Categories() {
       <div className="flex items-center justify-between">
         <Title text={"Categories"} />
 
-        <Link className={buttonVariants("default")} href={"/categories/create"}>
+        <Link
+          className={buttonVariants({ variant: "outline" })}
+          href={"/categories/create"}
+        >
           Create
         </Link>
       </div>

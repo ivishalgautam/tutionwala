@@ -165,6 +165,7 @@ export function DataTable({
               "No entries found"
             )}
           </div>
+
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
               <p className="whitespace-nowrap text-sm font-medium">
@@ -190,6 +191,7 @@ export function DataTable({
             </div>
           </div>
         </div>
+
         <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
           <div className="flex w-[150px] items-center justify-center text-sm font-medium">
             {totalItems > 0 ? (

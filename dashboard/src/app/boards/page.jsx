@@ -6,11 +6,10 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import Spinner from "@/components/spinner";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import { DataTable } from "@/components/ui/table/data-table";
-import BoardsTableActions from "./_component/user-table-actions";
+import BoardsTableActions from "./_component/board-table-actions";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { useSearchParams } from "next/navigation";
@@ -115,6 +114,7 @@ export default function Categories() {
 
         <Button
           type="button"
+          variant="outline"
           onClick={() => {
             setType("create");
             openModal();

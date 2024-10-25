@@ -23,18 +23,20 @@ export const columns = (handleDelete, handleNavigate) => [
   {
     accessorKey: "image",
     header: ({ column }) => {
-      return <Button variant="ghost">Image</Button>;
+      return <Button variant="ghost">IMAGE</Button>;
     },
     cell: ({ row }) => {
       const image = row.original.image;
       return (
-        <Image
-          src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image}`}
-          width={50}
-          height={50}
-          alt="image"
-          className="rounded"
-        />
+        <figure className="size-8 rounded border p-1">
+          <Image
+            src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image}`}
+            width={50}
+            height={50}
+            alt="image"
+            className="h-full w-full rounded object-cover object-center"
+          />
+        </figure>
       );
     },
   },
@@ -46,7 +48,7 @@ export const columns = (handleDelete, handleNavigate) => [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
+          NAME
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -69,7 +71,7 @@ export const columns = (handleDelete, handleNavigate) => [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Courses
+          COURSES
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );

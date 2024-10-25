@@ -22,7 +22,6 @@ import ReactSelect from "react-select";
 import Spinner from "../spinner";
 import ShadcnSelect from "../ui/shadcn-select";
 import { Plus, Trash, Trash2 } from "lucide-react";
-import { Checkbox } from "../ui/checkbox";
 import { useFetchBoards } from "@/hooks/useFetchBoards";
 
 let defaultValues = {
@@ -81,7 +80,6 @@ export function SubCategoryForm({
       })),
     [isCategoryLoading, subCategoryId],
   );
-  console.log({ image });
   const onSubmit = (data) => {
     const payload = {
       name: data?.name,

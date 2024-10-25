@@ -10,35 +10,34 @@ export function useUserTableFilters() {
       .withDefault(""),
   );
 
-  const [categoriesFilter, setCategoriesFilter] = useQueryState(
-    "categories",
-    searchParams.categories.withOptions({ shallow: false }).withDefault(""),
-  );
-
   const [page, setPage] = useQueryState(
     "page",
     searchParams.page.withDefault(1),
   );
+  const [roleFilter, setRoleFilter] = useQueryState(
+    "role",
+    searchParams.role.withDefault(""),
+  );
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setCategoriesFilter(null);
+    setRoleFilter(null);
 
     setPage(1);
-  }, [setSearchQuery, setCategoriesFilter, setPage]);
+  }, [setSearchQuery, setRoleFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!categoriesFilter;
-  }, [searchQuery, categoriesFilter]);
+    return !!searchQuery || !!roleFilter;
+  }, [searchQuery, roleFilter]);
 
   return {
     searchQuery,
     setSearchQuery,
     page,
     setPage,
+    roleFilter,
+    setRoleFilter,
     resetFilters,
     isAnyFilterActive,
-    categoriesFilter,
-    setCategoriesFilter,
   };
 }

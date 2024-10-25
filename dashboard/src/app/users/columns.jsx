@@ -32,7 +32,7 @@ export const columns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fullname
+          FULLNAME
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -40,29 +40,15 @@ export const columns = (
   },
   {
     accessorKey: "mobile_number",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Phone
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "PHONE",
   },
   {
     accessorKey: "email",
-    header: ({ column }) => {
-      return <Button variant="ghost">Email</Button>;
-    },
+    header: "EMAIL",
   },
   {
     accessorKey: "role",
-    header: ({ column }) => {
-      return <Button variant="ghost">Role</Button>;
-    },
+    header: "ROLE",
     cell: (row) => {
       const role = row.getValue("role");
       return (
@@ -82,7 +68,7 @@ export const columns = (
   {
     accessorKey: "is_active",
     header: ({ column }) => {
-      return <Button variant="ghost">Status</Button>;
+      return <Button variant="ghost">STATUS</Button>;
     },
     cell: ({ row }) => {
       const is_active = row.getValue("is_active");
@@ -103,7 +89,7 @@ export const columns = (
   {
     accessorKey: "created_at",
     header: ({ column }) => {
-      return <Button variant="ghost">Registered On</Button>;
+      return <Button variant="ghost">REGISTERED ON</Button>;
     },
     cell: ({ row }) => {
       return (

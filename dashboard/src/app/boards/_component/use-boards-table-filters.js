@@ -10,11 +10,6 @@ export function useBoardsTableFilters() {
       .withDefault(""),
   );
 
-  const [categoriesFilter, setCategoriesFilter] = useQueryState(
-    "categories",
-    searchParams.categories.withOptions({ shallow: false }).withDefault(""),
-  );
-
   const [page, setPage] = useQueryState(
     "page",
     searchParams.page.withDefault(1),
@@ -22,14 +17,13 @@ export function useBoardsTableFilters() {
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setCategoriesFilter(null);
 
     setPage(1);
-  }, [setSearchQuery, setCategoriesFilter, setPage]);
+  }, [setSearchQuery, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!categoriesFilter;
-  }, [searchQuery, categoriesFilter]);
+    return !!searchQuery;
+  }, [searchQuery]);
 
   return {
     searchQuery,
@@ -38,7 +32,5 @@ export function useBoardsTableFilters() {
     setPage,
     resetFilters,
     isAnyFilterActive,
-    categoriesFilter,
-    setCategoriesFilter,
   };
 }
