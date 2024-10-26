@@ -6,9 +6,9 @@ import { MainContext } from "@/store/context";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
-import { FaDumbbell } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 
 export const logout = () => {
   if (typeof window !== "undefined") {
@@ -44,18 +44,18 @@ export default function SidebarLayout({ children }) {
   return (
     <div
       className={cn(
-        "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 md:flex-row",
+        "mx-auto flex w-full flex-1 flex-col overflow-hidden border border-neutral-200 md:flex-row",
         "h-screen",
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={false}>
         <SidebarBody className="justify-between gap-10">
-          <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden rounded-lg bg-white p-3">
+          <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-blue-50 p-3">
             {/* {open ? <Logo /> : <LogoIcon />} */}
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-start">
               <Logo />
             </div>
-            <div className="mt-8 flex flex-col gap-2">
+            <div className="mt-4 flex flex-col gap-2">
               {sidebarData.map((link, idx) => (
                 <SidebarLink
                   key={idx}
@@ -64,11 +64,14 @@ export default function SidebarLayout({ children }) {
                     href: link.path,
                     icon: link.icon,
                   }}
-                  className={cn("rounded-lg p-3 text-center", {
+                  className={cn("rounded-md p-3 py-2 text-center", {
                     "bg-primary text-white": pathname === link.path,
                   })}
                 />
               ))}
+            </div>
+
+            <div className="mt-auto">
               <SidebarLink
                 link={{
                   label: "Logout",
@@ -84,7 +87,7 @@ export default function SidebarLayout({ children }) {
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="flex flex-1 overflow-hidden p-2 *:w-full">{children}</div>
+      <div className="flex flex-1 overflow-hidden *:w-full">{children}</div>
     </div>
   );
 }
@@ -100,9 +103,12 @@ export const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="whitespace-pre font-grotesk text-xl font-extrabold text-black dark:text-white"
+        className="whitespace-pre font-grotesk font-medium text-black dark:text-white"
       >
-        Tution
+        <div className="flex items-center justify-start gap-2">
+          <LogoIcon />
+          <span>Tutionwala</span>
+        </div>
       </motion.span>
     </Link>
   );
@@ -111,9 +117,17 @@ export const LogoIcon = () => {
   return (
     <Link
       href="#"
-      className="relative z-20 flex items-center justify-center space-x-2 py-1 text-sm font-normal text-black"
+      className="relative z-20 flex flex-shrink-0 items-center justify-center space-x-2 rounded border bg-white p-1 font-normal"
     >
-      <FaDumbbell size={28} />
+      <div className="size-8">
+        <Image
+          width={50}
+          height={50}
+          src={"/images/logo.png"}
+          alt="tutionwala logo"
+          className="h-full w-full object-contain"
+        />
+      </div>
     </Link>
   );
 };

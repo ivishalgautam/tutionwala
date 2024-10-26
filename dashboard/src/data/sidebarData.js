@@ -132,6 +132,12 @@ export const ALLROUTES = [
   },
   {
     title: "Board",
+    path: "/boards/create",
+    roles: [ROLES.ADMIN],
+    icon: <Kanban size={size} />,
+  },
+  {
+    title: "Board",
     path: "/boards/subject/[id]",
     roles: [ROLES.ADMIN],
     icon: <Users size={size} />,

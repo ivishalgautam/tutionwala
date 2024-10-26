@@ -1,90 +1,38 @@
-"use client";
-import Title from "@/components/Title";
 import { columns } from "./columns";
 import { buttonVariants } from "@/components/ui/button";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import http from "@/utils/http";
-import { endpoints } from "@/utils/endpoints";
-import { toast } from "sonner";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { DataTable } from "@/components/ui/table/data-table";
 import SubcatTableActions from "./_component/subcat-table-actions";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import { serialize } from "@/lib/searchparams";
+import { searchParamsCache, serialize } from "@/lib/searchparams";
+import { Heading } from "@/components/ui/heading";
+import SubCategoryListing from "./_component/subcat-listing";
+import PageContainer from "@/components/layout/page-container";
+import { Plus } from "lucide-react";
 
-async function deleteSubCategory(data) {
-  return http().delete(`${endpoints.subCategories.getAll}/${data.id}`);
-}
-
-async function fetchSubCategories(params) {
-  return await http().get(`${endpoints.subCategories.getAll}?${params}`);
-}
-
-export default function Categories() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const searchParamStr = searchParams.toString();
+export default async function Page({ searchParams }) {
+  searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });
 
-  const { data, isLoading, isFetching, isError, error } = useQuery({
-    queryFn: () => fetchSubCategories(searchParamStr),
-    queryKey: ["sub-categories", searchParamStr],
-  });
-  const deleteMutation = useMutation(deleteSubCategory, {
-    onSuccess: () => {
-      toast.success("Sub category deleted.");
-      queryClient.invalidateQueries({ queryKey: ["sub-categories"] });
-    },
-    onError: (error) => {
-      toast.error(error.message ?? "error");
-    },
-  });
-
-  const handleDelete = async (id) => {
-    deleteMutation.mutate({ id: id });
-  };
-
-  const handleNavigate = (href) => {
-    router.push(href);
-  };
-
-  if (isError) {
-    toast.error(error.message);
-    return "error";
-  }
-
   return (
-    <div className="border-input container mx-auto rounded-lg bg-white p-8">
-      <div className="flex items-center justify-between">
-        <Title text={"Sub Categories"} />
-
+    <PageContainer>
+      <div className="flex items-start justify-between">
+        <Heading title="Sub Categories" description="Manage sub categories" />
         <Link
-          className={buttonVariants({ variant: "outline" })}
+          className={buttonVariants({ variant: "primary" })}
           href={"/sub-categories/create"}
         >
-          Create
+          <Plus size={20} /> <span className="ml-1">Add new</span>
         </Link>
       </div>
-      <div>
-        <SubcatTableActions />
-        {isLoading ||
-          (isFetching && <DataTableSkeleton columnCount={4} rowCount={10} />)}
-        <Suspense
-          key={key}
-          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
-        >
-          {data && (
-            <DataTable
-              columns={columns(handleDelete, handleNavigate)}
-              data={data.data}
-              totalItems={data.total}
-            />
-          )}
-        </Suspense>
-      </div>
-    </div>
+      <SubcatTableActions />
+      <Suspense
+        key={key}
+        fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+      >
+        <SubCategoryListing />
+      </Suspense>
+    </PageContainer>
   );
 }

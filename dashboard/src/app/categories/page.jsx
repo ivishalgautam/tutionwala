@@ -1,102 +1,67 @@
-"use client";
-import Title from "@/components/Title";
-import { columns } from "./columns";
-import { buttonVariants } from "@/components/ui/button";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import http from "@/utils/http";
-import { endpoints } from "@/utils/endpoints";
-import Spinner from "@/components/spinner";
-import { isObject } from "@/utils/object";
-import { toast } from "sonner";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { DataTable } from "@/components/ui/table/data-table";
-import CategoryTableActions from "./_component/category-table-actions";
-import { serialize } from "@/lib/searchparams";
-import SubcatTableActions from "../sub-categories/_component/subcat-table-actions";
-import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { Suspense } from "react";
+import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { searchParamsCache, serialize } from "@/lib/searchparams";
+import { Heading } from "@/components/ui/heading";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import CategoryTableActions from "./_component/category-table-actions";
+import CategoryListing from "./_component/category-listing";
+import PageContainer from "@/components/layout/page-container";
+import { Plus } from "lucide-react";
 
-async function deleteCategory(data) {
-  return http().delete(`${endpoints.categories.getAll}/${data.id}`);
-}
-
-async function fetchCategories(params) {
-  return await http().get(`${endpoints.categories.getAll}?${params}`);
-}
-
-export default function Categories() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const searchParamStr = searchParams.toString();
+export default async function Users({ searchParams }) {
+  searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });
 
-  function openModal() {
-    setIsModal(true);
-  }
-  function closeModal() {
-    setIsModal(false);
-  }
-
-  const { data, isLoading, isFetching, isError, error } = useQuery({
-    queryFn: () => fetchCategories(searchParamStr),
-    queryKey: ["categories", searchParamStr],
-  });
-  console.log(data);
-  const deleteMutation = useMutation(deleteCategory, {
-    onSuccess: () => {
-      toast.success("Category deleted.");
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      closeModal();
-    },
-    onError: (error) => {
-      toast.error(error?.message ?? "error deleting!");
-    },
-  });
-
-  const handleDelete = async (id) => {
-    deleteMutation.mutate({ id: id });
-  };
-
-  const handleNavigate = (href) => {
-    router.push(href);
-  };
-
-  if (isError) {
-    toast.error(error.message ?? "error");
-    return "error";
-  }
-
   return (
-    <div className="border-input container mx-auto rounded-lg bg-white p-8">
-      <div className="flex items-center justify-between">
-        <Title text={"Categories"} />
-
+    <PageContainer>
+      <div className="flex items-start justify-between">
+        <Heading title="Categories" description="Manage categories" />
         <Link
-          className={buttonVariants({ variant: "outline" })}
-          href={"/categories/create"}
+          className={cn(buttonVariants({ variant: "primary" }))}
+          href={"categories/create"}
         >
-          Create
+          <Plus size={20} /> <span className="ml-1">Add new</span>
         </Link>
       </div>
-      <div>
-        <CategoryTableActions />
-        {isLoading ||
-          (isFetching && <DataTableSkeleton columnCount={4} rowCount={10} />)}
-        <Suspense
-          key={key}
-          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
-        >
-          {data && (
-            <DataTable
-              columns={columns(handleDelete, handleNavigate)}
-              data={data.data.map((category) => category)}
-              totalItems={data.total}
-            />
-          )}
-        </Suspense>
-      </div>
-    </div>
+      <CategoryTableActions />
+      <Suspense
+        key={key}
+        fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+      >
+        <CategoryListing />
+      </Suspense>
+    </PageContainer>
+  );
+}
+
+function NavigateDropdown() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="">
+          <DotsVerticalIcon className="h-3 w-3" />
+          <span className="ml-1">Create</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>
+          <Link href={"/users/create/student"}>Student</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link href={"/users/create/tutor"}>Tutor</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
