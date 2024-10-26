@@ -18,6 +18,10 @@ import CategoryListing from "./_component/category-listing";
 import PageContainer from "@/components/layout/page-container";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Categories",
+};
+
 export default async function Users({ searchParams }) {
   searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });

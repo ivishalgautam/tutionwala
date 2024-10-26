@@ -11,6 +11,10 @@ import SubCategoryListing from "./_component/subcat-listing";
 import PageContainer from "@/components/layout/page-container";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Sub categories",
+};
+
 export default async function Page({ searchParams }) {
   searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });

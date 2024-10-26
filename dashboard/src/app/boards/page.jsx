@@ -10,6 +10,10 @@ import { buttonVariants } from "@/components/ui/button";
 import PageContainer from "@/components/layout/page-container";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Boards",
+};
+
 export default async function Page({ searchParams }) {
   searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });

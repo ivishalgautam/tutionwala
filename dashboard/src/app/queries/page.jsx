@@ -6,6 +6,10 @@ import { Heading } from "@/components/ui/heading";
 import QueryListing from "./_component/query-listing";
 import PageContainer from "@/components/layout/page-container";
 
+export const metadata = {
+  title: "Queries",
+};
+
 export default async function Queries({ searchParams }) {
   searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });
