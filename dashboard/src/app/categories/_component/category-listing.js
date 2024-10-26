@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { DataTable } from "@/components/ui/table/data-table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
@@ -35,6 +35,7 @@ export default function CategoryListing() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryFn: () => fetchCategories(searchParamStr),
     queryKey: ["categories", searchParamStr],
+    enabled: !!searchParamStr,
   });
   const deleteMutation = useMutation(deleteCategory, {
     onSuccess: () => {
@@ -55,9 +56,14 @@ export default function CategoryListing() {
     router.push(href);
   };
 
-  if (isLoading) {
-    return "loading...";
-  }
+  useEffect(() => {
+    if (!searchParamStr) {
+      const params = new URLSearchParams();
+      params.set("page", 1);
+      params.set("limit", 10);
+      router.replace(`?${params.toString()}`);
+    }
+  }, [searchParamStr, router]);
 
   if (isLoading || isFetching)
     return <DataTableSkeleton columnCount={4} rowCount={10} />;

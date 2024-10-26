@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { toast } from "sonner";
-import { isObject } from "@/utils/object";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 const UserDialog = dynamic(() => import("@/components/dialogs/user-dialog"), {
   ssr: false,
@@ -15,6 +14,7 @@ import React from "react";
 import { columns } from "../columns";
 import { endpoints } from "@/utils/endpoints";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { searchParamsCache } from "@/lib/searchparams";
 async function deleteCustomer(data) {
   return http().delete(`${endpoints.users.getAll}/${data.id}`);
 }
@@ -22,16 +22,19 @@ async function deleteCustomer(data) {
 const fetchUsers = async (params) => {
   return await http().get(`${endpoints.users.getAll}?${params}`);
 };
+
 export default function UserListing() {
   const [isModal, setIsModal] = useState(false);
   const [userId, setUserId] = useState("");
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const searchParamsStr = searchParams.toString();
+  const router = useRouter();
 
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryFn: () => fetchUsers(searchParamsStr),
     queryKey: ["users", searchParamsStr],
+    enabled: !!searchParamsStr,
   });
 
   const deleteMutation = useMutation(deleteCustomer, {
@@ -40,11 +43,7 @@ export default function UserListing() {
       queryClient.invalidateQueries("users");
     },
     onError: (error) => {
-      if (isObject(error)) {
-        toast.error(error.message);
-      } else {
-        toast.error(error);
-      }
+      toast.error(error?.message ?? "error deleting!");
     },
   });
 
@@ -86,6 +85,15 @@ export default function UserListing() {
     updateMutation.mutate(data);
   };
 
+  useEffect(() => {
+    if (!searchParamsStr) {
+      const params = new URLSearchParams();
+      params.set("page", 1);
+      params.set("limit", 10);
+      router.replace(`?${params.toString()}`);
+    }
+  }, [searchParamsStr, router]);
+
   if (isLoading || isFetching)
     return <DataTableSkeleton columnCount={6} rowCount={10} />;
 
@@ -93,17 +101,13 @@ export default function UserListing() {
 
   return (
     <div className="border-input rounded-lg">
-      <div>
-        {data && (
-          <DataTable
-            columns={columns(handleDelete, handleUserStatus, setUserId, () =>
-              setIsModal(true),
-            )}
-            data={data.data}
-            totalItems={data.total}
-          />
+      <DataTable
+        columns={columns(handleDelete, handleUserStatus, setUserId, () =>
+          setIsModal(true),
         )}
-      </div>
+        data={data.data}
+        totalItems={data.total}
+      />
       {typeof document !== "undefined" && (
         <UserDialog
           handleUpdate={handleUpdate}

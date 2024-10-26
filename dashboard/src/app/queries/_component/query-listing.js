@@ -1,12 +1,12 @@
 "use client";
 import { columns } from "../columns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { toast } from "sonner";
 import QueryDialog from "@/components/dialogs/query-dialog";
 import { DataTable } from "@/components/ui/table/data-table";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { serialize } from "@/lib/searchparams";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { endpoints } from "@/utils/endpoints";
@@ -25,7 +25,7 @@ export default function QueryListing() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const searchParamStr = searchParams.toString();
-  const key = serialize({ ...searchParams });
+  const router = useRouter();
 
   function openModal() {
     setIsModal(true);
@@ -37,6 +37,7 @@ export default function QueryListing() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryFn: () => fetchQueries(searchParamStr),
     queryKey: ["queries", searchParamStr],
+    enabled: !!searchParamStr,
   });
 
   const deleteMutation = useMutation(deleteQuery, {
@@ -53,6 +54,15 @@ export default function QueryListing() {
   const handleDelete = async (id) => {
     deleteMutation.mutate({ id });
   };
+
+  useEffect(() => {
+    if (!searchParamStr) {
+      const params = new URLSearchParams();
+      params.set("page", 1);
+      params.set("limit", 10);
+      router.replace(`?${params.toString()}`);
+    }
+  }, [searchParamStr, router]);
 
   if (isLoading || isFetching)
     return <DataTableSkeleton columnCount={4} rowCount={10} />;

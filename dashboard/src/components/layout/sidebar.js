@@ -115,10 +115,7 @@ export const Logo = () => {
 };
 export const LogoIcon = () => {
   return (
-    <Link
-      href="#"
-      className="relative z-20 flex flex-shrink-0 items-center justify-center space-x-2 rounded border bg-white p-1 font-normal"
-    >
+    <div className="relative z-20 flex flex-shrink-0 items-center justify-center space-x-2 rounded border bg-white p-1 font-normal">
       <div className="size-8">
         <Image
           width={50}
@@ -128,6 +125,6 @@ export const LogoIcon = () => {
           className="h-full w-full object-contain"
         />
       </div>
-    </Link>
+    </div>
   );
 };

@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import Sidebar from "./sidebar";
 import { useEffect } from "react";
 import { ALLROUTES } from "@/data/sidebarData";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function Layout({ children }) {
   const pathname = usePathname();
@@ -50,6 +51,7 @@ export default function Layout({ children }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools />
       <Toaster richColors />
       {getContent()}
     </QueryClientProvider>

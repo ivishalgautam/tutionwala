@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PageContainer from "@/components/layout/page-container";
@@ -20,7 +19,6 @@ import { Plus } from "lucide-react";
 export default async function Users({ searchParams }) {
   searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });
-
   return (
     <PageContainer>
       <div className="flex items-start justify-between">

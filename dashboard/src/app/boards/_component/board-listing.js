@@ -1,13 +1,13 @@
 "use client";
 import { columns } from "../columns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import { DataTable } from "@/components/ui/table/data-table";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { serialize } from "@/lib/searchparams";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
@@ -39,7 +39,7 @@ export default function BoardListing() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const searchParamStr = searchParams.toString();
-  const key = serialize({ ...searchParams });
+  const router = useRouter();
 
   function openModal() {
     setIsModal(true);
@@ -51,6 +51,7 @@ export default function BoardListing() {
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryFn: () => fetchBoards(searchParamStr),
     queryKey: ["boards", searchParamStr],
+    enabled: !!searchParamStr,
   });
 
   const createMutation = useMutation(createBoard, {
@@ -97,6 +98,15 @@ export default function BoardListing() {
   const handleDelete = async (id) => {
     deleteMutation.mutate({ id: id });
   };
+
+  useEffect(() => {
+    if (!searchParamStr) {
+      const params = new URLSearchParams();
+      params.set("page", 1);
+      params.set("limit", 10);
+      router.replace(`?${params.toString()}`);
+    }
+  }, [searchParamStr, router]);
 
   if (isLoading || isFetching)
     return <DataTableSkeleton columnCount={3} rowCount={10} />;

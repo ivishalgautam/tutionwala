@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { DataTable } from "@/components/ui/table/data-table";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { serialize } from "@/lib/searchparams";
+import { useEffect } from "react";
 
 async function deleteSubCategory(data) {
   return http().delete(`${endpoints.subCategories.getAll}/${data.id}`);
@@ -22,11 +23,11 @@ export default function SubCategoryListing() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchParamStr = searchParams.toString();
-  const key = serialize({ ...searchParams });
 
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryFn: () => fetchSubCategories(searchParamStr),
     queryKey: ["sub-categories", searchParamStr],
+    enabled: !!searchParamStr,
   });
   const deleteMutation = useMutation(deleteSubCategory, {
     onSuccess: () => {
@@ -45,6 +46,15 @@ export default function SubCategoryListing() {
   const handleNavigate = (href) => {
     router.push(href);
   };
+
+  useEffect(() => {
+    if (!searchParamStr) {
+      const params = new URLSearchParams();
+      params.set("page", 1);
+      params.set("limit", 10);
+      router.replace(`?${params.toString()}`);
+    }
+  }, [searchParamStr, router]);
 
   if (isLoading || isFetching)
     return <DataTableSkeleton columnCount={3} rowCount={10} />;

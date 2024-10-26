@@ -55,7 +55,6 @@ export function DataTable({
       .withOptions({ shallow: false, history: "push" })
       .withDefault(10),
   );
-
   const paginationState = {
     pageIndex: currentPage - 1,
     pageSize: pageSize,
