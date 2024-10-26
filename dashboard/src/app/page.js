@@ -63,8 +63,12 @@ export default function Home() {
           }}
         />
       </div>
-      {/* <pre>{JSON.stringify(report, undefined, 2)}</pre>
-      <pre>{JSON.stringify(last30DaysReport, undefined, 2)}</pre> */}
+      {/* <pre>
+        <code>{JSON.stringify(report, undefined, 2)}</code>
+      </pre>
+      <pre>
+        <code>{JSON.stringify(last30DaysReport, undefined, 2)}</code>
+      </pre> */}
     </PageContainer>
   );
 }

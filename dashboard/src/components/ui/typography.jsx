@@ -110,6 +110,6 @@ export function Small({ children, className }) {
 
 export function Muted({ children, className }) {
   return (
-    <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>
+    <p className={cn("text-muted-foreground text-sm", className)}>{children}</p>
   );
 }
