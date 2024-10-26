@@ -16,6 +16,9 @@ export const endpoints = {
   categories: {
     getAll: "/categories",
   },
+  reports: {
+    getAll: "/reports",
+  },
   subCategories: {
     getAll: "/subCategories",
   },
