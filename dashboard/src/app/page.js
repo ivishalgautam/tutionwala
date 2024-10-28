@@ -117,7 +117,7 @@ function Card({ count = 0, title = "", icon = "" }) {
       <div className="rounded-full bg-blue-50 p-3">{icon}</div>
       <div className="flex flex-col items-start justify-start">
         <span className="text-xl font-bold text-primary">{count}</span>
-        <span className="text-xs font-medium">{title}</span>
+        <span className="text-xs font-medium tracking-wide">{title}</span>
       </div>
     </div>
   );

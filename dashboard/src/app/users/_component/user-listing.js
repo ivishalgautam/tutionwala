@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { toast } from "sonner";
@@ -14,7 +14,7 @@ import React from "react";
 import { columns } from "../columns";
 import { endpoints } from "@/utils/endpoints";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import { searchParamsCache } from "@/lib/searchparams";
+
 async function deleteCustomer(data) {
   return http().delete(`${endpoints.users.getAll}/${data.id}`);
 }
@@ -100,7 +100,7 @@ export default function UserListing() {
   if (isError) return error?.message ?? "error";
 
   return (
-    <div className="border-input rounded-lg">
+    <div className="border-input w-full rounded-lg">
       <DataTable
         columns={columns(handleDelete, handleUserStatus, setUserId, () =>
           setIsModal(true),

@@ -170,6 +170,7 @@ export default function UserForm({ type, handleUpdate, userId }) {
                       value={field.value}
                       onChange={field.onChange}
                       defaultCountry="IN"
+                      disabled
                     />
                   )}
                 />

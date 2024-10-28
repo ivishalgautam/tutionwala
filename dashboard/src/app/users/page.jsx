@@ -23,6 +23,7 @@ export const metadata = {
 export default async function Users({ searchParams }) {
   searchParamsCache.parse(searchParams);
   const key = serialize({ ...searchParams });
+
   return (
     <PageContainer>
       <div className="flex items-start justify-between">
