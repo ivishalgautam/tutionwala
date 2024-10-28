@@ -77,7 +77,7 @@ export default function StudentReviewCards() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center gap-12 overflow-x-hidden rounded-lg border bg-background py-20">
-      <div className="space-y-4">
+      <div className="space-y-2">
         <Small
           className={"flex items-center justify-center gap-1 text-primary"}
         >
