@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { H4, Muted } from "../ui/typography";
-import EnquiryForm from "../forms/enquiry";
+import EnquiryForm from "../../forms/enquiry";
 import { Badge } from "../ui/badge";
 
 import Review from "../review";

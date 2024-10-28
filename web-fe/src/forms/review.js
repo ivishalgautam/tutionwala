@@ -1,9 +1,9 @@
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Controller, useForm } from "react-hook-form";
-import { Textarea } from "../ui/textarea";
-import { H4 } from "../ui/typography";
-import { Button } from "../ui/button";
+import { Textarea } from "../components/ui/textarea";
+import { H4 } from "../components/ui/typography";
+import { Button } from "../components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import http from "@/utils/http";

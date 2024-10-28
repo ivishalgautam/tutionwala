@@ -1,5 +1,5 @@
 "use client";
-import CompleteProfileTutor from "@/components/forms/complete-profile-tutor";
+import CompleteProfileTutor from "@/forms/complete-profile-tutor";
 import { MainContext } from "@/store/context";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";

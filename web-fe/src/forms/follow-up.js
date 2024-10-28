@@ -1,19 +1,23 @@
 "use client";
 import { Controller, useForm } from "react-hook-form";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "../components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { getFormattedDateTime } from "@/lib/time";
 import { useEffect } from "react";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import { H4 } from "../ui/typography";
+import { H4 } from "../components/ui/typography";
 
 const fetchFollowUp = async (id) => {
   const { data } = await http().get(`${endpoints.followUps.getAll}/${id}`);

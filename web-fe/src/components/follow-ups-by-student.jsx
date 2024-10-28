@@ -4,7 +4,7 @@ import FollowUpCard from "./card/follow-up";
 import { Button } from "./ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
 import Modal from "./Modal";
-import CreateFollowUpForm from "./forms/follow-up";
+import CreateFollowUpForm from "../forms/follow-up";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";

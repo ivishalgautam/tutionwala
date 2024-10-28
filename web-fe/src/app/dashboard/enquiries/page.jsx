@@ -9,7 +9,7 @@ import { DataTable as TutorsEnquiryDataTable } from "@/components/table/enquirie
 import { DataTable as StudentsEnquiryDataTable } from "@/components/table/enquiries/students/data-table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Modal from "@/components/Modal";
-import ReviewForm from "@/components/forms/review";
+import ReviewForm from "@/forms/review";
 import { MainContext } from "@/store/context";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";

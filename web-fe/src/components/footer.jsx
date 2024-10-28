@@ -101,9 +101,10 @@ export const FooterTwo = ({ isError, error, isLoading, courses }) => {
       <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-7 md:col-span-8 lg:col-span-10">
         <Muted className={"font-medium"}>Tutors By Subjects</Muted>
         <div>
-          {isError && (error?.message ?? "error")}
           {isLoading ? (
             <Loading />
+          ) : isError ? (
+            (error?.message ?? "error")
           ) : (
             <Courses {...{ courses, totalSlices: 5, sliceCount: 5 }} />
           )}

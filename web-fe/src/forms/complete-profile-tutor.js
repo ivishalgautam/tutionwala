@@ -40,12 +40,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Progress } from "../ui/progress";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Progress } from "../components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { getCurrentCoords } from "@/lib/get-current-coords";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "../components/ui/checkbox";
 import { useRouter } from "next/navigation";
-import ShadcnSelect from "../ui/shadcn-select";
+import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
 

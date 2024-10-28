@@ -1,5 +1,5 @@
 "use client";
-import CompleteProfileStudent from "@/components/forms/complete-profile-student";
+import CompleteProfileStudent from "@/forms/complete-profile-student";
 import { MainContext } from "@/store/context";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";

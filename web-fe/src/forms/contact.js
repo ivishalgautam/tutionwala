@@ -6,8 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
-import { H2 } from "../ui/typography";
+import { Button } from "../components/ui/button";
+import { H2 } from "../components/ui/typography";
 import { cn } from "@/lib/utils";
 
 const createQuery = async (data) => {

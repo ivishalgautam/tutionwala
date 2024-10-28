@@ -1,6 +1,6 @@
 "use client";
-import LoginForm from "@/components/forms/login";
-import OTPForm from "@/components/forms/otp";
+import LoginForm from "@/forms/login";
+import OTPForm from "@/forms/otp";
 import AuthLayout from "@/components/layout/auth-layout";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useRouter } from "next/navigation";

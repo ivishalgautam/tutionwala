@@ -1,5 +1,5 @@
 "use client";
-import CreateCourse from "@/components/forms/create-course";
+import CreateCourse from "@/forms/create-course";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useMutation } from "@tanstack/react-query";

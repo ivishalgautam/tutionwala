@@ -1,11 +1,15 @@
 "use client";
-import { Button } from "../ui/button";
-import { H3 } from "../ui/typography";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Button } from "../components/ui/button";
+import { H3 } from "../components/ui/typography";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { CheckIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import {
   Command,
@@ -14,14 +18,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../ui/command";
+} from "../components/ui/command";
 import { useQuery } from "@tanstack/react-query";
-import SubCategorySelect from "../select/sub-category-select";
+import SubCategorySelect from "../components/select/sub-category-select";
 import { useSearchParams } from "next/navigation";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { cn } from "@/lib/utils";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "../components/ui/checkbox";
 
 const fetchSubCategory = async (slug) => {
   const { data } = await http().get(

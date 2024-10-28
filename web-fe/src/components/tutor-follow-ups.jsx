@@ -2,7 +2,7 @@
 import { useState } from "react";
 import FollowUpCard from "./card/follow-up";
 import Modal from "./Modal";
-import CreateFollowUpForm from "./forms/follow-up";
+import CreateFollowUpForm from "../forms/follow-up";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";

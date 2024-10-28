@@ -14,12 +14,23 @@ const Footer = dynamic(() => import("../footer").then((data) => data.Footer), {
 import dynamic from "next/dynamic";
 import Loading from "../loading";
 import HeaderLoader from "../loaders/header";
+import Lenis from "lenis";
 
 export default function Layout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const { slug } = useParams();
   const { user, isUserLoading } = useContext(MainContext);
+
+  useEffect(() => {
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }, []);
+
   useEffect(() => {
     if (
       pathname === "/login" ||
@@ -38,6 +49,7 @@ export default function Layout({ children }) {
     const currentRoute = allRoutes?.find(
       (route) => route.link.replace("[slug]", slug) === pathname,
     );
+
     if (user?.role === "tutor") {
       async function getTutorDetails(id) {
         const { data } = await http().get(

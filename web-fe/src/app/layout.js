@@ -4,6 +4,7 @@ import QueryProvider from "@/components/QueryClientProvider";
 import { Toaster } from "sonner";
 import Context from "@/store/context";
 import Layout from "@/components/layout";
+import { ViewTransitions } from "next-view-transitions";
 
 // const montserrat = Montserrat({
 //   weight: ["300", "400", "500", "700"],
@@ -19,15 +20,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`font-switzer`} suppressHydrationWarning={true}>
-        <Context>
-          <Toaster richColors />
-          <QueryProvider>
-            <Layout>{children}</Layout>
-          </QueryProvider>
-        </Context>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en">
+        <body className={`font-switzer`} suppressHydrationWarning={true}>
+          <Context>
+            <Toaster richColors />
+            <QueryProvider>
+              <Layout>{children}</Layout>
+            </QueryProvider>
+          </Context>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

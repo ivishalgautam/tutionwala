@@ -6,8 +6,8 @@ import {
 } from "@/components/ui/input-otp";
 import { H1, Small } from "@/components/ui/typography";
 import { useForm, Controller } from "react-hook-form";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
+import { Label } from "../components/ui/label";
+import { Button } from "../components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";

@@ -1,6 +1,6 @@
 "use client";
-import PersonalInfoForm from "@/components/forms/personal-info";
-import TutorProfileForm from "@/components/forms/tutor-profile";
+import PersonalInfoForm from "@/forms/personal-info";
+import TutorProfileForm from "@/forms/tutor-profile";
 import Loading from "@/components/loading";
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";

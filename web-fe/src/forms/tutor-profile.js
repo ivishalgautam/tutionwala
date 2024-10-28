@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { H5 } from "../ui/typography";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { H5 } from "../components/ui/typography";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -10,10 +10,10 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Plus, Trash, TrashIcon } from "lucide-react";
-import { Progress } from "../ui/progress";
+import { Progress } from "../components/ui/progress";
 import Image from "next/image";
-import { Textarea } from "../ui/textarea";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Textarea } from "../components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -21,10 +21,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../components/ui/select";
 import axios from "axios";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import ShadcnSelect from "../ui/shadcn-select";
+import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 
 const fetchProfile = async (id) => {

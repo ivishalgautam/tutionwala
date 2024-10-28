@@ -1,12 +1,12 @@
 "use client";
 import { useContext, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "../components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import { MainContext } from "@/store/context";
-import Modal from "../Modal";
+import Modal from "../components/Modal";
 import LoginForm from "./login";
 import OTPForm from "./otp";
 

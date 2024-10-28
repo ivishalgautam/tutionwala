@@ -1,4 +1,4 @@
-import ContactForm from "@/components/forms/contact";
+import ContactForm from "@/forms/contact";
 import {
   Breadcrumb,
   BreadcrumbItem,

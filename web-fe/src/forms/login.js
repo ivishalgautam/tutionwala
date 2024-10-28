@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { H1, P } from "../ui/typography";
+import { H1, P } from "../components/ui/typography";
 import { Label } from "@radix-ui/react-label";
-import { Input } from "../ui/input";
-import { Button, buttonVariants } from "../ui/button";
+import { Input } from "../components/ui/input";
+import { Button, buttonVariants } from "../components/ui/button";
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../ui/alert-dialog";
+} from "../components/ui/alert-dialog";
 import Image from "next/image";
 import { X } from "lucide-react";
 

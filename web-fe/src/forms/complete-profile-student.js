@@ -41,9 +41,9 @@ import { useEffect, useState } from "react";
 import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { getCurrentCoords } from "@/lib/get-current-coords";
-import { FilterAddress } from "../tutors-with-filter";
+import { FilterAddress } from "../components/tutors-with-filter";
 import { useSearchParams } from "next/navigation";
-import { Progress } from "../ui/progress";
+import { Progress } from "../components/ui/progress";
 
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(

@@ -1,4 +1,4 @@
-import EnquiryForm from "@/components/forms/enquiry";
+import EnquiryForm from "@/forms/enquiry";
 import Review from "@/components/review";
 import { H3, H4, Muted } from "@/components/ui/typography";
 import { endpoints } from "@/utils/endpoints";

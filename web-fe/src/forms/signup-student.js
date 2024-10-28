@@ -1,20 +1,24 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { H2, H4, P } from "../ui/typography";
+import { H2, H4, P } from "../components/ui/typography";
 import { Label } from "@radix-ui/react-label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
-import ShadcnSelect from "../ui/shadcn-select";
+import ShadcnSelect from "../components/ui/shadcn-select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Edit } from "lucide-react";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "../components/ui/input-otp";
 import { formatTime } from "@/utils/time";
 import { useRouter } from "next/navigation";
 import useMapLoader from "@/hooks/useMapLoader";
