@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Marquee from "./marquee";
-import { H2, Muted, Small } from "./ui/typography";
+import { Muted, Small } from "./ui/typography";
 import { Lightbulb } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import http from "@/utils/http";
@@ -10,6 +10,7 @@ import { endpoints } from "@/utils/endpoints";
 import Loading from "./loading";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
+import { Heading } from "./ui/heading";
 
 const reviews = [
   {
@@ -83,10 +84,7 @@ export default function StudentReviewCards() {
           <Lightbulb size={20} />{" "}
           <span className="tracking-wide">Student Review</span>
         </Small>
-        <H2 className={"text-center"}>Our Students Feedback</H2>
-        <Muted className={"text-center"}>
-          You&apos;ll find something to spark your curiosity and enhance
-        </Muted>
+        <Heading title={"Our Students Feedback"} description={""} />
       </div>
 
       <div>

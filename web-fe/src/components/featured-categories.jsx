@@ -2,7 +2,7 @@
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useQuery } from "@tanstack/react-query";
-import { H2, Muted, Small } from "./ui/typography";
+import { Small } from "./ui/typography";
 import useEmblaCarousel from "embla-carousel-react";
 import {
   NextButton,
@@ -11,6 +11,7 @@ import {
 } from "./carousel/EmblaCarouselArrowButtons";
 import CategoryCard from "./card/category";
 import CategoryLoader from "./loaders/category";
+import { Heading } from "./ui/heading";
 
 async function fetchFeaturedCategories() {
   const { data } = await http().get(
@@ -41,7 +42,7 @@ export default function FeaturedCategories() {
 
   return (
     <div className="bg-patterns px-4 py-20 md:px-10 lg:p-16">
-      <div className="space-y-4">
+      <div className="space-y-2">
         <Small
           className={
             "block text-center font-medium uppercase tracking-wide text-primary"
@@ -49,12 +50,12 @@ export default function FeaturedCategories() {
         >
           Top Category
         </Small>
-        <H2 className={"mx-auto w-max text-center"}>
-          Explore our top categories
-        </H2>
-        <Muted className={"block text-center"}>
-          You&apos;ll find something to spark your curiosity and enhance
-        </Muted>
+        <Heading
+          title={"Explore our top categories"}
+          description={
+            "You'll find something to spark your curiosity and enhance"
+          }
+        />
       </div>
       <section className="embla">
         <div className="embla__viewport" ref={emblaRef}>
