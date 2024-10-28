@@ -40,9 +40,6 @@ export default function LoginForm({ setIsOtpSent, setPhone }) {
         credentials,
       );
       setIsOtpSent(true);
-      // localStorage.setItem("user", JSON.stringify(response.user_data));
-      // localStorage.setItem("token", response.token);
-      // localStorage.setItem("refreshToken", response.refresh_token);
 
       return response.data;
     } catch (error) {
@@ -59,7 +56,7 @@ export default function LoginForm({ setIsOtpSent, setPhone }) {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-start text-start">
         <div className="w-full space-y-6">
           <div className="relative mb-8 before:absolute before:-bottom-5 before:left-0 before:h-1.5 before:w-20 before:bg-black">
             <H1>Login</H1>

@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children }) => {
             />
           </svg>
         </button>
-        <div className="flex min-h-[200px] w-full flex-col justify-start overflow-auto p-6">
+        <div className="flex min-h-[200px] w-full flex-col items-start justify-start overflow-auto p-6">
           {children}
         </div>
       </div>

@@ -61,7 +61,7 @@ export default function TutorsWithFilter() {
   const page = Number(searchParams.get("page") ?? 1);
   const limit = Number(searchParams.get("limit") ?? 10);
   const router = useRouter();
-
+  const searchParamsStr = searchParams.toString();
   // show filtered data
   // const allowedFilterKeys = [
   //   "category",
@@ -125,8 +125,9 @@ export default function TutorsWithFilter() {
   // );
 
   const { data, isLoading } = useQuery({
-    queryFn: () => fetchTutors(searchParams.toString()),
-    queryKey: ["tutors", searchParams.toString()],
+    queryFn: () => fetchTutors(searchParamsStr),
+    queryKey: ["tutors", searchParamsStr],
+    enabled: !!searchParamsStr,
   });
   const paginationCount = Math.ceil(data?.total / limit);
 
@@ -147,13 +148,13 @@ export default function TutorsWithFilter() {
   const onSubmit = (data) => {};
 
   useEffect(() => {
-    if (!page) {
-      router.push(`?${createQueryString("page", 1)}`);
+    if (!searchParamsStr) {
+      const params = new URLSearchParams();
+      params.set("page", 1);
+      params.set("limit", 10);
+      router.replace(`?${params.toString()}`);
     }
-    if (!limit) {
-      router.push(`?${createQueryString("limit", 10)}`);
-    }
-  }, [page, limit, createQueryString, router]);
+  }, [searchParamsStr, router]);
 
   return (
     <div className="bg-gray-100">
