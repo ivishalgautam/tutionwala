@@ -150,26 +150,41 @@ export default function NavbarComponent() {
             <>
               {user?.role !== "tutor" && (
                 <>
-                  <NavbarItem active={pathname === "/"}>
-                    <Link href={"/"}>Home</Link>
-                  </NavbarItem>
-                  <NavbarItem active={pathname === "/tutors"}>
-                    <Link href={"/tutors"}>Tutors</Link>
-                  </NavbarItem>
-                  <NavbarItem active={pathname === "/about"}>
-                    <Link href={"/about"}>About Us</Link>
-                  </NavbarItem>
-                  <NavbarItem active={pathname === "/contact"}>
-                    <Link href={"/contact"}>Contact Us</Link>
-                  </NavbarItem>
+                  <FadeUp delay={0.1} y={15}>
+                    <NavbarItem active={pathname === "/"}>
+                      <Link href={"/"}>Home</Link>
+                    </NavbarItem>
+                  </FadeUp>
+
+                  <FadeUp delay={0.2} y={15}>
+                    <NavbarItem active={pathname === "/tutors"}>
+                      <Link href={"/tutors"}>Tutors</Link>
+                    </NavbarItem>
+                  </FadeUp>
+
+                  <FadeUp delay={0.3} y={15}>
+                    <NavbarItem active={pathname === "/about"}>
+                      <Link href={"/about"}>About Us</Link>
+                    </NavbarItem>
+                  </FadeUp>
+
+                  <FadeUp delay={0.4} y={15}>
+                    <NavbarItem active={pathname === "/contact"}>
+                      <Link href={"/contact"}>Contact Us</Link>
+                    </NavbarItem>
+                  </FadeUp>
                 </>
               )}
-              <NavbarItem>
-                <Link href={"/login"}>Login</Link>
-              </NavbarItem>
-              <NavbarItem active={true}>
-                <Link href={"/signup/tutor"}>Signup as Tutor</Link>
-              </NavbarItem>
+              <FadeUp delay={0.5} y={15}>
+                <NavbarItem>
+                  <Link href={"/login"}>Login</Link>
+                </NavbarItem>
+              </FadeUp>
+              <FadeUp delay={0.6} y={15}>
+                <NavbarItem active={true}>
+                  <Link href={"/signup/tutor"}>Signup as Tutor</Link>
+                </NavbarItem>
+              </FadeUp>
             </>
           )}
         </NavbarCollapse>
