@@ -132,7 +132,6 @@ export default function Page({ params: { subCatSlug } }) {
   };
 
   const onSubmit = (formData) => {
-    console.log({ formData });
     setIsFilterationComplete(true);
     tutors.mutate({ ...formData, subCatSlug });
   };

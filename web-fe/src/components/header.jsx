@@ -24,8 +24,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { LucideLogOut } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import Loading from "./loading";
 import CategoryMenuLoader from "./loaders/category-menu";
+import FadeUp from "./fade-up";
 
 export default function NavbarComponent() {
   const { user, setUser, isUserLoading } = useContext(MainContext);
@@ -37,70 +37,87 @@ export default function NavbarComponent() {
       <NavbarContainer>
         <NavbarBrand>
           <div className="flex items-center justify-start gap-8">
-            <Link href={"/"} className={`text-3xl`}>
-              <figure className="aspect-video w-24">
-                <Image
-                  src={"/images/logo.jpeg"}
-                  width={200}
-                  height={200}
-                  alt="logo"
-                  className="h-full w-full rounded-lg object-cover object-center"
-                  priority={false}
-                />
-              </figure>
-            </Link>
-            <div>{user?.role !== "tutor" && <CategoryMenu />}</div>
+            <FadeUp x={-100} rotate={-45} delay={0.6} duration={1}>
+              <Link href={"/"} className={`text-3xl`}>
+                <figure className="aspect-video w-24">
+                  <Image
+                    src={"/images/logo.jpeg"}
+                    width={200}
+                    height={200}
+                    alt="logo"
+                    className="h-full w-full rounded-lg object-cover object-center"
+                    priority={false}
+                  />
+                </figure>
+              </Link>
+            </FadeUp>
+            <FadeUp x={-100} delay={0.5}>
+              <div>{user?.role !== "tutor" && <CategoryMenu />}</div>
+            </FadeUp>
           </div>
         </NavbarBrand>
         {user?.role !== "tutor" && (
           <NavbarList>
-            <NavbarItem active={pathname === "/"}>
-              <Link href={"/"}>Home</Link>
-            </NavbarItem>
-            <NavbarItem active={pathname === "/tutors"}>
-              <Link href={"/tutors"}>Tutors</Link>
-            </NavbarItem>
-            <NavbarItem active={pathname === "/about"}>
-              <Link href={"/about"}>About Us</Link>
-            </NavbarItem>
-            <NavbarItem active={pathname === "/contact"}>
-              <Link href={"/contact"}>Contact Us</Link>
-            </NavbarItem>
+            <FadeUp delay={0.1} y={-15}>
+              <NavbarItem active={pathname === "/"}>
+                <Link href={"/"}>Home</Link>
+              </NavbarItem>
+            </FadeUp>
+
+            <FadeUp delay={0.2} y={-15}>
+              <NavbarItem active={pathname === "/tutors"}>
+                <Link href={"/tutors"}>Tutors</Link>
+              </NavbarItem>
+            </FadeUp>
+
+            <FadeUp delay={0.3} y={-15}>
+              <NavbarItem active={pathname === "/about"}>
+                <Link href={"/about"}>About Us</Link>
+              </NavbarItem>
+            </FadeUp>
+
+            <FadeUp delay={0.4} y={-15}>
+              <NavbarItem active={pathname === "/contact"}>
+                <Link href={"/contact"}>Contact Us</Link>
+              </NavbarItem>
+            </FadeUp>
           </NavbarList>
         )}
-        {isUserLoading ? (
-          <Loader />
-        ) : user ? (
-          <NavbarList>
-            <Link
-              className={buttonVariants({ variant: "default" })}
-              href={"/dashboard/enquiries"}
-            >
-              Dashboard
-            </Link>
-            <Button
-              type="button"
-              onClick={() => {
-                localStorage.clear();
-                setUser("");
-                router.replace("/login");
-              }}
-              variant="outline"
-            >
-              <LucideLogOut size={15} />
-              &nbsp;Logout
-            </Button>
-          </NavbarList>
-        ) : (
-          <NavbarList>
-            <NavbarItem>
-              <Link href={"/login"}>Login</Link>
-            </NavbarItem>
-            <NavbarItem active={true}>
-              <Link href={"/signup/tutor"}>Signup as Tutor</Link>
-            </NavbarItem>
-          </NavbarList>
-        )}
+        <FadeUp x={100} delay={0.5}>
+          {isUserLoading ? (
+            <Loader />
+          ) : user ? (
+            <NavbarList>
+              <Link
+                className={buttonVariants({ variant: "default" })}
+                href={"/dashboard/enquiries"}
+              >
+                Dashboard
+              </Link>
+              <Button
+                type="button"
+                onClick={() => {
+                  localStorage.clear();
+                  setUser("");
+                  router.replace("/login");
+                }}
+                variant="outline"
+              >
+                <LucideLogOut size={15} />
+                &nbsp;Logout
+              </Button>
+            </NavbarList>
+          ) : (
+            <NavbarList>
+              <NavbarItem>
+                <Link href={"/login"}>Login</Link>
+              </NavbarItem>
+              <NavbarItem active={true}>
+                <Link href={"/signup/tutor"}>Signup as Tutor</Link>
+              </NavbarItem>
+            </NavbarList>
+          )}
+        </FadeUp>
         <NavbarCollapseBtn />
         <NavbarCollapse>
           {/* <NavbarItem>Projects</NavbarItem>

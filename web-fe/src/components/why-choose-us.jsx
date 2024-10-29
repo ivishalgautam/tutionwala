@@ -8,6 +8,7 @@ import {
   Lightbulb,
   Users,
 } from "lucide-react";
+import FadeUp from "./fade-up";
 
 const benefits = [
   {
@@ -85,8 +86,10 @@ export default function WhyChooseUs() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-            {benefits.map(({ title, icon }) => (
-              <Block key={title} title={title} icon={icon} />
+            {benefits.map((b, ind) => (
+              <FadeUp key={ind} delay={ind * 0.2}>
+                <Block key={ind} title={b.title} icon={b.icon} />
+              </FadeUp>
             ))}
           </div>
         </div>

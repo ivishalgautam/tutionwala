@@ -29,7 +29,7 @@ export default function Page() {
       }
     },
     onError: (error) => {
-      console.log({ error });
+      // console.log({ error });
     },
   });
   const handleCreate = (data) => {

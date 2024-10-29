@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import Loading from "../loading";
 import HeaderLoader from "../loaders/header";
 import Lenis from "lenis";
+import FadeUp from "../fade-up";
 
 export default function Layout({ children }) {
   const pathname = usePathname();
@@ -106,7 +107,9 @@ export default function Layout({ children }) {
       <div className="h-full">
         <Header />
         <div className="min-h-screen">{children}</div>
-        <Footer />
+        <FadeUp>
+          <Footer />
+        </FadeUp>
       </div>
     );
   };

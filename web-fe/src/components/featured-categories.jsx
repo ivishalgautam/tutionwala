@@ -9,9 +9,13 @@ import {
   PrevButton,
   usePrevNextButtons,
 } from "./carousel/EmblaCarouselArrowButtons";
-import CategoryCard from "./card/category";
+const CategoryCard = dynamic(() => import("./card/category"), {
+  loading: () => "loading...",
+});
 import CategoryLoader from "./loaders/category";
 import { Heading } from "./ui/heading";
+import dynamic from "next/dynamic";
+import FadeUp from "./fade-up";
 
 async function fetchFeaturedCategories() {
   const { data } = await http().get(
@@ -60,12 +64,14 @@ export default function FeaturedCategories() {
       <section className="embla">
         <div className="embla__viewport" ref={emblaRef}>
           <div className="embla__container">
-            {data.map((category) => (
-              <div className="embla__slide" key={category.id}>
-                <div className="embla__slide__number">
-                  <CategoryCard category={category} />
+            {data.map((category, ind) => (
+              <FadeUp key={category.id} delay={(ind + 1) * 0.2} x={50} y={0}>
+                <div className="embla__slide">
+                  <div className="embla__slide__number">
+                    <CategoryCard category={category} />
+                  </div>
                 </div>
-              </div>
+              </FadeUp>
             ))}
           </div>
         </div>

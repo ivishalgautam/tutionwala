@@ -132,7 +132,6 @@ export default function Map({
     if (autoComplete) {
       autoComplete.addListener("place_changed", () => {
         const place = autoComplete.getPlace();
-        console.log({ place });
 
         if (place.formatted_address) {
           placeAutoCompleteRef.current.value = place.formatted_address; // Fill the input with the selected address

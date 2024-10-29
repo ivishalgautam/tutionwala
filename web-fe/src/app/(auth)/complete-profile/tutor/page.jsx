@@ -26,7 +26,7 @@ export default function Page() {
       queryClient.invalidateQueries([`subCategory-${id}`]);
     },
     onError: (error) => {
-      console.log({ error });
+      // console.log({ error });
     },
   });
 

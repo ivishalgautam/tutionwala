@@ -26,12 +26,17 @@ async function fetchCategories() {
 }
 
 export function CategoryMenu() {
-  const { data, isLoading, isError, error } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryFn: fetchCategories,
     queryKey: ["categories"],
     keepPreviousData: true,
   });
-  if (isLoading) return <Loading />;
+
   if (isError) return error?.message ?? "Error";
 
   return (

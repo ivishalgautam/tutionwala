@@ -3,6 +3,7 @@ import Loading from "./loading";
 import HeroLoader from "./loaders/hero";
 import CategoryLoader from "./loaders/category";
 import WhyChooseUsLoader from "./loaders/why-choose-us";
+import FadeUp from "./fade-up";
 
 const Hero = dynamic(() => import("./hero.jsx"), {
   loading: () => <HeroLoader />,
@@ -20,10 +21,18 @@ const StudentReviewCards = dynamic(() => import("./student-feedbacks"), {
 export default function HomePage() {
   return (
     <>
-      <Hero />
-      <FeaturedCategories />
-      <WhyChooseUs />
-      <StudentReviewCards />
+      <FadeUp y={20}>
+        <Hero />
+      </FadeUp>
+      <FadeUp y={20}>
+        <FeaturedCategories />
+      </FadeUp>
+      <FadeUp y={20}>
+        <WhyChooseUs />
+      </FadeUp>
+      <FadeUp y={20}>
+        <StudentReviewCards />
+      </FadeUp>
     </>
   );
 }
