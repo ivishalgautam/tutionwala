@@ -107,7 +107,7 @@ export default function Layout({ children }) {
       <div className="h-full">
         <Header />
         <div className="min-h-screen">{children}</div>
-        <FadeUp>
+        <FadeUp y={20}>
           <Footer />
         </FadeUp>
       </div>
