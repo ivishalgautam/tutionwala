@@ -29,7 +29,10 @@ export default async function Users({ searchParams }) {
   return (
     <PageContainer>
       <div className="flex items-start justify-between">
-        <Heading title="Categories" description="Manage categories" />
+        <Heading
+          title="Categories"
+          description="Manage categories (Create, Update, Delete)."
+        />
         <Link
           className={cn(buttonVariants({ variant: "primary" }))}
           href={"categories/create"}

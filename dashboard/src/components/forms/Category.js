@@ -181,7 +181,7 @@ export function CategoryForm({
                   <Button
                     type="button"
                     variant="destructive"
-                    onClick={() => deleteFile(image, "adhaar")}
+                    onClick={() => deleteFile(image)}
                     className="absolute -right-2 -top-2"
                     size="icon"
                   >

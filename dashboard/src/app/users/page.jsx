@@ -27,7 +27,10 @@ export default async function Users({ searchParams }) {
   return (
     <PageContainer>
       <div className="flex items-start justify-between">
-        <Heading title="Users" description="Manage users" />
+        <Heading
+          title="Users"
+          description="Manage users (Create, Update, Delete)."
+        />
         <NavigateDropdown />
       </div>
       <UserTableActions />

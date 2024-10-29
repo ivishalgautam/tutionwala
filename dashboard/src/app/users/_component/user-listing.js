@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import http from "@/utils/http";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -12,16 +11,13 @@ const UserDialog = dynamic(() => import("@/components/dialogs/user-dialog"), {
 import { DataTable } from "@/components/ui/table/data-table";
 import React from "react";
 import { columns } from "../columns";
-import { endpoints } from "@/utils/endpoints";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-
-async function deleteCustomer(data) {
-  return http().delete(`${endpoints.users.getAll}/${data.id}`);
-}
-
-const fetchUsers = async (params) => {
-  return await http().get(`${endpoints.users.getAll}?${params}`);
-};
+import {
+  deleteUser,
+  fetchUsers,
+  updateUser,
+  updateUserStatus,
+} from "@/server/users";
 
 export default function UserListing() {
   const [isModal, setIsModal] = useState(false);
@@ -37,7 +33,7 @@ export default function UserListing() {
     enabled: !!searchParamsStr,
   });
 
-  const deleteMutation = useMutation(deleteCustomer, {
+  const deleteMutation = useMutation(deleteUser, {
     onSuccess: () => {
       toast.success("Customer deleted.");
       queryClient.invalidateQueries("users");
@@ -56,21 +52,16 @@ export default function UserListing() {
 
   async function handleUserStatus(customerId, status) {
     try {
-      const response = await http().put(
-        `${endpoints.users.getAll}/status/${customerId}`,
-        { is_active: status },
-      );
-      toast.success(response.message);
-      queryClient.invalidateQueries("customers");
+      const response = await updateUserStatus(customerId, status);
+      toast.success(response?.message ?? "Status changed");
+      queryClient.invalidateQueries(["users"]);
     } catch (error) {
       console.log(error);
     }
   }
 
   const updateMutation = useMutation({
-    mutationFn: async (data) => {
-      return await http().put(`${endpoints.users.getAll}/${userId}`, data);
-    },
+    mutationFn: (data) => updateUser(data, userId),
     onSuccess: (data) => {
       toast.success("Updated");
       queryClient.invalidateQueries(["users"]);

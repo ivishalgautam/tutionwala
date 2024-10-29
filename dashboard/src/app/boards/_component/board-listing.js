@@ -2,35 +2,23 @@
 import { columns } from "../columns";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import http from "@/utils/http";
-import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import { DataTable } from "@/components/ui/table/data-table";
 import { useRouter, useSearchParams } from "next/navigation";
-import { serialize } from "@/lib/searchparams";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import {
+  createBoard,
+  deleteBoard,
+  fetchBoards,
+  updateBoard,
+} from "@/server/boards";
 
 const BoardDialog = dynamic(() => import("@/components/dialogs/board-dialog"), {
   ssr: false,
 });
 
 //
-async function createBoard(data) {
-  return http().post(`${endpoints.boards.getAll}`, data);
-}
-
-async function updateBoard(data) {
-  return http().put(`${endpoints.boards.getAll}/${data.id}`, data);
-}
-
-async function deleteBoard(data) {
-  return http().delete(`${endpoints.boards.getAll}/${data.id}`);
-}
-
-async function fetchBoards(params) {
-  return await http().get(`${endpoints.boards.getAll}?${params}`);
-}
 
 export default function BoardListing() {
   const [boardId, setBoardId] = useState("");

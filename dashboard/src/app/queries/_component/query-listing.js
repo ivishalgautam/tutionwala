@@ -2,22 +2,12 @@
 import { columns } from "../columns";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import http from "@/utils/http";
 import { toast } from "sonner";
 import QueryDialog from "@/components/dialogs/query-dialog";
 import { DataTable } from "@/components/ui/table/data-table";
 import { useRouter, useSearchParams } from "next/navigation";
-import { serialize } from "@/lib/searchparams";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import { endpoints } from "@/utils/endpoints";
-
-async function deleteQuery({ id }) {
-  return await http().delete(`${endpoints.queries.getAll}/${id}`);
-}
-
-async function fetchQueries(params) {
-  return await http().get(`${endpoints.queries.getAll}?${params}`);
-}
+import { deleteQuery, fetchQueries } from "@/server/query";
 
 export default function QueryListing() {
   const [isModal, setIsModal] = useState(false);

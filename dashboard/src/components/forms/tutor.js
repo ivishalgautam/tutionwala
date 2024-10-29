@@ -1,11 +1,10 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { H1, H2, H3, H4, H5, P } from "../ui/typography";
+import { H4 } from "../ui/typography";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
@@ -13,8 +12,6 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import ShadcnSelect from "../ui/shadcn-select";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
 import useMapLoader from "@/hooks/useMapLoader";
 import ReactSelect from "react-select/async";
@@ -26,6 +23,8 @@ import PhoneInputWithCountrySelect, {
 
 import "react-phone-number-input/style.css";
 import { useRef } from "react";
+import { searchCategory } from "@/server/category";
+import { fetchTutor } from "@/server/users";
 
 const defaultValues = {
   type: "",
@@ -41,19 +40,10 @@ const defaultValues = {
   role: "tutor",
 };
 
-const searchCategory = async (q) => {
-  const { data } = await http().get(`${endpoints.subCategories.getAll}?q=${q}`);
-  const filteredData = data?.map(({ id, name }) => ({
-    label: name,
-    value: id,
-  }));
-  return filteredData;
-};
 export default function TutorForm({ type, handleUpdate, tutorId }) {
   const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -72,13 +62,7 @@ export default function TutorForm({ type, handleUpdate, tutorId }) {
   });
 
   const { data: tutor } = useQuery({
-    queryFn: async () => {
-      const { record } = await http().get(
-        `${endpoints.users.getAll}/${tutorId}`,
-      );
-      console.log({ record });
-      return record;
-    },
+    queryFn: fetchTutor(tutorId),
     queryKey: [`tutor-${tutorId}`],
     enabled: !!tutorId && !!(type === "edit"),
   });

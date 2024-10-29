@@ -1,16 +1,10 @@
 "use client";
 import { BoardForm } from "@/components/forms/board";
-import { Heading } from "@/components/ui/heading";
-import { endpoints } from "@/utils/endpoints";
-import http from "@/utils/http";
+import { createBoard } from "@/server/boards";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
-
-async function createBoard(data) {
-  return http().post(`${endpoints.boards.getAll}`, data);
-}
 
 export default function Page() {
   const queryClient = useQueryClient();

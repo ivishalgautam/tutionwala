@@ -1,22 +1,12 @@
 "use client";
 import { columns } from "../columns";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import http from "@/utils/http";
-import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DataTable } from "@/components/ui/table/data-table";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import { serialize } from "@/lib/searchparams";
 import { useEffect } from "react";
-
-async function deleteSubCategory(data) {
-  return http().delete(`${endpoints.subCategories.getAll}/${data.id}`);
-}
-
-async function fetchSubCategories(params) {
-  return await http().get(`${endpoints.subCategories.getAll}?${params}`);
-}
+import { deleteSubCategory, fetchSubCategories } from "@/server/sub-category";
 
 export default function SubCategoryListing() {
   const queryClient = useQueryClient();

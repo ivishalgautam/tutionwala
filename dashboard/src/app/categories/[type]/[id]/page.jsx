@@ -1,15 +1,10 @@
 "use client";
 import Section from "@/components/section";
-import { endpoints } from "@/utils/endpoints";
-import http from "@/utils/http";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CategoryForm } from "@/components/forms/Category";
-
-async function updateCategory(data) {
-  return http().put(`${endpoints.categories.getAll}/${data.id}`, data);
-}
+import { updateCategory } from "@/server/category";
 
 export default function Page({ params: { type, id } }) {
   const queryClient = useQueryClient();
@@ -22,11 +17,7 @@ export default function Page({ params: { type, id } }) {
       router.push("/categories");
     },
     onError: (error) => {
-      if (isObject(error)) {
-        toast(error.message);
-      } else {
-        toast.error(error);
-      }
+      toast(error?.message ?? "Something went wrong!");
     },
   });
 

@@ -1,30 +1,23 @@
 "use client";
 import Section from "@/components/section";
-import { endpoints } from "@/utils/endpoints";
-import http from "@/utils/http";
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { SubCategoryForm } from "@/components/forms/sub-category";
 import { useRouter } from "next/navigation";
-
-async function postSubCategory(data) {
-  return http().post(endpoints.subCategories.getAll, data);
-}
+import { createSubCategory } from "@/server/sub-category";
 
 export default function Page() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const createMutation = useMutation(postSubCategory, {
+  const createMutation = useMutation(createSubCategory, {
     onSuccess: (data) => {
-      console.log({ data });
       toast.success("New sub category added.");
       queryClient.invalidateQueries(["sub-categories"]);
-      router.push("/sub-categories");
+      router.replace("/sub-categories");
     },
     onError: (error) => {
-      console.log({ error });
       toast.error(error.message ?? "Error creating sub category");
     },
   });

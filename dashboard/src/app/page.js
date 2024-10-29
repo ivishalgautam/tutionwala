@@ -40,7 +40,7 @@ export default function Home() {
   });
 
   return (
-    <PageContainer className={"space-y-4 bg-gray-100"}>
+    <PageContainer className={"space-y-4 bg-white"}>
       <Heading title={"Dashboard"} description={"Dashboard reports"} />
 
       <Reports
@@ -76,28 +76,29 @@ export default function Home() {
 function Reports({ data, isError, isLoading, error }) {
   if (isLoading) <Skelotons />;
   if (isError) return error?.message ?? "Error fetching reports";
+  const size = 25;
 
   return (
     <GridContainer>
       <Card
         count={data?.total_tutor}
         title="Tutors"
-        icon={<FaChalkboardTeacher size={25} className="text-primary" />}
+        icon={<FaChalkboardTeacher size={size} className="text-primary" />}
       />
       <Card
         count={data?.total_student}
         title="Student"
-        icon={<PiStudentBold size={25} className="text-primary" />}
+        icon={<PiStudentBold size={size} className="text-primary" />}
       />
       <Card
         count={data?.total_category}
         title="Categories"
-        icon={<BiCategory size={25} className="text-primary" />}
+        icon={<BiCategory size={size} className="text-primary" />}
       />
       <Card
         count={data?.total_sub_category}
         title="Sub Categories"
-        icon={<MdOutlineCategory size={25} className="text-primary" />}
+        icon={<MdOutlineCategory size={size} className="text-primary" />}
       />
     </GridContainer>
   );
@@ -113,11 +114,11 @@ function GridContainer({ children }) {
 
 function Card({ count = 0, title = "", icon = "" }) {
   return (
-    <div className="flex items-center justify-start gap-2 rounded-lg border bg-white p-4 py-3">
-      <div className="rounded-full bg-blue-50 p-3">{icon}</div>
+    <div className="bg-primary-light flex items-center justify-start gap-2 rounded-lg border p-4 py-3">
+      <div className="rounded-full border bg-white p-3">{icon}</div>
       <div className="flex flex-col items-start justify-start">
-        <span className="text-xl font-bold text-primary">{count}</span>
         <span className="text-xs font-medium tracking-wide">{title}</span>
+        <span className="text-3xl font-semibold text-primary">{count}</span>
       </div>
     </div>
   );

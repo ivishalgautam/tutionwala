@@ -21,7 +21,10 @@ export default async function Page({ searchParams }) {
   return (
     <PageContainer>
       <div className="flex items-start justify-between">
-        <Heading title="Boards" description="Manage boards and subjects" />
+        <Heading
+          title="Boards"
+          description="Manage boards and subjects (Create, Update, Delete)."
+        />
         <Link
           className={cn(buttonVariants({ variant: "primary" }))}
           href={"/boards/create"}

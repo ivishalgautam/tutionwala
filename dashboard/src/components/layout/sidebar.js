@@ -9,6 +9,7 @@ import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
+import { ScrollArea } from "../ui/scroll-area";
 
 export const logout = () => {
   if (typeof window !== "undefined") {
@@ -50,7 +51,7 @@ export default function SidebarLayout({ children }) {
     >
       <Sidebar open={open} setOpen={setOpen} animate={false}>
         <SidebarBody className="justify-between gap-10">
-          <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-blue-50 p-3">
+          <div className="bg-primary-light flex flex-1 flex-col overflow-y-auto overflow-x-hidden p-3">
             {/* {open ? <Logo /> : <LogoIcon />} */}
             <div className="flex items-center justify-start">
               <Logo />
@@ -87,7 +88,9 @@ export default function SidebarLayout({ children }) {
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="flex flex-1 overflow-hidden *:w-full">{children}</div>
+      <div className="flex flex-1 overflow-hidden *:w-full">
+        <ScrollArea className="max-h-full">{children}</ScrollArea>
+      </div>
     </div>
   );
 }

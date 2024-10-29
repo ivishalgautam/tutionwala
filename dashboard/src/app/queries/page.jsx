@@ -17,7 +17,10 @@ export default async function Queries({ searchParams }) {
   return (
     <PageContainer>
       <div className="flex items-center justify-between">
-        <Heading title={"Queries"} description={"Manage queries"} />
+        <Heading
+          title={"Queries"}
+          description={"Manage queries (View, Delete)."}
+        />
       </div>
       <QueriesTableActions />
 

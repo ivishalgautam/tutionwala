@@ -22,7 +22,10 @@ export default async function Page({ searchParams }) {
   return (
     <PageContainer>
       <div className="flex items-start justify-between">
-        <Heading title="Sub Categories" description="Manage sub categories" />
+        <Heading
+          title="Sub Categories"
+          description="Manage sub categories (Create, Update, Delete)."
+        />
         <Link
           className={buttonVariants({ variant: "primary" })}
           href={"/sub-categories/create"}
