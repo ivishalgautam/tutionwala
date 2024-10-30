@@ -21,18 +21,10 @@ const StudentReviewCards = dynamic(() => import("./student-feedbacks"), {
 export default function HomePage() {
   return (
     <>
-      <FadeUp y={20} delay={0.5}>
-        <Hero />
-      </FadeUp>
-      <FadeUp y={20} delay={0.5}>
-        <FeaturedCategories />
-      </FadeUp>
-      <FadeUp y={20} delay={0.5}>
-        <WhyChooseUs />
-      </FadeUp>
-      <FadeUp y={20} delay={0.5}>
-        <StudentReviewCards />
-      </FadeUp>
+      <Hero />
+      <FeaturedCategories />
+      <WhyChooseUs />
+      <StudentReviewCards />
     </>
   );
 }
