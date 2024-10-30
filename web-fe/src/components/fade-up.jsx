@@ -22,14 +22,14 @@ export default function FadeUp({
 
   return (
     <div
-      ref={ref}
-      variants={{
-        hidden: { opacity: 0, y: y, x: x, rotate: rotate },
-        visible: { opacity: 1, y: 0, x: 0, rotate: 0 },
-      }}
-      initial={false}
-      animate={isVisible ? "visible" : "hidden"}
-      transition={{ delay, type: "spring", duration }}
+    // ref={ref}
+    // variants={{
+    //   hidden: { opacity: 0, y: y, x: x, rotate: rotate },
+    //   visible: { opacity: 1, y: 0, x: 0, rotate: 0 },
+    // }}
+    // initial={false}
+    // animate={isVisible ? "visible" : "hidden"}
+    // transition={{ delay, type: "spring", duration }}
     >
       {children}
     </div>
