@@ -10,15 +10,15 @@ export default function FadeUp({
   y = 0,
   rotate = 0,
 }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
-  const isInView = useInView(ref);
+  // const [isVisible, setIsVisible] = useState(false);
+  // const ref = useRef(null);
+  // const isInView = useInView(ref);
 
-  useEffect(() => {
-    if (isInView && !isVisible) {
-      setIsVisible(true);
-    }
-  }, [isInView, isVisible]);
+  // useEffect(() => {
+  //   if (isInView && !isVisible) {
+  //     setIsVisible(true);
+  //   }
+  // }, [isInView, isVisible]);
 
   return (
     <div
