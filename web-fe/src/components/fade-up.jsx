@@ -21,7 +21,7 @@ export default function FadeUp({
   }, [isInView, isVisible]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
       variants={{
         hidden: { opacity: 0, y: y, x: x, rotate: rotate },
@@ -32,6 +32,6 @@ export default function FadeUp({
       transition={{ delay, type: "spring", duration }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
