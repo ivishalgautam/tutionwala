@@ -17,6 +17,10 @@ const WhyChooseUs = dynamic(() => import("./why-choose-us"), {
 const StudentReviewCards = dynamic(() => import("./student-feedbacks"), {
   loading: () => <Loading />,
 });
+const CoursesWithTabs = dynamic(() => import("./courses-with-tabs"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 export default function HomePage() {
   return (
@@ -25,6 +29,7 @@ export default function HomePage() {
       <FeaturedCategories />
       <WhyChooseUs />
       <StudentReviewCards />
+      <CoursesWithTabs slugs={["school", "college"]} />
     </>
   );
 }

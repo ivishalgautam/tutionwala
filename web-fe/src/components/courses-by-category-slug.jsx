@@ -13,9 +13,11 @@ const fetchCourses = async (slug, page = 1) => {
   );
 };
 
-export default function CoursesByCategorySlug({ slug }) {
+export default function CoursesByCategorySlug({ slug, design = "list" }) {
   const searchParams = useSearchParams();
-  const categoryName = searchParams.get("categoryName").split("%20").join(" ");
+  const categoryName =
+    design === "list" &&
+    searchParams.get("categoryName").split("%20").join(" ");
   let page = searchParams.get("page");
   page = page ? Number(page) : 1;
 
@@ -29,10 +31,15 @@ export default function CoursesByCategorySlug({ slug }) {
 
   return (
     <div className="space-y-6">
-      <H4 className={"text-center"}>{categoryName}</H4>
+      {design === "list" && <H4 className={"text-center"}>{categoryName}</H4>}
 
       <div>
-        <Courses courses={data?.data} sliceCount={5} totalSlices={3} />
+        <Courses
+          courses={data?.data}
+          sliceCount={5}
+          totalSlices={3}
+          design={design}
+        />
       </div>
     </div>
   );

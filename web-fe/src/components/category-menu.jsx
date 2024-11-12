@@ -45,10 +45,10 @@ export function CategoryMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger className="flex items-center justify-center gap-2 border">
             <DotsNine />
-            <span>Category</span>
+            <span className="hidden sm:block">Category</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] lg:grid-cols-3">
+            <ul className="grid w-[200px] gap-3 p-4 sm:w-[400px] sm:grid-cols-2 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
               {data.map((category) => (
                 <ListItem key={category.id} category={category}></ListItem>
               ))}
@@ -66,8 +66,7 @@ const ListItem = React.forwardRef(
       <li>
         <NavigationMenuLink asChild>
           <Link
-            // href={category.slug}
-            href={"#"}
+            href={`/categories/${category.slug}?categoryName=${category.name}`}
             ref={ref}
             className={cn(
               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",

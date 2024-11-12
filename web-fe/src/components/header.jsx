@@ -48,9 +48,10 @@ export default function NavbarComponent() {
                 />
               </figure>
             </Link>
-            <div>{user?.role !== "tutor" && <CategoryMenu />}</div>
+            {user?.role !== "tutor" && <CategoryMenu />}
           </div>
         </NavbarBrand>
+
         {user?.role !== "tutor" && (
           <NavbarList>
             <NavbarItem active={pathname === "/"}>
@@ -104,7 +105,8 @@ export default function NavbarComponent() {
           </NavbarList>
         )}
         <NavbarCollapseBtn />
-        <NavbarCollapse>
+
+        <NavbarCollapse className="overflow-auto">
           {/* <NavbarItem>Projects</NavbarItem>
           <NavbarItem>Research</NavbarItem>
           <NavbarItem>Contact</NavbarItem> */}
