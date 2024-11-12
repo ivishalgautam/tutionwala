@@ -51,11 +51,12 @@ export default function SidebarLayout({ children }) {
     >
       <Sidebar open={open} setOpen={setOpen} animate={false}>
         <SidebarBody className="justify-between gap-10">
-          <div className="bg-primary-light flex flex-1 flex-col overflow-y-auto overflow-x-hidden p-3">
+          <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-primary-light p-3">
             {/* {open ? <Logo /> : <LogoIcon />} */}
             <div className="flex items-center justify-start">
               <Logo />
             </div>
+
             <div className="mt-4 flex flex-col gap-2">
               {sidebarData.map((link, idx) => (
                 <SidebarLink

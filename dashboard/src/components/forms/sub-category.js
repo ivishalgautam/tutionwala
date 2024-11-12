@@ -23,6 +23,7 @@ import Spinner from "../spinner";
 import ShadcnSelect from "../ui/shadcn-select";
 import { Plus, Trash, Trash2 } from "lucide-react";
 import { useFetchBoards } from "@/hooks/useFetchBoards";
+import { cn } from "@/lib/utils";
 
 let defaultValues = {
   name: "",
@@ -368,6 +369,7 @@ export function SubCategoryForm({
               <Controller
                 control={control}
                 name={"boards"}
+                rules={{ required: "required*" }}
                 render={({ field }) => (
                   <ReactSelect
                     options={boards}
@@ -376,9 +378,13 @@ export function SubCategoryForm({
                     defaultValue={field.value}
                     className="uppercase"
                     placeholder={"Select boards"}
+                    disabled={type === "view"}
                   />
                 )}
               />
+              {errors.boards && (
+                <span className="text-red-500">{errors.boards.message}</span>
+              )}
             </div>
           </div>
         )}
@@ -394,7 +400,7 @@ export function SubCategoryForm({
               >
                 <div className="flex items-center justify-between">
                   <H5>Question: {ind + 1}</H5>
-                  {fields?.length > 1 && (
+                  {fields?.length > 1 && type !== "view" && (
                     <Button
                       size="icon"
                       type="button"
@@ -446,6 +452,7 @@ export function SubCategoryForm({
                       {...register(`fields.${ind}.fieldName`, {
                         required: "required*",
                       })}
+                      disabled={type === "view"}
                     />
                     {errors.fields?.[ind]?.fieldName && (
                       <span className="text-sm text-red-500">
@@ -463,6 +470,7 @@ export function SubCategoryForm({
                       {...register(`fields.${ind}.questionForTutor`, {
                         required: "required*",
                       })}
+                      disabled={type === "view"}
                     />
                     {errors.fields?.[ind]?.questionForTutor && (
                       <span className="text-sm text-red-500">
@@ -480,6 +488,7 @@ export function SubCategoryForm({
                       {...register(`fields.${ind}.questionForStudent`, {
                         required: "required*",
                       })}
+                      disabled={type === "view"}
                     />
                     {errors.fields?.[ind]?.questionForStudent && (
                       <span className="text-sm text-red-500">
@@ -511,13 +520,15 @@ export function SubCategoryForm({
                         <li key={ele} className="rounded-md bg-gray-100 p-2">
                           <div className="flex items-center justify-between">
                             <span>{ele}</span>
-                            <span>
-                              <Trash
-                                className="cursor-pointer text-red-500"
-                                onClick={() => deleteOption(ind, key)}
-                                size={20}
-                              />
-                            </span>
+                            {type !== "view" && (
+                              <span>
+                                <Trash
+                                  className="cursor-pointer text-red-500"
+                                  onClick={() => deleteOption(ind, key)}
+                                  size={20}
+                                />
+                              </span>
+                            )}
                           </div>
                         </li>
                       ))}
@@ -526,11 +537,13 @@ export function SubCategoryForm({
                 </div>
               </div>
             ))}
-            <div className="text-end">
-              <Button type="button" onClick={() => appendField()}>
-                Add Question
-              </Button>
-            </div>
+            {type !== "view" && (
+              <div className="text-end">
+                <Button type="button" onClick={() => appendField()}>
+                  Add Question
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
