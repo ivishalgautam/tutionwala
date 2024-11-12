@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function CoursesCard({ courses = [] }) {
   return courses?.map((course) => (
-    <Link key={course.id} href={`/tutors?category=${course.slug}`}>
+    <Link key={course.id} href={`/search/${course.slug}`}>
       <div className="space-y-3">
         <figure className="">
           <NextImage
