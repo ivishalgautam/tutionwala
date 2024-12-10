@@ -137,6 +137,7 @@ export default function SignUpStudentForm() {
       const mobile_number = nationalNumber;
       const country_code = countryCallingCode;
       const email = getValues("email");
+      const fullname = getValues("fullname");
 
       const { statusText, data } = await axios.post(
         `${baseUrl}${endpoints.auth.sendOtp}`,
@@ -144,6 +145,7 @@ export default function SignUpStudentForm() {
           mobile_number,
           country_code,
           email,
+          fullname,
         },
       );
       if (statusText === "OK") {
