@@ -126,7 +126,7 @@ export default function SignUpTutorForm() {
       setLoading(false);
     }
   }
-
+  //
   async function handleSendOtp() {
     if (!(await trigger())) {
       return;
@@ -138,12 +138,14 @@ export default function SignUpTutorForm() {
       const mobile_number = nationalNumber;
       const country_code = countryCallingCode;
       const email = getValues("email");
+      const fullname = getValues("fullname");
       const { statusText, data } = await axios.post(
         `${baseUrl}${endpoints.auth.sendOtp}`,
         {
           mobile_number,
           country_code,
           email,
+          fullname,
         },
       );
       toast.success(data.message);
