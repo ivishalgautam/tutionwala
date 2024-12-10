@@ -430,7 +430,7 @@ export function SubCategoryForm({
                             ]}
                             name={`fields.${ind}.fieldType`}
                             setValue={setValue}
-                            placeholder="type"
+                            placeholder="type"fi
                             field={field}
                           />
                         )}
