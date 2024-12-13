@@ -70,6 +70,7 @@ export default function CompleteProfileStudent({
   setProfileStep,
   subCatSlug,
 }) {
+  console.log({ currStep, profileStep });
   const {
     register,
     watch,
@@ -104,11 +105,17 @@ export default function CompleteProfileStudent({
 
   const { token } = useLocalStorage("token");
 
-  const { data, isLoading: categoryLoading } = useQuery({
+  const {
+    data,
+    isLoading: categoryLoading,
+    isFetching,
+  } = useQuery({
     queryKey: [`subCategory-${id}`],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
+
+  console.log({ categoryLoading, isFetching });
 
   // console.log(data?.fields);
   const tutors = useMutation({
@@ -204,7 +211,7 @@ export default function CompleteProfileStudent({
       : data.fields?.length + 2;
 
     setTotalSteps(totalSteps);
-  }, [data]);
+  }, [data, setProfileStep]);
 
   const handleFileChange = async (event, type) => {
     setIsLoading((prev) => ({

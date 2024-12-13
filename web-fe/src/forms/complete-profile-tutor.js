@@ -129,8 +129,6 @@ export default function CompleteProfileTutor({
     enabled: !!id,
   });
 
-  console.log({ data });
-
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
@@ -338,7 +336,7 @@ export default function CompleteProfileTutor({
       setValue("intro_video", video);
       setMedia((prev) => ({ ...prev, video: video }));
     }
-  }, []);
+  }, [setValue]);
 
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
