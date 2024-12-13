@@ -10,6 +10,7 @@ import {
 import { H1, Large } from "@/components/ui/typography";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
+import config from "@/config";
 
 export default function Page() {
   return (
@@ -24,18 +25,11 @@ export default function Page() {
 
       {/* main */}
       <div className="container py-10 pb-20">
-        <div className="mx-auto grid max-w-5xl gap-8 rounded-lg bg-white p-8 md:grid-cols-2">
-          <div className="grid grid-rows-3 gap-3">
-            <div className="order-2 row-span-2 overflow-hidden rounded-lg shadow-lg md:order-1">
-              <MapIFrame />
-            </div>
-            <div className="order-1 row-span-1 md:order-2">
-              <MeetUs />
-            </div>
-          </div>
+        <div className="mx-auto max-w-lg space-y-4 rounded-lg bg-white p-8">
           <div className="rounded-lg bg-primary p-10 py-6 md:-mt-12">
             <ContactForm />
           </div>
+          <MeetUs />
         </div>
       </div>
     </div>
@@ -56,12 +50,12 @@ function MapIFrame() {
 
 function MeetUs() {
   return (
-    <>
+    <div>
       <Large>Meet Us</Large>
       <ul className="space-y-3 rounded-lg bg-primary-25 p-4">
         <li className="flex items-start justify-start gap-2">
           <Phone size={20} className="text-primary" />
-          <span className="text-sm font-medium">+91 9535133513</span>
+          <span className="text-sm font-medium">{config.phone}</span>
         </li>
         <li className="flex items-start justify-start gap-2">
           <Mail size={20} className="text-primary" />
@@ -74,7 +68,7 @@ function MeetUs() {
           </span>
         </li>
       </ul>
-    </>
+    </div>
   );
 }
 
