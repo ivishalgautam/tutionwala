@@ -1,4 +1,5 @@
 import { H4, H5, H6, P } from "@/components/ui/typography";
+import config from "@/config";
 
 export default function Page() {
   return (
@@ -219,8 +220,8 @@ export default function Page() {
           by the revised Privacy Policy.
         </p>
       </div>
-      For any questions regarding this Privacy Policy, contact us at +91
-      9535133513
+      For any questions regarding this Privacy Policy, contact us at{" "}
+      {config.phone}
     </div>
   );
 }
