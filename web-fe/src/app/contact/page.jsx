@@ -61,7 +61,7 @@ function MeetUs() {
           <Mail size={20} className="text-primary" />
           <span className="text-sm font-medium">{config.email}</span>
         </li>
-        <li className="flex items-start justify-start gap-2">
+        <li className="sr-only flex items-start justify-start gap-2">
           <MapPin size={25} className="text-primary" />
           <span className="text-sm font-medium">
             F 314, Street No 8, Samaspur Road, Pandav Nagar, New Delhi, 110091
