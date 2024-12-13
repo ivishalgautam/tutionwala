@@ -59,7 +59,7 @@ function MeetUs() {
         </li>
         <li className="flex items-start justify-start gap-2">
           <Mail size={20} className="text-primary" />
-          <span className="text-sm font-medium">tech.tutionwala@gmail.com</span>
+          <span className="text-sm font-medium">{config.email}</span>
         </li>
         <li className="flex items-start justify-start gap-2">
           <MapPin size={25} className="text-primary" />
