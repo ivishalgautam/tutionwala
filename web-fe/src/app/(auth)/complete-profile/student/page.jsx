@@ -23,7 +23,7 @@ export default function Page() {
   const createMutation = useMutation(createStudentProfile, {
     onSuccess: (data) => {
       toast.success("submitted");
-      queryClient.invalidateQueries([`subCategory-${id}`]);
+      queryClient.invalidateQueries({ queryKey: [`subCategory-${id}`] });
       if (profileStep === 2) {
         router.replace("/");
       }

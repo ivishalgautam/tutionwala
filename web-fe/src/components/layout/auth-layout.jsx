@@ -24,8 +24,8 @@ export default function AuthLayout({ children }) {
           <figure className="absolute inset-0 h-full w-full object-contain object-center mix-blend-normal lg:p-20">
             <Image
               src={"/images/educator.svg"}
-              width={300}
-              height={300}
+              width={200}
+              height={200}
               quality={100}
               alt="Educator"
               className="h-full w-full"
