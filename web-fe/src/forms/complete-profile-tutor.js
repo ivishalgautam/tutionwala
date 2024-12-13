@@ -128,6 +128,9 @@ export default function CompleteProfileTutor({
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
+
+  console.log({ data });
+
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
@@ -306,7 +309,7 @@ export default function CompleteProfileTutor({
         unregister("languages");
       }
     }
-  }, [data, unregister]);
+  }, [data, unregister, setCurrStep]);
 
   useEffect(() => {
     async function getCoords() {

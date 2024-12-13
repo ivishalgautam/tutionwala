@@ -317,7 +317,7 @@ export default function CompleteProfileStudent({
       setValue("lat", lat);
       setValue("lng", lng);
     }
-  }, [addr, lat, lng]);
+  }, [addr, lat, lng, setValue]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -332,7 +332,7 @@ export default function CompleteProfileStudent({
       setValue("profile_picture", profile);
       setMedia((prev) => ({ ...prev, profile_picture: profile }));
     }
-  }, []);
+  }, [setValue]);
 
   if (categoryLoading) return <Loading />;
 
