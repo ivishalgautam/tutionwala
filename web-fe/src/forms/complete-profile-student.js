@@ -1,6 +1,5 @@
 "use client";
 import { languages } from "@/data/languages";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { cn } from "@/lib/utils";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
@@ -97,7 +96,6 @@ export default function CompleteProfileStudent({
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
 
-  // console.log(data?.fields);
   const tutors = useMutation({
     mutationKey: [`tutors-${id}`],
     mutationFn: (data) => fetchTutors({ ...data, subCatSlug }),
@@ -235,7 +233,6 @@ export default function CompleteProfileStudent({
         localStorage.setItem("adhaar", fileurl);
       }
     } catch (error) {
-      console.error("Error uploading image: ", error);
     } finally {
       setIsLoading((prev) => ({
         ...prev,

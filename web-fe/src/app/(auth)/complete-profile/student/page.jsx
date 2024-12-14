@@ -20,7 +20,6 @@ async function createStudentProfile(data) {
 export default function Page() {
   const [currStep, setCurrStep] = useState(1);
   const [profileStep, setProfileStep] = useState(null);
-  const queryClient = useQueryClient();
   const router = useRouter();
   const { user } = useContext(MainContext);
   const id = user?.sub_categories?.[0]?.id;
@@ -29,16 +28,12 @@ export default function Page() {
   const {
     data,
     isLoading: categoryLoading,
-    isFetching,
-    isRefetching,
     refetch,
   } = useQuery({
     queryKey: ["details"],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
-
-  console.log({ isRefetching });
 
   const createMutation = useMutation(createStudentProfile, {
     onSuccess: (data) => {
