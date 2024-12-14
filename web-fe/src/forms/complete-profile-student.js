@@ -109,11 +109,14 @@ export default function CompleteProfileStudent({
     data,
     isLoading: categoryLoading,
     isFetching,
+    isRefetching,
   } = useQuery({
     queryKey: ["details"],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
+
+  console.log({ isRefetching });
 
   // console.log(data?.fields);
   const tutors = useMutation({
@@ -200,7 +203,6 @@ export default function CompleteProfileStudent({
   };
 
   useEffect(() => {
-    console.log("objectssldfnskjdfnejenfwenfweif", data);
     if (!data) return;
 
     setProfileStep(data.curr_step);
