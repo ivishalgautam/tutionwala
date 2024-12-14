@@ -95,40 +95,39 @@ export default function LoginForm({ setIsOtpSent, setPhone }) {
                     <AlertDialogTitle className="text-center uppercase">
                       Sign up as?
                     </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      <div className="flex w-full items-center justify-center gap-2">
-                        <AlertDialogCancel
-                          className={`absolute right-2 top-2 border-none p-0 ${buttonVariants({ size: "icon", variant: "ghost" })}`}
-                        >
-                          <X size={20} />
-                        </AlertDialogCancel>
-                        {["tutor", "student"].map((item) => (
-                          <div key={item}>
-                            <Link
-                              className={`group flex size-44 flex-col items-center justify-center gap-2 rounded-lg border text-lg font-semibold tracking-wider transition-colors hover:bg-gray-100`}
-                              href={`/signup/${item}`}
-                            >
-                              <figure className="size-20">
-                                <Image
-                                  src={
-                                    item === "tutor"
-                                      ? "/images/teacher.png"
-                                      : "/images/student.png"
-                                  }
-                                  width={100}
-                                  height={100}
-                                  alt={item}
-                                  className="h-full w-full object-contain object-center transition-all"
-                                />
-                              </figure>
-                              <div className={"text-center text-sm uppercase"}>
-                                {item}
-                              </div>
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    </AlertDialogDescription>
+                    <AlertDialogDescription></AlertDialogDescription>
+                    <div className="flex w-full items-center justify-center gap-2">
+                      <AlertDialogCancel
+                        className={`absolute right-2 top-2 border-none p-0 ${buttonVariants({ size: "icon", variant: "ghost" })}`}
+                      >
+                        <X size={20} />
+                      </AlertDialogCancel>
+                      {["tutor", "student"].map((item) => (
+                        <div key={item}>
+                          <Link
+                            className={`group flex size-44 flex-col items-center justify-center gap-2 rounded-lg border text-lg font-semibold tracking-wider transition-colors hover:bg-gray-100`}
+                            href={`/signup/${item}`}
+                          >
+                            <figure className="size-20">
+                              <Image
+                                src={
+                                  item === "tutor"
+                                    ? "/images/teacher.png"
+                                    : "/images/student.png"
+                                }
+                                width={100}
+                                height={100}
+                                alt={item}
+                                className="h-full w-full object-contain object-center transition-all"
+                              />
+                            </figure>
+                            <div className={"text-center text-sm uppercase"}>
+                              {item}
+                            </div>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
                   </AlertDialogHeader>
                 </AlertDialogContent>
               </AlertDialog>

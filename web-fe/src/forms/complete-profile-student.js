@@ -45,13 +45,6 @@ import { FilterAddress } from "../components/tutors-with-filter";
 import { useSearchParams } from "next/navigation";
 import { Progress } from "../components/ui/progress";
 
-const fetchSubCategory = async (id) => {
-  const { data } = await http().get(
-    `${endpoints.subCategories.getAll}/getById/${id}`,
-  );
-  return data;
-};
-
 const limit = 6;
 
 const fetchTutors = async (formData) => {
@@ -69,8 +62,9 @@ export default function CompleteProfileStudent({
   profileStep,
   setProfileStep,
   subCatSlug,
+  data,
+  categoryLoading,
 }) {
-  console.log({ currStep, profileStep });
   const {
     register,
     watch,
@@ -102,21 +96,6 @@ export default function CompleteProfileStudent({
   const addr = searchParams.get("addr");
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
-
-  const { token } = useLocalStorage("token");
-
-  const {
-    data,
-    isLoading: categoryLoading,
-    isFetching,
-    isRefetching,
-  } = useQuery({
-    queryKey: ["details"],
-    queryFn: () => fetchSubCategory(id),
-    enabled: !!id,
-  });
-
-  console.log({ isRefetching });
 
   // console.log(data?.fields);
   const tutors = useMutation({

@@ -3,11 +3,17 @@ import CompleteProfileStudent from "@/forms/complete-profile-student";
 import { MainContext } from "@/store/context";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { toast } from "sonner";
 
+const fetchSubCategory = async (id) => {
+  const { data } = await http().get(
+    `${endpoints.subCategories.getAll}/getById/${id}`,
+  );
+  return data;
+};
 async function createStudentProfile(data) {
   return http().put(`${endpoints.student.getAll}/${data.student_id}`, data);
 }
@@ -20,6 +26,20 @@ export default function Page() {
   const id = user?.sub_categories?.[0]?.id;
   const slug = user?.sub_categories?.[0]?.slug;
 
+  const {
+    data,
+    isLoading: categoryLoading,
+    isFetching,
+    isRefetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["details"],
+    queryFn: () => fetchSubCategory(id),
+    enabled: !!id,
+  });
+
+  console.log({ isRefetching });
+
   const createMutation = useMutation(createStudentProfile, {
     onSuccess: (data) => {
       toast.success("submitted");
@@ -31,11 +51,7 @@ export default function Page() {
       // console.log({ error });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["details"],
-        exact: true,
-        refetchActive: true,
-      });
+      refetch();
     },
   });
   const handleCreate = (data) => {
@@ -51,6 +67,8 @@ export default function Page() {
       profileStep={profileStep}
       setProfileStep={setProfileStep}
       subCatSlug={slug}
+      data={data}
+      categoryLoading={categoryLoading}
     />
   );
 }
