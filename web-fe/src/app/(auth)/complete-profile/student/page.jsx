@@ -31,7 +31,8 @@ export default function Page() {
       // console.log({ error });
     },
     onSettled: () => {
-      queryClient.resetQueries({ queryKey: [`subCategory-${id}`] });
+      console.log(`Invalidating query for subCategory-${id}`);
+      queryClient.invalidateQueries({ queryKey: [`subCategory-${id}`] });
     },
   });
   const handleCreate = (data) => {
