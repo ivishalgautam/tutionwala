@@ -36,7 +36,6 @@ export default function Page() {
         exact: true,
         refetchActive: true,
       });
-      queryClient.invalidateQueries({ queryKey: ["details"] });
     },
   });
   const handleCreate = (data) => {
