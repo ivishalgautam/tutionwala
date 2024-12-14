@@ -110,7 +110,7 @@ export default function CompleteProfileStudent({
     isLoading: categoryLoading,
     isFetching,
   } = useQuery({
-    queryKey: [`subCategory-${id}`],
+    queryKey: ["details"],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
