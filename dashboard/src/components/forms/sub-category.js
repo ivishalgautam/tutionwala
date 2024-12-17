@@ -28,15 +28,7 @@ import { cn } from "@/lib/utils";
 let defaultValues = {
   name: "",
   category_id: "",
-  fields: [
-    {
-      questionForTutor: "",
-      questionForStudent: "",
-      fieldName: "",
-      options: [],
-      fieldType: "",
-    },
-  ],
+  fields: [], // { questionForTutor: "", questionForStudent: "", fieldName: "", options: [], fieldType: "", }
   is_featured: false,
   is_boards: false,
   meta_title: "",
@@ -400,7 +392,7 @@ export function SubCategoryForm({
               >
                 <div className="flex items-center justify-between">
                   <H5>Question: {ind + 1}</H5>
-                  {fields?.length > 1 && type !== "view" && (
+                  {type !== "view" && (
                     <Button
                       size="icon"
                       type="button"
@@ -430,7 +422,8 @@ export function SubCategoryForm({
                             ]}
                             name={`fields.${ind}.fieldType`}
                             setValue={setValue}
-                            placeholder="type"fi
+                            placeholder="type"
+                            fi
                             field={field}
                           />
                         )}
