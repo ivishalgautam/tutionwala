@@ -43,6 +43,7 @@ import { getCurrentCoords } from "@/lib/get-current-coords";
 import { FilterAddress } from "../components/tutors-with-filter";
 import { useSearchParams } from "next/navigation";
 import { Progress } from "../components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const limit = 6;
 
@@ -185,8 +186,8 @@ export default function CompleteProfileStudent({
     setProfileStep(data.curr_step);
 
     let totalSteps = data.is_boards
-      ? data.fields?.length + 2 + 2
-      : data.fields?.length + 2;
+      ? data.fields?.length + 2 + 5
+      : data.fields?.length + 5;
 
     setTotalSteps(totalSteps);
   }, [data, setProfileStep]);
@@ -411,8 +412,151 @@ export default function CompleteProfileStudent({
                     </div>
                   )}
 
+                  {/* preference */}
+                  {currStep === 3 && (
+                    <div className="space-y-1">
+                      <Label>
+                        Are you looking for Private or Group Classes?
+                      </Label>
+                      <Controller
+                        control={control}
+                        rules={{ required: "required*" }}
+                        name="preference"
+                        render={({ field }) => (
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex items-center justify-start gap-2"
+                            value={field.value}
+                          >
+                            {[
+                              "one on one/private tutions",
+                              "no preference",
+                              "group classes",
+                            ].map((ele, key) => (
+                              <div
+                                className={cn(
+                                  "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                                  {
+                                    "border-primary-200 bg-primary-50":
+                                      field.value === ele,
+                                  },
+                                )}
+                                key={ele}
+                              >
+                                <RadioGroupItem value={ele} id={ele} />
+                                <Label htmlFor={ele} className="capitalize">
+                                  {ele}
+                                </Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        )}
+                      />
+                      {errors.preference && (
+                        <span className="text-sm text-red-500">
+                          {errors.preference.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* availability */}
+                  {currStep === 4 && (
+                    <div className="space-y-1">
+                      <Label>
+                        What days are you generally available to Classes?
+                      </Label>
+                      <Controller
+                        control={control}
+                        rules={{ required: "required*" }}
+                        name="availability"
+                        render={({ field }) => (
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex items-center justify-start gap-2"
+                            value={field.value}
+                          >
+                            {["anyday", "weekday", "weekend"].map(
+                              (ele, key) => (
+                                <div
+                                  className={cn(
+                                    "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                                    {
+                                      "border-primary-200 bg-primary-50":
+                                        field.value === ele,
+                                    },
+                                  )}
+                                  key={ele}
+                                >
+                                  <RadioGroupItem value={ele} id={ele} />
+                                  <Label htmlFor={ele} className="capitalize">
+                                    {ele}
+                                  </Label>
+                                </div>
+                              ),
+                            )}
+                          </RadioGroup>
+                        )}
+                      />
+                      {errors.availability && (
+                        <span className="text-sm text-red-500">
+                          {errors.availability.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* start_date */}
+                  {currStep === 5 && (
+                    <div className="space-y-1">
+                      <Label>When do you plan to start?</Label>
+                      <Controller
+                        control={control}
+                        rules={{ required: "required*" }}
+                        name="start_date"
+                        render={({ field }) => (
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex items-center justify-start gap-2"
+                            value={field.value}
+                          >
+                            {[
+                              "immediately",
+                              "not sure, just want to look at options",
+                              "within a month",
+                            ].map((ele, key) => (
+                              <div
+                                className={cn(
+                                  "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                                  {
+                                    "border-primary-200 bg-primary-50":
+                                      field.value === ele,
+                                  },
+                                )}
+                                key={ele}
+                              >
+                                <RadioGroupItem value={ele} id={ele} />
+                                <Label htmlFor={ele} className="capitalize">
+                                  {ele}
+                                </Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        )}
+                      />
+                      {errors.start_date && (
+                        <span className="text-sm text-red-500">
+                          {errors.start_date.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   {/* boards */}
-                  {data?.is_boards && currStep === 3 && (
+                  {data?.is_boards && currStep === 6 && (
                     <div>
                       <div className="text-sm font-medium">
                         Which {data?.name} board of education are you looking
@@ -446,7 +590,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* board subjects */}
-                  {data?.is_boards && currStep === 4 && (
+                  {data?.is_boards && currStep === 7 && (
                     <div className="space-y-2">
                       <div className="text-sm font-medium">
                         Which of the following {selectedBoard} subjects fo you
@@ -481,7 +625,7 @@ export default function CompleteProfileStudent({
                   {/* custom fields */}
                   {data?.fields.map(
                     (field, key) =>
-                      currStep === (data.is_boards ? 2 + key + 3 : key + 3) && (
+                      currStep === (data.is_boards ? 2 + key + 6 : key + 6) && (
                         <div className="space-y-4" key={key}>
                           <div className="mt-3 space-y-4">
                             <div className="text-sm font-medium capitalize">

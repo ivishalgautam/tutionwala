@@ -84,6 +84,9 @@ export default function CompleteProfileTutor({
       class_conduct_mode: "",
       enquiry_radius: "",
       is_demo_class: false,
+      preference: "no preference",
+      availability: "anyday",
+      start_date: "immediately",
 
       // step 2
       experience: "",
@@ -204,6 +207,9 @@ export default function CompleteProfileTutor({
             enquiry_radius: formData.enquiry_radius,
             coords: coords,
             is_demo_class: formData.is_demo_class,
+            preference: formData.preference,
+            availability: formData.availability,
+            start_date: formData.start_date,
           }
         : currStep === 2
           ? {
@@ -340,7 +346,6 @@ export default function CompleteProfileTutor({
 
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
-
   return (
     <div className={"space-y-4 p-8"}>
       <div className="mx-auto max-w-2xl space-y-2 rounded-lg bg-white p-6">
@@ -626,6 +631,139 @@ export default function CompleteProfileTutor({
                   )}
                 </div>
 
+                {/* preference */}
+                <div className="space-y-1">
+                  <Label>Are you looking for Private or Group Classes?</Label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "required*" }}
+                    name="preference"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex items-center justify-start gap-2"
+                        value={field.value}
+                      >
+                        {[
+                          "one on one/private tutions",
+                          "no preference",
+                          "group classes",
+                        ].map((ele, key) => (
+                          <div
+                            className={cn(
+                              "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                              {
+                                "border-primary-200 bg-primary-50":
+                                  field.value === ele,
+                              },
+                            )}
+                            key={ele}
+                          >
+                            <RadioGroupItem value={ele} id={ele} />
+                            <Label htmlFor={ele} className="capitalize">
+                              {ele}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.preference && (
+                    <span className="text-sm text-red-500">
+                      {errors.preference.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* availability */}
+                <div className="space-y-1">
+                  <Label>
+                    What days are you generally available to Classes?
+                  </Label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "required*" }}
+                    name="availability"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex items-center justify-start gap-2"
+                        value={field.value}
+                      >
+                        {["anyday", "weekday", "weekend"].map((ele, key) => (
+                          <div
+                            className={cn(
+                              "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                              {
+                                "border-primary-200 bg-primary-50":
+                                  field.value === ele,
+                              },
+                            )}
+                            key={ele}
+                          >
+                            <RadioGroupItem value={ele} id={ele} />
+                            <Label htmlFor={ele} className="capitalize">
+                              {ele}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.availability && (
+                    <span className="text-sm text-red-500">
+                      {errors.availability.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* start_date */}
+                <div className="space-y-1">
+                  <Label>When do you plan to start?</Label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "required*" }}
+                    name="start_date"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex items-center justify-start gap-2"
+                        value={field.value}
+                      >
+                        {[
+                          "immediately",
+                          "not sure, just want to look at options",
+                          "within a month",
+                        ].map((ele, key) => (
+                          <div
+                            className={cn(
+                              "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                              {
+                                "border-primary-200 bg-primary-50":
+                                  field.value === ele,
+                              },
+                            )}
+                            key={ele}
+                          >
+                            <RadioGroupItem value={ele} id={ele} />
+                            <Label htmlFor={ele} className="capitalize">
+                              {ele}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.start_date && (
+                    <span className="text-sm text-red-500">
+                      {errors.start_date.message}
+                    </span>
+                  )}
+                </div>
+
                 {/* board */}
                 {data?.is_boards && (
                   <div>
@@ -893,6 +1031,7 @@ export default function CompleteProfileTutor({
               <H5 className={"text-center"}>
                 What is your background and experience ?
               </H5>
+
               <div>
                 <Textarea
                   {...register("experience", {
