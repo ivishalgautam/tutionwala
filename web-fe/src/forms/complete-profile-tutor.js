@@ -81,12 +81,16 @@ export default function CompleteProfileTutor({
         year: "",
         status: "",
       },
-      class_conduct_mode: "",
       enquiry_radius: "",
       is_demo_class: false,
       preference: "no preference",
       availability: "anyday",
       start_date: "immediately",
+      class_conduct_mode: [],
+      selectedOnlineTypes: [],
+      selectedOfflineTypes: [],
+      selectedOfflineLocations: [],
+      budgets: [],
 
       // step 2
       experience: "",
@@ -97,6 +101,20 @@ export default function CompleteProfileTutor({
       adhaar: "",
     },
   });
+
+  const {
+    fields: budgets,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "budgets",
+  });
+  const selectedModes = watch("class_conduct_mode");
+  const selectedOnlineTypes = watch("selectedOnlineTypes");
+  const selectedOfflineTypes = watch("selectedOfflineTypes");
+  const selectedOfflineLocations = watch("selectedOfflineLocations");
+
   const [media, setMedia] = useState({
     profile: "",
     adhaar: "",
@@ -195,7 +213,6 @@ export default function CompleteProfileTutor({
   };
 
   const onSubmit = async (formData) => {
-    // console.log({ formData });
     const payload =
       currStep === 1
         ? {
@@ -210,6 +227,7 @@ export default function CompleteProfileTutor({
             preference: formData.preference,
             availability: formData.availability,
             start_date: formData.start_date,
+            budgets: formData?.budgets ?? [],
           }
         : currStep === 2
           ? {
@@ -344,6 +362,45 @@ export default function CompleteProfileTutor({
     }
   }, [setValue]);
 
+  useEffect(() => {
+    // Clear budgets when modes, session types, or categories change
+    remove();
+
+    if (selectedModes.includes("online") && selectedOnlineTypes.length > 0) {
+      selectedOnlineTypes.forEach((type) => {
+        append({
+          mode: "online",
+          type,
+          location: null, // No categories for online
+          budget: "",
+        });
+      });
+    }
+
+    if (
+      selectedModes.includes("offline") &&
+      selectedOfflineTypes.length > 0 &&
+      selectedOfflineLocations?.length > 0
+    ) {
+      selectedOfflineTypes.forEach((type) => {
+        selectedOfflineLocations.forEach((location) => {
+          append({
+            mode: "offline",
+            type,
+            location,
+            budget: "",
+          });
+        });
+      });
+    }
+  }, [
+    selectedModes,
+    selectedOnlineTypes,
+    selectedOfflineTypes,
+    selectedOfflineLocations,
+    append,
+    remove,
+  ]);
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
   return (
@@ -542,45 +599,178 @@ export default function CompleteProfileTutor({
                 {/* counduct classes */}
                 <div className="space-y-1">
                   <Label>How will you conduct class?</Label>
-                  <Controller
-                    control={control}
-                    rules={{ required: "required*" }}
-                    name="class_conduct_mode"
-                    render={({ field }) => (
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex items-center justify-start gap-2"
-                        value={field.value}
-                      >
-                        {["offline", "online", "nearby", "any"].map(
-                          (ele, key) => (
-                            <div
-                              className={cn(
-                                "flex cursor-pointer items-center space-x-2 rounded border p-2",
-                                {
-                                  "border-primary-200 bg-primary-50":
-                                    field.value === ele,
-                                },
-                              )}
-                              key={ele}
-                            >
-                              <RadioGroupItem value={ele} id={ele} />
-                              <Label htmlFor={ele} className="capitalize">
-                                {ele}
-                              </Label>
-                            </div>
-                          ),
+                  <div className="flex items-center justify-start gap-2">
+                    {["offline", "online"].map((mode) => (
+                      <Controller
+                        key={mode}
+                        control={control}
+                        rules={{ required: "required*" }}
+                        name="class_conduct_mode"
+                        render={({ field }) => (
+                          <div className="flex items-center gap-1">
+                            <Checkbox
+                              checked={field.value?.includes(mode)}
+                              onCheckedChange={(checked) => {
+                                const newValue = checked
+                                  ? [...field.value, mode]
+                                  : field.value.filter((val) => val !== mode);
+                                field.onChange(newValue);
+                              }}
+                            />
+                            <Label className="capitalize">{mode}</Label>
+                          </div>
                         )}
-                      </RadioGroup>
-                    )}
-                  />
+                      />
+                    ))}
+                  </div>
                   {errors.class_conduct_mode && (
                     <span className="text-sm text-red-500">
                       {errors.class_conduct_mode.message}
                     </span>
                   )}
                 </div>
+
+                {/* Online Section */}
+                {selectedModes.includes("online") && (
+                  <div>
+                    <h3>Online</h3>
+
+                    {/* online Session Types */}
+                    <div className="flex items-center justify-start gap-2">
+                      {["oneToOne", "group"].map((mode) => (
+                        <Controller
+                          key={mode}
+                          control={control}
+                          rules={{ required: "required*" }}
+                          name="selectedOnlineTypes"
+                          render={({ field }) => (
+                            <div className="flex items-center gap-1">
+                              <Checkbox
+                                checked={field.value?.includes(mode)}
+                                onCheckedChange={(checked) => {
+                                  const newValue = checked
+                                    ? [...field.value, mode]
+                                    : field.value.filter((val) => val !== mode);
+                                  field.onChange(newValue);
+                                }}
+                              />
+                              <Label className="capitalize">{mode}</Label>
+                            </div>
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Offline Section */}
+                {selectedModes.includes("offline") && (
+                  <div className="space-y-2">
+                    <h3>Offline</h3>
+                    {/* Offline Session Types */}
+                    <div className="">
+                      <Label>Offline Type:</Label>
+                      <div className="flex items-center justify-start gap-2">
+                        {["oneToOne", "group"].map((mode) => (
+                          <Controller
+                            key={mode}
+                            control={control}
+                            rules={{ required: "required*" }}
+                            name="selectedOfflineTypes"
+                            render={({ field }) => (
+                              <div className="flex items-center gap-1">
+                                <Checkbox
+                                  checked={field.value?.includes(mode)}
+                                  onCheckedChange={(checked) => {
+                                    const newValue = checked
+                                      ? [...field.value, mode]
+                                      : field.value.filter(
+                                          (val) => val !== mode,
+                                        );
+                                    field.onChange(newValue);
+                                  }}
+                                />
+                                <Label className="capitalize">{mode}</Label>
+                              </div>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Offline Location */}
+                    {selectedOfflineTypes.length > 0 && (
+                      <div>
+                        <Label>Location:</Label>
+                        <div className="flex items-center justify-start gap-2">
+                          {["tutorPlace", "studentPlace", "other"].map(
+                            (mode) => (
+                              <Controller
+                                key={mode}
+                                control={control}
+                                rules={{ required: "required*" }}
+                                name="selectedOfflineLocations"
+                                render={({ field }) => (
+                                  <div className="flex items-center gap-1">
+                                    <Checkbox
+                                      checked={field.value?.includes(mode)}
+                                      onCheckedChange={(checked) => {
+                                        const newValue = checked
+                                          ? [...field.value, mode]
+                                          : field.value.filter(
+                                              (val) => val !== mode,
+                                            );
+                                        field.onChange(newValue);
+                                      }}
+                                    />
+                                    <Label className="capitalize">{mode}</Label>
+                                  </div>
+                                )}
+                              />
+                            ),
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Dynamic Budgets */}
+                {budgets.length > 0 && (
+                  <div>
+                    <h4>Budgets:</h4>
+                    {budgets.map((field, index) => (
+                      <div key={field.id}>
+                        <p>
+                          Mode: <strong>{field.mode}</strong>, Type:{" "}
+                          <strong>{field.type}</strong>,
+                          {field.location && (
+                            <>
+                              {" "}
+                              Location: <strong>{field.location}</strong>
+                            </>
+                          )}
+                        </p>
+                        <div>
+                          <Input
+                            type="number"
+                            {...register(`budgets.${index}.budget`, {
+                              min: 0,
+                              valueAsNumber: true,
+                              required: "required*",
+                            })}
+                            placeholder="Enter budget"
+                          />
+                          {errors?.budgets?.[index]?.budget && (
+                            <span className="text-red-500">
+                              {errors?.budgets?.[index]?.budget?.message}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* demo class */}
                 <div>

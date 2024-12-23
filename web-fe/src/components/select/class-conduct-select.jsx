@@ -1,26 +1,36 @@
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 const options = [
   { label: "Online", value: "online" },
-  { label: "Offliine", value: "offliine" },
-  { label: "Nearby", value: "nearby" },
-  { label: "Any", value: "any" },
+  { label: "Offline", value: "offline" },
+  // { label: "Nearby", value: "nearby" },
+  // { label: "Any", value: "any" },
 ];
 
 export default function ClassConductSelect({ searchParams }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const router = useRouter();
-  const gender = searchParams.get("mode");
-
+  const mode = searchParams.get("mode");
+  const defaultValues = useCallback(() => {
+    return (
+      options.filter(({ value }) => mode?.split(" ").includes(value)) ?? []
+    );
+  }, [mode]);
   useEffect(() => {
     if (!selectedOption) return;
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    if (searchParams.get("mode")) {
-      newSearchParams.set("mode", selectedOption.value);
+    const valuesToSet = Array.isArray(selectedOption)
+      ? selectedOption
+          .map(({ value }) => value)
+          .join(" ")
+          .toString()
+      : selectedOption.value;
+    if (mode) {
+      newSearchParams.set("mode", valuesToSet);
     } else {
-      newSearchParams.append("mode", selectedOption.value);
+      newSearchParams.append("mode", valuesToSet);
     }
 
     if (!selectedOption || selectedOption?.value === "any") {
@@ -33,10 +43,11 @@ export default function ClassConductSelect({ searchParams }) {
   return (
     <ReactSelect
       options={options}
-      defaultValue={options.find((so) => so.value === gender)}
+      defaultValue={defaultValues}
       placeholder={"Select Class Conduct"}
       onChange={setSelectedOption}
       menuPortalTarget={document.body}
+      isMulti
     />
   );
 }

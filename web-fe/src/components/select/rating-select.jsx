@@ -95,7 +95,7 @@ export default function RatingSelect({ searchParams }) {
     }
 
     router.push(`?${newSearchParams.toString()}`);
-  }, [selectedOption, router, searchParams]);
+  }, [selectedOption, router, searchParams, rating]);
 
   return (
     <ReactSelect
