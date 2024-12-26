@@ -81,7 +81,7 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
       setDefaultOptions(formattedOptions);
       setSelectedOption(formattedOptions);
     }
-  }, []);
+  }, [searchParams]);
 
   return (
     <ReactSelect

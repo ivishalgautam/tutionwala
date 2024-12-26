@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import Loading from "../loading";
 import HeaderLoader from "../loaders/header";
 import Lenis from "lenis";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export default function Layout({ children }) {
   const pathname = usePathname();
@@ -22,14 +23,14 @@ export default function Layout({ children }) {
   const { slug } = useParams();
   const { user, isUserLoading } = useContext(MainContext);
 
-  useEffect(() => {
-    const lenis = new Lenis();
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-  }, []);
+  // useEffect(() => {
+  //   const lenis = new Lenis();
+  //   function raf(time) {
+  //     lenis.raf(time);
+  //     requestAnimationFrame(raf);
+  //   }
+  //   requestAnimationFrame(raf);
+  // }, []);
 
   useEffect(() => {
     if (
@@ -113,5 +114,9 @@ export default function Layout({ children }) {
 
   // if (isUserLoading) return <Spinner />;
 
-  return <main className="min-h-screen bg-gray-100">{getContent()}</main>;
+  return (
+    <main className="min-h-screen bg-gray-100">
+      <NuqsAdapter>{getContent()}</NuqsAdapter>
+    </main>
+  );
 }

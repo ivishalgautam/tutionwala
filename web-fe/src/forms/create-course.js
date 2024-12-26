@@ -3,7 +3,7 @@ import { Button } from "../components/ui/button";
 import { H3 } from "../components/ui/typography";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { CheckIcon } from "lucide-react";
 import {
   Popover,
@@ -26,6 +26,7 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "../components/ui/checkbox";
+import { useEffect } from "react";
 
 const fetchSubCategory = async (slug) => {
   const { data } = await http().get(
@@ -48,8 +49,25 @@ export default function CreateCourse({ handleCreate }) {
       is_demo_class: false,
       fields: [],
       boards: [],
+      class_conduct_mode: [],
+      selectedOnlineTypes: [],
+      selectedOfflineTypes: [],
+      selectedOfflineLocations: [],
+      budgets: [],
     },
   });
+  const {
+    fields: budgets,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "budgets",
+  });
+  const selectedModes = watch("class_conduct_mode");
+  const selectedOnlineTypes = watch("selectedOnlineTypes");
+  const selectedOfflineTypes = watch("selectedOfflineTypes");
+  const selectedOfflineLocations = watch("selectedOfflineLocations");
 
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
@@ -125,10 +143,51 @@ export default function CreateCourse({ handleCreate }) {
       boards: formData.boards,
       sub_category_slug: categorySlug,
       is_demo_class: formData.is_demo_class,
+      budgets: formData?.budgets ?? [],
     };
 
     handleCreate({ ...payload });
   };
+
+  useEffect(() => {
+    // Clear budgets when modes, session types, or categories change
+    remove();
+
+    if (selectedModes.includes("online") && selectedOnlineTypes.length > 0) {
+      selectedOnlineTypes.forEach((type) => {
+        append({
+          mode: "online",
+          type,
+          location: null, // No categories for online
+          budget: "",
+        });
+      });
+    }
+
+    if (
+      selectedModes.includes("offline") &&
+      selectedOfflineTypes.length > 0 &&
+      selectedOfflineLocations?.length > 0
+    ) {
+      selectedOfflineTypes.forEach((type) => {
+        selectedOfflineLocations.forEach((location) => {
+          append({
+            mode: "offline",
+            type,
+            location,
+            budget: "",
+          });
+        });
+      });
+    }
+  }, [
+    selectedModes,
+    selectedOnlineTypes,
+    selectedOfflineTypes,
+    selectedOfflineLocations,
+    append,
+    remove,
+  ]);
 
   return (
     <div className="rounded-lg bg-white p-8">
@@ -165,6 +224,176 @@ export default function CreateCourse({ handleCreate }) {
                 )}
               />
             </div>
+
+            {/* counduct classes */}
+            <div className="space-y-1">
+              <Label>How will you conduct class?</Label>
+              <div className="flex items-center justify-start gap-2">
+                {["offline", "online"].map((mode) => (
+                  <Controller
+                    key={mode}
+                    control={control}
+                    rules={{ required: "required*" }}
+                    name="class_conduct_mode"
+                    render={({ field }) => (
+                      <div className="flex items-center gap-1">
+                        <Checkbox
+                          checked={field.value?.includes(mode)}
+                          onCheckedChange={(checked) => {
+                            const newValue = checked
+                              ? [...field.value, mode]
+                              : field.value.filter((val) => val !== mode);
+                            field.onChange(newValue);
+                          }}
+                        />
+                        <Label className="capitalize">{mode}</Label>
+                      </div>
+                    )}
+                  />
+                ))}
+              </div>
+              {errors.class_conduct_mode && (
+                <span className="text-sm text-red-500">
+                  {errors.class_conduct_mode.message}
+                </span>
+              )}
+            </div>
+
+            {/* Online Section */}
+            {selectedModes.includes("online") && (
+              <div>
+                <h3>Online</h3>
+
+                {/* online Session Types */}
+                <div className="flex items-center justify-start gap-2">
+                  {["oneToOne", "group"].map((mode) => (
+                    <Controller
+                      key={mode}
+                      control={control}
+                      rules={{ required: "required*" }}
+                      name="selectedOnlineTypes"
+                      render={({ field }) => (
+                        <div className="flex items-center gap-1">
+                          <Checkbox
+                            checked={field.value?.includes(mode)}
+                            onCheckedChange={(checked) => {
+                              const newValue = checked
+                                ? [...field.value, mode]
+                                : field.value.filter((val) => val !== mode);
+                              field.onChange(newValue);
+                            }}
+                          />
+                          <Label className="capitalize">{mode}</Label>
+                        </div>
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Offline Section */}
+            {selectedModes.includes("offline") && (
+              <div className="space-y-2">
+                <h3>Offline</h3>
+                {/* Offline Session Types */}
+                <div className="">
+                  <Label>Offline Type:</Label>
+                  <div className="flex items-center justify-start gap-2">
+                    {["oneToOne", "group"].map((mode) => (
+                      <Controller
+                        key={mode}
+                        control={control}
+                        rules={{ required: "required*" }}
+                        name="selectedOfflineTypes"
+                        render={({ field }) => (
+                          <div className="flex items-center gap-1">
+                            <Checkbox
+                              checked={field.value?.includes(mode)}
+                              onCheckedChange={(checked) => {
+                                const newValue = checked
+                                  ? [...field.value, mode]
+                                  : field.value.filter((val) => val !== mode);
+                                field.onChange(newValue);
+                              }}
+                            />
+                            <Label className="capitalize">{mode}</Label>
+                          </div>
+                        )}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Offline Location */}
+                {selectedOfflineTypes.length > 0 && (
+                  <div>
+                    <Label>Location:</Label>
+                    <div className="flex items-center justify-start gap-2">
+                      {["tutorPlace", "studentPlace", "other"].map((mode) => (
+                        <Controller
+                          key={mode}
+                          control={control}
+                          rules={{ required: "required*" }}
+                          name="selectedOfflineLocations"
+                          render={({ field }) => (
+                            <div className="flex items-center gap-1">
+                              <Checkbox
+                                checked={field.value?.includes(mode)}
+                                onCheckedChange={(checked) => {
+                                  const newValue = checked
+                                    ? [...field.value, mode]
+                                    : field.value.filter((val) => val !== mode);
+                                  field.onChange(newValue);
+                                }}
+                              />
+                              <Label className="capitalize">{mode}</Label>
+                            </div>
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Dynamic Budgets */}
+            {budgets.length > 0 && (
+              <div>
+                <h4>Budgets:</h4>
+                {budgets.map((field, index) => (
+                  <div key={field.id}>
+                    <p>
+                      Mode: <strong>{field.mode}</strong>, Type:{" "}
+                      <strong>{field.type}</strong>,
+                      {field.location && (
+                        <>
+                          {" "}
+                          Location: <strong>{field.location}</strong>
+                        </>
+                      )}
+                    </p>
+                    <div>
+                      <Input
+                        type="number"
+                        {...register(`budgets.${index}.budget`, {
+                          min: 0,
+                          valueAsNumber: true,
+                          required: "required*",
+                        })}
+                        placeholder="Enter budget"
+                      />
+                      {errors?.budgets?.[index]?.budget && (
+                        <span className="text-red-500">
+                          {errors?.budgets?.[index]?.budget?.message}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {data?.is_boards && (
               <div>

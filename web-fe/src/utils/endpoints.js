@@ -64,6 +64,9 @@ export const endpoints = {
   queries: {
     getAll: "/queries",
   },
+  feedbacks: {
+    getAll: "/feedbacks",
+  },
   creditApplies: {
     getAll: "/credit-applies",
   },

@@ -61,7 +61,7 @@ export default function SignUpStudentForm() {
   const [remainingTime, setRemainingTime] = useState(0);
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const debounceTimeoutRef = useRef(null);
-  const [minute] = useState(5);
+  const [minute] = useState(1.5);
   const router = useRouter();
   const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);

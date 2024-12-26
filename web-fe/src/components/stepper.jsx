@@ -50,6 +50,23 @@ export default function Stepper({ currStep = 1, role }) {
                 <small className="mt-1"> Identity details </small>
               </p>
             </li>
+
+            {/* <li
+              className={cn("flex items-center justify-center gap-2 p-4", {
+                "bg-primary text-white": currStep === 3,
+              })}
+            >
+              {currStep > 3 ? (
+                <Check className="text-primary" />
+              ) : (
+                <SquareUserRound />
+              )}
+
+              <p className="leading-none">
+                <strong className="block font-medium"> Identity </strong>
+                <small className="mt-1"> Identity details </small>
+              </p>
+            </li> */}
           </ol>
         </div>
       ) : (

@@ -3,47 +3,49 @@ import { useCallback, useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 const options = [
-  { label: "Online", value: "online" },
-  { label: "Offline", value: "offline" },
-  // { label: "Nearby", value: "nearby" },
-  // { label: "Any", value: "any" },
+  { label: "Tutor place", value: "tutorPlace" },
+  { label: "Student place", value: "studentPlace" },
+  { label: "Other", value: "other" },
 ];
 
-export default function ClassConductSelect({ searchParams }) {
+export default function ClassPlaceSelect({ searchParams }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const router = useRouter();
-  const mode = searchParams.get("mode");
+
+  const place = searchParams.get("place");
   const defaultValues = useCallback(() => {
     return (
-      options.filter(({ value }) => mode?.split(" ").includes(value)) ?? []
+      options.filter(({ value }) => place?.split(" ").includes(value)) ?? []
     );
-  }, [mode]);
+  }, [place]);
+
   useEffect(() => {
     if (!selectedOption) return;
     const newSearchParams = new URLSearchParams(searchParams.toString());
+
     const valuesToSet = selectedOption
       .map(({ value }) => value)
       .join(" ")
       .toString();
 
-    if (mode) {
-      newSearchParams.set("mode", valuesToSet);
+    if (place) {
+      newSearchParams.set("place", valuesToSet);
     } else {
-      newSearchParams.append("mode", valuesToSet);
+      newSearchParams.append("place", valuesToSet);
     }
 
     if (!valuesToSet) {
-      newSearchParams.delete("mode");
+      newSearchParams.delete("place");
     }
 
     router.push(`?${newSearchParams.toString()}`);
-  }, [selectedOption, router, searchParams, mode]);
+  }, [selectedOption, router, searchParams, place]);
 
   return (
     <ReactSelect
       options={options}
       defaultValue={defaultValues}
-      placeholder={"Select Class Conduct"}
+      placeholder={"Select Class place"}
       onChange={setSelectedOption}
       menuPortalTarget={document.body}
       isMulti

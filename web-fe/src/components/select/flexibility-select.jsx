@@ -3,21 +3,22 @@ import { useCallback, useEffect, useState } from "react";
 import ReactSelect from "react-select";
 
 const options = [
-  { label: "Online", value: "online" },
-  { label: "Offline", value: "offline" },
+  { label: "One To One", value: "oneToOne" },
+  { label: "Group", value: "group" },
   // { label: "Nearby", value: "nearby" },
   // { label: "Any", value: "any" },
 ];
 
-export default function ClassConductSelect({ searchParams }) {
+export default function ClassFlexibilitySelect({ searchParams }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const router = useRouter();
-  const mode = searchParams.get("mode");
+  const flexibility = searchParams.get("flexibility");
   const defaultValues = useCallback(() => {
     return (
-      options.filter(({ value }) => mode?.split(" ").includes(value)) ?? []
+      options.filter(({ value }) => flexibility?.split(" ").includes(value)) ??
+      []
     );
-  }, [mode]);
+  }, [flexibility]);
   useEffect(() => {
     if (!selectedOption) return;
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -26,24 +27,24 @@ export default function ClassConductSelect({ searchParams }) {
       .join(" ")
       .toString();
 
-    if (mode) {
-      newSearchParams.set("mode", valuesToSet);
+    if (flexibility) {
+      newSearchParams.set("flexibility", valuesToSet);
     } else {
-      newSearchParams.append("mode", valuesToSet);
+      newSearchParams.append("flexibility", valuesToSet);
     }
 
     if (!valuesToSet) {
-      newSearchParams.delete("mode");
+      newSearchParams.delete("flexibility");
     }
 
     router.push(`?${newSearchParams.toString()}`);
-  }, [selectedOption, router, searchParams, mode]);
+  }, [selectedOption, router, searchParams, flexibility]);
 
   return (
     <ReactSelect
       options={options}
       defaultValue={defaultValues}
-      placeholder={"Select Class Conduct"}
+      placeholder={"Select Class Flexibility"}
       onChange={setSelectedOption}
       menuPortalTarget={document.body}
       isMulti

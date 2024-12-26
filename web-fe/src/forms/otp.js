@@ -31,7 +31,7 @@ export default function OTPForm({ phone }) {
   });
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
-  const [minute] = useState(5);
+  const [minute] = useState(1.5);
 
   const sendMutation = useMutation(sendOtp, {
     onSuccess: (data) => {

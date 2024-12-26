@@ -1,0 +1,106 @@
+.whatsappBox {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 300px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.whatsappBox.active {
+  transform: scale(1);
+}
+
+.whatsappHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  /* border-bottom: 1px solid #ddd; */
+  background-color: #00a884;
+  color: white;
+  border-radius: 8px;
+}
+
+.whatsappHead span {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.whatsappProfile img {
+  border-radius: 50%;
+}
+
+.whatsappDetails h6 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.whatsappDetails p {
+  margin: 0;
+  font-size: 12px;
+  color: #555;
+}
+
+.whatsappChat {
+  padding: 10px;
+}
+
+.chatbox {
+  position: relative;
+  background: #f1f1f1;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.chatbox .arrow {
+  position: absolute;
+  top: 10px;
+  left: -10px;
+}
+
+.chatbox h6 {
+  margin: 0 0 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.chatbox p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.chatbox .time {
+  font-size: 10px;
+  color: #aaa;
+  text-align: right;
+}
+
+.chatBtnBox {
+  padding: 10px;
+  text-align: center;
+}
+
+.chatBtn a {
+  display: inline-flex;
+  align-items: center;
+  background: #00a884;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.whatsappStickyBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  cursor: pointer;
+}

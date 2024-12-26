@@ -4,6 +4,7 @@ import HeroLoader from "./loaders/hero";
 import CategoryLoader from "./loaders/category";
 import WhyChooseUsLoader from "./loaders/why-choose-us";
 import FadeUp from "./fade-up";
+import WhatsAppWidget from "./whatsapp-widget";
 
 const Hero = dynamic(() => import("./hero.jsx"), {
   loading: () => <HeroLoader />,
@@ -30,6 +31,7 @@ export default function HomePage() {
       <WhyChooseUs />
       <StudentReviewCards />
       <CoursesWithTabs slugs={["school", "college"]} />
+      <WhatsAppWidget />
     </>
   );
 }

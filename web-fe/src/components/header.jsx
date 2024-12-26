@@ -59,7 +59,7 @@ export default function NavbarComponent() {
             </NavbarItem>
 
             <NavbarItem active={pathname === "/tutors"}>
-              <Link href={"/tutors"}>Tutors</Link>
+              <Link href={"/tutors"}>Find Tutors</Link>
             </NavbarItem>
 
             <NavbarItem active={pathname === "/about"}>

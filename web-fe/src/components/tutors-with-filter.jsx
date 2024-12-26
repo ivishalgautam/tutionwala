@@ -14,20 +14,11 @@ import { useForm } from "react-hook-form";
 import SubCategorySelect from "./select/sub-category-select";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import PaginationControl from "./pagination";
-import LanguageSelect from "./select/language-select";
-import GenderSelect from "./select/gender-select";
-import RatingSelect from "./select/rating-select";
+
 import { Input } from "./ui/input";
 import useMapLoader from "@/hooks/useMapLoader";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
-import DemoClassSelect from "./select/demo-class-select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
+
 import { Filter, Layers, Search, X } from "lucide-react";
 import {
   Sheet,
@@ -37,10 +28,9 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { buttonVariants } from "./ui/button";
-import { cn } from "@/lib/utils";
-import ClassConductSelect from "./select/class-conduct-select";
 import dynamic from "next/dynamic";
 import { PaginationWithLinks } from "./pagination-with-links";
+import { FilterForm } from "@/forms/filter";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -230,70 +220,6 @@ export default function TutorsWithFilter() {
     </div>
   );
 }
-
-export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
-  const tabs = [
-    // {
-    //   name: "Address?",
-    //   comp: <FilterAddress searchParams={searchParams} />,
-    //   className: "block lg:hidden",
-    // },
-    // {
-    //   name: "Category?",
-    //   comp: <SubCategorySelect searchParams={searchParams} />,
-    //   className: "block lg:hidden",
-    // },
-    {
-      name: "Languages?",
-      comp: <LanguageSelect searchParams={searchParams} />,
-      className: "",
-    },
-    {
-      name: "Gender?",
-      comp: <GenderSelect searchParams={searchParams} />,
-      className: "",
-    },
-    {
-      name: "Rating?",
-      comp: <RatingSelect searchParams={searchParams} />,
-      className: "",
-    },
-    {
-      name: "Demo Classes?",
-      comp: <DemoClassSelect searchParams={searchParams} />,
-      className: "",
-    },
-    {
-      name: "Class conduct mode?",
-      comp: <ClassConductSelect searchParams={searchParams} />,
-      className: "",
-    },
-  ];
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4">
-        <Accordion type="multiple" className="space-y-2">
-          {tabs.map((item, ind) => (
-            <AccordionItem
-              value={`item-${ind + 1}`}
-              key={ind}
-              className={cn(
-                "rounded-lg border-b-0 bg-gray-100",
-                item.className,
-              )}
-            >
-              <AccordionTrigger className="border-b-0 p-3">
-                {item.name}
-              </AccordionTrigger>
-              <AccordionContent className="px-4">{item.comp}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
-    </form>
-  );
-};
 
 export const FilterAddress = ({ searchParams }) => {
   const { isLoaded } = useMapLoader();

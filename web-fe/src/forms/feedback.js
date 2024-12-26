@@ -11,10 +11,14 @@ import { H2 } from "../components/ui/typography";
 import { cn } from "@/lib/utils";
 
 const createQuery = async (data) => {
-  return await http().post(endpoints.queries.getAll, data);
+  return await http().post(endpoints.feedbacks.getAll, data);
 };
 
-export default function ContactForm() {
+function countWords(str) {
+  return str.trim().split(/\s+/).length;
+}
+
+export default function FeedbackForm() {
   const {
     formState: { errors },
     register,
@@ -24,6 +28,7 @@ export default function ContactForm() {
 
   const createMutation = useMutation(createQuery, {
     onSuccess: (data) => {
+      console.log({ data });
       toast.success(data.message);
       reset();
     },
@@ -41,7 +46,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <H2 className={"border-none text-white"}>Contact Us</H2>
+      <H2 className={"border-none text-white"}>Feedback</H2>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* name */}
@@ -127,6 +132,11 @@ export default function ContactForm() {
             placeholder="Message"
             {...register("message", {
               required: "required",
+              validate: (value) => {
+                if (countWords(value) > 240) {
+                  return "Message must be less than 240 words.";
+                }
+              },
             })}
             className={cn(`min-h-[200px] outline-none ring-0`, className)}
           />

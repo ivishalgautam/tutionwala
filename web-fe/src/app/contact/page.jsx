@@ -11,6 +11,7 @@ import { H1, Large } from "@/components/ui/typography";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import config from "@/config";
+import FeedbackForm from "@/forms/feedback";
 
 export default function Page() {
   return (
@@ -25,26 +26,19 @@ export default function Page() {
 
       {/* main */}
       <div className="container py-10 pb-20">
-        <div className="mx-auto max-w-lg space-y-4 rounded-lg bg-white p-8">
-          <div className="rounded-lg bg-primary p-10 py-6 md:-mt-12">
-            <ContactForm />
+        <div className="mx-auto max-w-5xl space-y-4 rounded-lg bg-white p-8">
+          <div className="grid gap-8 md:grid-cols-2">
+            <div className="rounded-lg bg-primary p-10 py-6 md:-mt-12">
+              <ContactForm />
+            </div>
+            <div className="rounded-lg bg-primary p-10 py-6 md:-mt-12">
+              <FeedbackForm />
+            </div>
           </div>
           <MeetUs />
         </div>
       </div>
     </div>
-  );
-}
-
-function MapIFrame() {
-  return (
-    <iframe
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.468332874635!2d77.28399527495618!3d28.615722584844846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3588836f4bd%3A0x28a9c8ce5f2624d6!2sSamaspur%20Rd%2C%20Delhi%2C%20110091!5e0!3m2!1sen!2sin!4v1728902304257!5m2!1sen!2sin"
-      allowFullscreen=""
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
-      className="h-full w-full"
-    ></iframe>
   );
 }
 

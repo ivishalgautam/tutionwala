@@ -30,20 +30,34 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 // react imports
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 // icons
-import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
+import {
+  CheckIcon,
+  MoveLeft,
+  MoveRight,
+  Plus,
+  PlusIcon,
+  Trash,
+} from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 import { FilterAddress } from "../components/tutors-with-filter";
 import { useSearchParams } from "next/navigation";
 import { Progress } from "../components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const limit = 6;
 
@@ -81,7 +95,25 @@ export default function CompleteProfileStudent({
       fields: [],
       boards: [],
       languages: [],
+
+      academic_details: [
+        {
+          institution_name: "",
+          program: "",
+          year: "",
+          grades: "",
+          status: "", //"current", "previous"
+        },
+      ], // []
     },
+  });
+  const {
+    fields: academicDetails,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "academic_details",
   });
   const [isLoading, setIsLoading] = useState({ adhaar: false, profile: false });
   const [progress, setProgress] = useState({ adhaar: 0, profile: 0 });
@@ -170,9 +202,9 @@ export default function CompleteProfileStudent({
       fields: formData.fields,
       boards: formData.boards,
       languages: formData.languages,
+      academic_details: formData.academic_details,
       coords: coords,
     };
-
     handleCreate({
       ...payload,
       student_id: data.student_id,
@@ -320,7 +352,7 @@ export default function CompleteProfileStudent({
   }, [setValue]);
 
   if (categoryLoading) return <Loading />;
-
+  console.log({ errors });
   return (
     <div className={"space-y-4 p-8"}>
       <div className="mx-auto max-w-2xl space-y-2 rounded-lg">
@@ -856,65 +888,139 @@ export default function CompleteProfileStudent({
                   )}
                 </div>
               </div>
-              <div className="space-y-4">
-                <H5 className={"text-center"}>Adhaar</H5>
-                <div className="space-y-4">
-                  {!media.adhaar && (
-                    <div className="flex flex-col items-center justify-center">
-                      <Input
-                        type="file"
-                        placeholder="Select Adhaar Card"
-                        {...register("adhaar", {
-                          required: "Required*",
-                        })}
-                        onChange={(e) => handleFileChange(e, "adhaar")}
-                        multiple={false}
-                        accept="image/png, image/jpeg, image/jpg"
-                        className={`max-w-56 bg-primary text-white`}
-                      />
-                      {errors.adhaar && (
-                        <span className="text-sm text-red-500">
-                          {errors.adhaar.message}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                    {isLoading.adhaar && (
-                      <Progress
-                        id="file"
-                        value={progress.adhaar}
-                        max="100"
-                      >{`${progress.adhaar}%`}</Progress>
-                    )}
-                    {media.adhaar ? (
-                      <figure className="relative size-32">
-                        <Image
-                          src={media.adhaar}
-                          width={500}
-                          height={500}
-                          alt="adhaar"
-                          className="h-full w-full"
-                          multiple={false}
-                        />
+
+              <div>
+                <H5 className={"text-center"}>Academic details</H5>
+                <div className="space-y-8">
+                  {academicDetails.map((item, ind) => (
+                    <div
+                      key={item.id}
+                      className="relative grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 rounded-lg border p-3"
+                    >
+                      {academicDetails?.length > 1 && (
                         <Button
                           type="button"
-                          variant="destructive"
-                          onClick={() => deleteFile(media.adhaar, "adhaar")}
-                          className="absolute -right-2 -top-2"
                           size="icon"
+                          className="absolute -right-4 -top-4"
+                          variant="destructive"
+                          onClick={() => remove(ind)}
                         >
                           <Trash size={20} />
                         </Button>
-                      </figure>
-                    ) : (
-                      <div>No file selected</div>
-                    )}
-                  </div>
+                      )}
+                      <div className="col-span-full">
+                        <Label>University or Institution Name</Label>
+                        <Input
+                          type="text"
+                          {...register(
+                            `academic_details.${ind}.institution_name`,
+                            {
+                              required: "required*",
+                            },
+                          )}
+                          placeholder="Enter University or Institution Name"
+                        />
+                        {errors.academic_details?.[ind]?.institution_name && (
+                          <span className="text-red-500">
+                            {
+                              errors.academic_details?.[ind]?.institution_name
+                                ?.message
+                            }
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <Label>Program</Label>
+                        <Input
+                          type="text"
+                          {...register(`academic_details.${ind}.program`, {
+                            required: "required*",
+                          })}
+                          placeholder="Enter program e.g: Class 9th, Class 10th, BCA, MCA etc."
+                        />
+                        {errors.academic_details?.[ind]?.program && (
+                          <span className="text-red-500">
+                            {errors.academic_details?.[ind]?.program?.message}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <Label>Year</Label>
+                        <Input
+                          type="number"
+                          {...register(`academic_details.${ind}.year`, {
+                            required: "required*",
+                            valueAsNumber: true,
+                          })}
+                          placeholder="Enter Year"
+                        />
+                        {errors.academic_details?.[ind]?.year && (
+                          <span className="text-red-500">
+                            {errors.academic_details?.[ind]?.year?.message}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <Label>Grades</Label>
+                        <Input
+                          type="number"
+                          {...register(`academic_details.${ind}.grades`, {
+                            required: "required*",
+                          })}
+                          placeholder="Enter Grades e.g: A+, B+"
+                        />
+                        {errors.academic_details?.[ind]?.grades && (
+                          <span className="text-red-500">
+                            {errors.academic_details?.[ind]?.grades?.message}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <Label>Status</Label>
+                        <Controller
+                          control={control}
+                          name={`academic_details.${ind}.status`}
+                          rules={{ required: "required*" }}
+                          render={({ field }) => (
+                            <Select
+                              value={field.value}
+                              onValueChange={field.onChange}
+                            >
+                              <SelectTrigger className="">
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="current">Current</SelectItem>
+                                <SelectItem value="previous">
+                                  Previous
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                        {errors.academic_details?.[ind]?.status && (
+                          <span className="text-red-500">
+                            {errors.academic_details?.[ind]?.status?.message}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="text-end">
-                  <Button>Submit</Button>
+                <div className="mt-2 text-right">
+                  <Button
+                    type="button"
+                    className="h-6"
+                    variant="outline"
+                    onClick={append}
+                  >
+                    <PlusIcon size={15} /> Add more
+                  </Button>
                 </div>
+              </div>
+
+              <div className="text-end">
+                <Button>Submit</Button>
               </div>
             </div>
           )}
