@@ -22,6 +22,10 @@ const CoursesWithTabs = dynamic(() => import("./courses-with-tabs"), {
   ssr: false,
   loading: () => <Loading />,
 });
+const PricingSection = dynamic(() => import("./pricing-section"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 export default function HomePage() {
   return (
@@ -31,6 +35,7 @@ export default function HomePage() {
       <WhyChooseUs />
       <StudentReviewCards />
       <CoursesWithTabs slugs={["school", "college"]} />
+      <PricingSection />
       <WhatsAppWidget />
     </>
   );

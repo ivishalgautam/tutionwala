@@ -54,6 +54,7 @@ export default function LoginForm({ setIsOtpSent, setPhone }) {
     setPhone(data.phone);
     await loginUser({ mobile_number: data.phone });
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center justify-start text-start">
