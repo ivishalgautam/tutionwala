@@ -80,7 +80,7 @@ export default function PricingSection() {
           />
           <PricingCard
             title="Enterprise"
-            price="Custom"
+            price="19,999"
             duration="year"
             students="500+"
             features={["All Pro features"]}
