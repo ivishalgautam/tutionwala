@@ -1,7 +1,7 @@
 "use client";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {
@@ -16,16 +16,11 @@ import { Button } from "@/components/ui/button";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import Loading from "@/components/loading";
 import { useForm } from "react-hook-form";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from "lucide-react";
-
-const postMessage = async ({ message }) => {};
 
 export default function ChatPage({ params: { slug: enquiryId } }) {
   const socketRef = useRef();
-  const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const scrollAreaRef = useRef(null);
   const [token] = useLocalStorage("token");
   let wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}/enquiries/${enquiryId}/chat?at=${token}`;
   const queryClient = useQueryClient();

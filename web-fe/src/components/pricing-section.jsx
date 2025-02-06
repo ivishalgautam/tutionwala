@@ -86,7 +86,7 @@ export default function PricingSection() {
             features={["All Pro features"]}
           />
         </div>
-        <div className="mt-16 text-center">
+        {/* <div className="mt-16 text-center">
           <h3 className="mb-4 text-2xl font-bold">
             Limited Time Launch Offer!
           </h3>
@@ -95,7 +95,7 @@ export default function PricingSection() {
             miss this opportunity!
           </p>
           <Button size="lg">Claim Your Discount Now</Button>
-        </div>
+        </div> */}
       </div>
     </section>
   );
