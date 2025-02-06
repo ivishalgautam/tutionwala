@@ -133,6 +133,10 @@ export const columns = (handleDelete, handleUpdate) => [
               <Link href={`/follow-ups/${studentId}`}>Follow ups</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link href={`/dashboard/enquiries/${id}/chat`}>Chat</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete(id)}>
               Delete
             </DropdownMenuItem>

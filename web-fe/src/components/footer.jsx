@@ -125,8 +125,11 @@ export const FooterThree = () => {
       <div className="mt-6 sm:mt-0">
         <ul className="flex gap-4">
           <li className="text-sm font-medium">
-            <Link href="#" className="underline hover:text-primary-500">
-              Terms of use
+            <Link
+              href="/terms-and-conditions"
+              className="underline hover:text-primary-500"
+            >
+              Terms and conditions
             </Link>
           </li>
           <li className="text-sm font-medium">

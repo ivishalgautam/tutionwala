@@ -107,6 +107,7 @@ export default function CompleteProfileStudent({
       ], // []
     },
   });
+
   const {
     fields: academicDetails,
     append,
@@ -1012,7 +1013,15 @@ export default function CompleteProfileStudent({
                     type="button"
                     className="h-6"
                     variant="outline"
-                    onClick={append}
+                    onClick={() =>
+                      append({
+                        institution_name: "",
+                        program: "",
+                        year: "",
+                        grades: "",
+                        status: "",
+                      })
+                    }
                   >
                     <PlusIcon size={15} /> Add more
                   </Button>

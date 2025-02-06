@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
+import Link from "next/link";
 
 export const columns = (
   handleDelete,
@@ -70,16 +71,22 @@ export const columns = (
             <DropdownMenuSeparator />
 
             {status === "converted" && (
-              <DropdownMenuItem
-                onClick={() => {
-                  openReviewModal();
-                  setTutorId(tutorId);
-                  setEnquiryId(id);
-                }}
-              >
-                Review
-              </DropdownMenuItem>
+              <>
+                <DropdownMenuItem
+                  onClick={() => {
+                    openReviewModal();
+                    setTutorId(tutorId);
+                    setEnquiryId(id);
+                  }}
+                >
+                  Review
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
             )}
+            <DropdownMenuItem>
+              <Link href={`/dashboard/enquiries/${id}/chat`}>Chat</Link>
+            </DropdownMenuItem>
             {/* <DropdownMenuItem onClick={() => handleDelete(id)}>
               Delete
             </DropdownMenuItem> */}
