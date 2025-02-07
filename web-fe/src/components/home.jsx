@@ -34,8 +34,8 @@ export default function HomePage() {
       <FeaturedCategories />
       <WhyChooseUs />
       <StudentReviewCards />
-      <CoursesWithTabs slugs={["school", "college"]} />
-      <PricingSection />
+      <CoursesWithTabs slugs={["school"]} />
+      {/* <PricingSection /> */}
       <WhatsAppWidget />
     </>
   );
