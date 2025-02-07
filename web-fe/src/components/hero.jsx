@@ -17,6 +17,10 @@ export default function Hero() {
             <span className="text-primary"> Expert Tutors</span>
           </h1>
           <p className="max-w-xl text-pretty leading-relaxed text-gray-500 sm:mx-auto lg:ml-0">
+            Currently Providing Coaching in Prime Locations of Lajpat Nagar, New
+            Delhi, Badarpur, and Faridabad, Haryana, India
+          </p>
+          <p className="max-w-xl text-pretty leading-relaxed text-gray-500 sm:mx-auto lg:ml-0">
             At our tuition classes, students receive personalized guidance from
             expert tutors dedicated to their academic growth. We focus on
             building strong fundamentals, enhancing problem-solving skills, and
