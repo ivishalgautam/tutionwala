@@ -35,7 +35,7 @@ export default function HomePage() {
       <WhyChooseUs />
       <StudentReviewCards />
       <CoursesWithTabs slugs={["school"]} />
-      {/* <PricingSection /> */}
+      <PricingSection />
       <WhatsAppWidget />
     </>
   );

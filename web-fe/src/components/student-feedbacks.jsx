@@ -14,46 +14,157 @@ import { Heading } from "./ui/heading";
 
 const reviews = [
   {
+    tutor_name: "Amit Khanna",
+    review:
+      "The way he explains concepts is outstanding. Learning has never been this easy!",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Ravi Mehta",
+    rating: 5,
+  },
+  {
     tutor_name: "Sanjay Singhania",
     review:
-      "I've never seen anything like this before. It's amazing. I love it.",
+      "Great tutor with deep subject knowledge. Cleared all my doubts patiently.",
     tutor_profile: "/images/not-found.png",
-    student_name: "Rohit Sharma",
+    student_name: "Neha Sharma",
     rating: 4,
   },
   {
     tutor_name: "Tirtha Sagar",
-    review: "I don't know what to say. I'm speechless. This is amazing.",
+    review:
+      "Very knowledgeable and supportive. Helped me improve my understanding a lot.",
     tutor_profile: "/images/not-found.png",
-    student_name: "Sonu Singh",
+    student_name: "Vikas Yadav",
     rating: 5,
   },
   {
     tutor_name: "Kamlesh Sarkar",
-    review: "I'm at a loss for words. This is amazing. I love it.",
+    review:
+      "Explains everything clearly and makes learning fun. Highly recommended!",
     tutor_profile: "/images/not-found.png",
-    student_name: "Akash Kumar",
-    rating: 4,
-  },
-  {
-    tutor_name: "Rahul Verma",
-    review: "I'm at a loss for words. This is amazing. I love it.",
-    tutor_profile: "/images/not-found.png",
-    student_name: "Yash Singh",
+    student_name: "Aditi Verma",
     rating: 5,
   },
   {
-    tutor_name: "Vijay Gupta",
-    review: "I'm at a loss for words. This is amazing. I love it.",
+    tutor_name: "Rahul Verma",
+    review:
+      "Goes the extra mile to ensure students understand. A fantastic teacher!",
     tutor_profile: "/images/not-found.png",
-    student_name: "Hemant Sharma",
+    student_name: "Prakash Kumar",
     rating: 4,
   },
   {
-    tutor_name: "Santosh Singh",
-    review: "I'm at a loss for words. This is amazing. I love it.",
+    tutor_name: "Vijay Gupta",
+    review:
+      "Makes even the toughest topics easy to grasp. A great learning experience!",
     tutor_profile: "/images/not-found.png",
-    student_name: "Rahul Kapoor",
+    student_name: "Meenal Shah",
+    rating: 5,
+  },
+  {
+    tutor_name: "Santosh Singh",
+    review:
+      "Very patient and knowledgeable. Helped me gain confidence in my studies.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Kunal Tiwari",
+    rating: 4,
+  },
+  {
+    tutor_name: "Deepak Kumar",
+    review: "His teaching methods are really effective. I’ve improved so much!",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Rohan Malhotra",
+    rating: 5,
+  },
+  {
+    tutor_name: "Manish Kapoor",
+    review:
+      "Simplifies complex concepts like a pro. Really enjoyed his sessions.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Sneha Agarwal",
+    rating: 5,
+  },
+  {
+    tutor_name: "Prakash Mishra",
+    review:
+      "A dedicated teacher who always ensures students grasp the concepts well.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Aditya Saxena",
+    rating: 4,
+  },
+  {
+    tutor_name: "Rajeev Nair",
+    review:
+      "Amazing teaching style. I understood things I used to struggle with before.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Tarun Menon",
+    rating: 5,
+  },
+  {
+    tutor_name: "Arun Sethi",
+    review:
+      "Very interactive sessions with real-life examples. Enjoyed learning from him!",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Simran Kaur",
+    rating: 5,
+  },
+  {
+    tutor_name: "Neeraj Pandey",
+    review:
+      "An excellent mentor who genuinely cares about his students’ progress.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Aman Gupta",
+    rating: 5,
+  },
+  {
+    tutor_name: "Mohit Sharma",
+    review:
+      "Explains with such clarity that even difficult topics seem simple.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Priya Bajaj",
+    rating: 4,
+  },
+  {
+    tutor_name: "Varun Bhardwaj",
+    review: "Superb tutor! His sessions are engaging and insightful.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Harshit Mehta",
+    rating: 5,
+  },
+  {
+    tutor_name: "Kunal Joshi",
+    review: "Highly knowledgeable and always willing to help. A great mentor!",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Sanya Kapoor",
+    rating: 4,
+  },
+  {
+    tutor_name: "Rajesh Patil",
+    review:
+      "Helped me overcome my fear of math. Now I actually enjoy solving problems!",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Ishaan Sharma",
+    rating: 5,
+  },
+  {
+    tutor_name: "Suresh Chandra",
+    review: "Very organized and methodical in teaching. Helped me a lot!",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Vivek Anand",
+    rating: 4,
+  },
+  {
+    tutor_name: "Pawan Saxena",
+    review: "A fantastic tutor! He makes learning enjoyable and effective.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Ritika Jain",
+    rating: 5,
+  },
+  {
+    tutor_name: "Ankit Rawat",
+    review: "Great mentor! Helped me achieve better results than I expected.",
+    tutor_profile: "/images/not-found.png",
+    student_name: "Arjun Chopra",
     rating: 5,
   },
 ];

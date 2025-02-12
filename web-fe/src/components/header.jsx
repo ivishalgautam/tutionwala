@@ -48,7 +48,7 @@ export default function NavbarComponent() {
                 />
               </figure>
             </Link>
-            {/* {user?.role !== "tutor" && <CategoryMenu />} */}
+            {user?.role !== "tutor" && <CategoryMenu />}
           </div>
         </NavbarBrand>
 
