@@ -58,6 +58,9 @@ export const endpoints = {
   enquiries: {
     getAll: "/enquiries",
   },
+  myStudents: {
+    getAll: "/tutor-student-map",
+  },
   reviews: {
     getAll: "/reviews",
   },

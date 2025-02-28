@@ -10,16 +10,19 @@ import Modal from "../components/Modal";
 import LoginForm from "./login";
 import OTPForm from "./otp";
 
-const enquiry = async ({ id }) => {
-  return await http().post(`${endpoints.enquiries.getAll}/${id}`);
+const enquiry = async (id, searchParams = "") => {
+  return await http().post(
+    `${endpoints.enquiries.getAll}/${id}?${searchParams}`,
+  );
 };
 
-export default function EnquiryForm({ tutorId }) {
+export default function EnquiryForm({ tutorId, searchParams }) {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [phone, setPhone] = useState("");
   const [isModal, setIsModal] = useState(false);
   const { user } = useContext(MainContext);
-  const { mutate, isLoading } = useMutation(enquiry, {
+  const { mutate, isLoading } = useMutation({
+    mutationFn: ({ id }) => enquiry(id, searchParams),
     onSuccess: (data) => {
       toast.success(data.message ?? "Enquiry submit.");
     },

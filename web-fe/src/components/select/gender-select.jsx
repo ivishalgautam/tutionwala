@@ -26,7 +26,7 @@ export default function GenderSelect({ searchParams }) {
       newSearchParams.delete("gender");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedOption, router, searchParams]);
 
   return (

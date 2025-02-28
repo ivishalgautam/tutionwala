@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { H5 } from "../components/ui/typography";
+import { H5, H6 } from "../components/ui/typography";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -18,7 +18,9 @@ import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
@@ -26,6 +28,8 @@ import axios from "axios";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
+import { courses } from "@/data/courses";
+import { MAX_CHARACTERS, validateTextLimit } from "./complete-profile-tutor";
 
 const fetchProfile = async (id) => {
   const { data } = await http().get(
@@ -54,6 +58,7 @@ export default function TutorProfileForm({ user, setUser }) {
     setValue,
     formState: { errors },
     control,
+    watch,
   } = useForm({
     defaultValues: {
       profile_picture: "",
@@ -63,7 +68,7 @@ export default function TutorProfileForm({ user, setUser }) {
       languages: "",
     },
   });
-
+  const [, rerender] = useState(false);
   const {
     data: tutor,
     isLoading: isTutorLoading,
@@ -74,6 +79,7 @@ export default function TutorProfileForm({ user, setUser }) {
     queryFn: () => fetchProfile(user.id),
     enabled: !!user.id,
   });
+  tutor && console.log({ tutor });
   const {
     fields: languages,
     append: appendLang,
@@ -192,6 +198,13 @@ export default function TutorProfileForm({ user, setUser }) {
       setValue("class_conduct_mode", tutor.class_conduct_mode);
       setValue("experience", tutor.experience);
       setValue("languages", tutor.languages);
+      setValue("preference", tutor.preference);
+      setValue("start_date", tutor.start_date);
+      setValue("type", tutor.type);
+      setValue("availability", tutor.availability);
+      setValue("enquiry_radius", tutor.enquiry_radius);
+      setValue("degree", tutor.degree);
+      rerender(true);
     }
   }, [tutor, setValue]);
 
@@ -202,12 +215,18 @@ export default function TutorProfileForm({ user, setUser }) {
       class_conduct_mode: data.class_conduct_mode,
       experience: data.experience,
       languages: data.languages,
+      preference: data.preference,
+      start_date: data.start_date,
+      type: data.type,
+      availability: data.availability,
+      enquiry_radius: data.enquiry_radius,
+      degree: data.degree,
     };
 
     updateMutation.mutate(payload);
     router.push("/dashboard/profile");
   };
-
+  const experience = watch("experience", "");
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-4">
@@ -285,18 +304,11 @@ export default function TutorProfileForm({ user, setUser }) {
                   <Input
                     type="file"
                     placeholder="Select Intro video"
-                    {...register("video", {
-                      required: "Required*",
-                    })}
+                    {...register("video")}
                     onChange={(e) => handleFileChange(e, "video")}
                     multiple={false}
                     accept=".mp4, .mkv"
                   />
-                  {errors.video && (
-                    <span className="text-sm text-red-500">
-                      {errors.video.message}
-                    </span>
-                  )}
                 </div>
               )}
 
@@ -341,57 +353,22 @@ export default function TutorProfileForm({ user, setUser }) {
           {/* experience */}
           <div className="">
             <Label>Experience</Label>
-            <Textarea
-              {...register("experience", {
-                required: "Required*",
-              })}
-              placeholder="Enter background and experience"
-              className="h-[220px]"
-            />
+            <div>
+              <p className="mt-1 text-end text-sm text-gray-500">
+                Letter Count: {experience.length} / {MAX_CHARACTERS}
+              </p>
+              <Textarea
+                {...register("experience", {
+                  required: "Required*",
+                  validate: validateTextLimit,
+                })}
+                placeholder="Enter background and experience"
+                className="h-[220px]"
+              />
+            </div>
             {errors.experience && (
               <span className="text-sm text-red-500">
                 {errors.experience.message}
-              </span>
-            )}
-          </div>
-
-          {/* counduct classes */}
-          <div className="space-y-1">
-            <Label>How will you conduct class?</Label>
-            <Controller
-              control={control}
-              rules={{ required: "required*" }}
-              name="class_conduct_mode"
-              render={({ field }) => (
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex items-center justify-start gap-2"
-                  value={field.value}
-                >
-                  {["offline", "online", "nearby", "any"].map((ele, key) => (
-                    <div
-                      className={cn(
-                        "flex cursor-pointer items-center space-x-2 rounded border p-2",
-                        {
-                          "border-primary-200 bg-primary-50":
-                            field.value === ele,
-                        },
-                      )}
-                      key={ele}
-                    >
-                      <RadioGroupItem value={ele} id={ele} />
-                      <Label htmlFor={ele} className="capitalize">
-                        {ele}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              )}
-            />
-            {errors.class_conduct_mode && (
-              <span className="text-sm text-red-500">
-                {errors.class_conduct_mode.message}
               </span>
             )}
           </div>
@@ -473,6 +450,255 @@ export default function TutorProfileForm({ user, setUser }) {
                 <Plus size={15} /> Add more
               </Button>
             </div>
+          </div>
+
+          {/* most recent degree */}
+          <div className="space-y-2">
+            <H6>Most recent degree</H6>
+            <div className="space-y-2">
+              {/* degree name */}
+              <div>
+                <Label>Name</Label>
+                <div>
+                  <Controller
+                    control={control}
+                    name={`degree.name`}
+                    render={({ field }) => (
+                      <ShadcnSelect
+                        field={field}
+                        name={`degree.name`}
+                        options={courses}
+                        setValue={setValue}
+                        placeholder="Course"
+                        width="w-full"
+                      />
+                    )}
+                  />
+                </div>
+                {errors.degree?.name && (
+                  <span className="text-sm text-red-500">
+                    {errors.degree?.name.message}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <Label>Is degree completed?</Label>
+                <Controller
+                  control={control}
+                  name={`degree.status`}
+                  rules={{ required: "required*" }}
+                  render={({ field }) => (
+                    <Select
+                      defaultValue={field.value}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger className="">
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Status</SelectLabel>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="pursuing">Pursuing</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.degree?.status && (
+                  <span className="text-sm text-red-500">
+                    {errors.degree?.status.message}
+                  </span>
+                )}
+              </div>
+
+              {/* degree completion year */}
+              {watch("degree.status") === "yes" && (
+                <div>
+                  <Label>Year of completion</Label>
+                  <Input
+                    type="number"
+                    {...register("degree.year", {
+                      required: "required*",
+                      max: {
+                        value: 2099,
+                        message: "Must be less than 2099",
+                      },
+                      min: {
+                        value: 1900,
+                        message: "Must be greater than 1900",
+                      },
+                    })}
+                    placeholder="Enter completion year"
+                  />
+                  {errors.degree?.year && (
+                    <span className="text-sm text-red-500">
+                      {errors.degree?.year.message}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* radius */}
+          <div className="relative">
+            <Label>Enquiry radius under</Label>
+            <Input
+              type="number"
+              placeholder="Enter radius in km"
+              {...register("enquiry_radius", {
+                required: "required*",
+                valueAsNumber: true,
+                validate: (value) => {
+                  if (value > 25) {
+                    return "Radius should be under 25 km";
+                  }
+                },
+              })}
+            />
+            <span className="absolute right-0 text-xs text-primary">
+              Max 25 km.
+            </span>
+
+            {errors.enquiry_radius && (
+              <span className="text-sm text-red-500">
+                {errors.enquiry_radius.message}
+              </span>
+            )}
+          </div>
+
+          {/* preference */}
+          <div className="space-y-1">
+            <Label>Are you providing for Private or Group Classes?</Label>
+            <Controller
+              control={control}
+              rules={{ required: "required*" }}
+              name="preference"
+              render={({ field }) => (
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex items-center justify-start gap-2"
+                  value={field.value}
+                >
+                  {[
+                    "one on one/private tutions",
+                    "no preference",
+                    "group classes",
+                  ].map((ele, key) => (
+                    <div
+                      className={cn(
+                        "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                        {
+                          "border-primary-200 bg-primary-50":
+                            field.value === ele,
+                        },
+                      )}
+                      key={ele}
+                    >
+                      <RadioGroupItem value={ele} id={ele} />
+                      <Label htmlFor={ele} className="capitalize">
+                        {ele}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+            {errors.preference && (
+              <span className="text-sm text-red-500">
+                {errors.preference.message}
+              </span>
+            )}
+          </div>
+
+          {/* availability */}
+          <div className="space-y-1">
+            <Label>What days are you generally available to Classes?</Label>
+            <Controller
+              control={control}
+              rules={{ required: "required*" }}
+              name="availability"
+              render={({ field }) => (
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex items-center justify-start gap-2"
+                  value={field.value}
+                >
+                  {["anyday", "weekday", "weekend"].map((ele, key) => (
+                    <div
+                      className={cn(
+                        "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                        {
+                          "border-primary-200 bg-primary-50":
+                            field.value === ele,
+                        },
+                      )}
+                      key={ele}
+                    >
+                      <RadioGroupItem value={ele} id={ele} />
+                      <Label htmlFor={ele} className="capitalize">
+                        {ele}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+            {errors.availability && (
+              <span className="text-sm text-red-500">
+                {errors.availability.message}
+              </span>
+            )}
+          </div>
+
+          {/* start_date */}
+          <div className="space-y-1">
+            <Label>When do you plan to start?</Label>
+            <Controller
+              control={control}
+              rules={{ required: "required*" }}
+              name="start_date"
+              render={({ field }) => (
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex items-center justify-start gap-2"
+                  value={field.value}
+                >
+                  {[
+                    "immediately",
+                    "not sure, just want to look at options",
+                    "within a month",
+                  ].map((ele, key) => (
+                    <div
+                      className={cn(
+                        "flex cursor-pointer items-center space-x-2 rounded border p-2",
+                        {
+                          "border-primary-200 bg-primary-50":
+                            field.value === ele,
+                        },
+                      )}
+                      key={ele}
+                    >
+                      <RadioGroupItem value={ele} id={ele} />
+                      <Label htmlFor={ele} className="capitalize">
+                        {ele}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+            {errors.start_date && (
+              <span className="text-sm text-red-500">
+                {errors.start_date.message}
+              </span>
+            )}
           </div>
         </div>
         <div className="text-right">

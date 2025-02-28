@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 import { Muted, Small } from "@/components/ui/typography";
@@ -16,15 +16,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { AlignLeft } from "lucide-react";
+import { AlignLeft, ChevronLeft } from "lucide-react";
+import { Button } from "../ui/button";
 
 const tabs = [
+  { value: "students", label: "Students", roles: ["tutor"] },
+  { value: "tutors", label: "Tutors", roles: ["student"] },
   { value: "enquiries", label: "Enquiries", roles: ["student", "tutor"] },
   { value: "courses", label: "Courses", roles: ["tutor"] },
   { value: "profile", label: "Profile", roles: ["tutor", "student"] },
 ];
 
 export default function DashboardLayout({ children }) {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-200 py-4">
       <div className="container grid grid-cols-12 gap-4">
@@ -40,6 +44,10 @@ export default function DashboardLayout({ children }) {
               <Sidebar />
             </SideSheet>
           </div>
+          <Button type="button" className="!mb-2" onClick={() => router.back()}>
+            <ChevronLeft size={20} />
+            Back
+          </Button>
           <div className="rounded bg-white p-4">{children}</div>
         </div>
       </div>

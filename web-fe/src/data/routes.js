@@ -27,6 +27,10 @@ export const allRoutes = [
     roles: [ROLES.TUTOR],
   },
   {
+    link: "/course/edit/[slug]",
+    roles: [ROLES.TUTOR],
+  },
+  {
     link: "/tutors",
     roles: [],
   },
@@ -40,6 +44,22 @@ export const allRoutes = [
   },
   {
     link: "/dashboard/enquiries",
+    roles: [ROLES.TUTOR, ROLES.STUDENT],
+  },
+  {
+    link: "/dashboard/courses",
+    roles: [ROLES.TUTOR],
+  },
+  {
+    link: "/dashboard/students",
+    roles: [ROLES.TUTOR],
+  },
+  {
+    link: "/dashboard/tutors",
+    roles: [ROLES.STUDENT],
+  },
+  {
+    link: "/dashboard/tutor-student-chats/[slug]",
     roles: [ROLES.TUTOR, ROLES.STUDENT],
   },
   {

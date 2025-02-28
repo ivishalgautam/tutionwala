@@ -105,7 +105,7 @@ export default function SearchModal() {
                       <li key={cat.id}>
                         <Link
                           className="flex items-center rounded-lg px-2 py-1 text-sm leading-6 text-slate-700 outline-none focus-within:bg-slate-100 hover:bg-slate-100"
-                          href={`/search/${cat.slug}`}
+                          href={`/tutors?page=1&limit=10&category=${cat.slug}`}
                         >
                           <svg
                             className="mr-3 h-3 w-3 shrink-0 fill-slate-400"

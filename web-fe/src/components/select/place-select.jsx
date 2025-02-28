@@ -38,7 +38,7 @@ export default function ClassPlaceSelect({ searchParams }) {
       newSearchParams.delete("place");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedOption, router, searchParams, place]);
 
   return (

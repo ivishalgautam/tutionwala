@@ -26,7 +26,7 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "../components/ui/checkbox";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const fetchSubCategory = async (slug) => {
   const { data } = await http().get(
@@ -35,7 +35,19 @@ const fetchSubCategory = async (slug) => {
   return data;
 };
 
-export default function CreateCourse({ handleCreate }) {
+const fetchTutorCourse = async (data) => {
+  const resp = await http().post(
+    `${endpoints.tutor.getAll}/get-tutor-course-by-tutor-and-course-id`,
+    data,
+  );
+  return resp.data;
+};
+
+export default function CreateCourse({
+  handleCreate,
+  type = "create",
+  updateMutation,
+}) {
   const {
     register,
     watch,
@@ -64,10 +76,17 @@ export default function CreateCourse({ handleCreate }) {
     control,
     name: "budgets",
   });
-  const selectedModes = watch("class_conduct_mode");
-  const selectedOnlineTypes = watch("selectedOnlineTypes");
-  const selectedOfflineTypes = watch("selectedOfflineTypes");
-  const selectedOfflineLocations = watch("selectedOfflineLocations");
+  const selectedModes = watch("class_conduct_mode", []);
+  const selectedOnlineTypes = watch("selectedOnlineTypes", []);
+  const selectedOfflineTypes = watch("selectedOfflineTypes", []);
+  const selectedOfflineLocations = watch("selectedOfflineLocations", []);
+
+  // console.log({
+  //   selectedModes,
+  //   selectedOnlineTypes,
+  //   selectedOfflineTypes,
+  //   selectedOfflineLocations,
+  // });
 
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
@@ -77,44 +96,55 @@ export default function CreateCourse({ handleCreate }) {
     enabled: !!categorySlug,
   });
 
+  const { data: tutorCourse, isLoading: isTutorCourseLoading } = useQuery({
+    queryKey: [`tutor-course-${categorySlug}`, categorySlug],
+    queryFn: () => fetchTutorCourse({ sub_category_slug: categorySlug }),
+    enabled: !!categorySlug,
+  });
+
+  // console.log(data?.fields, tutorCourse?.fields);
+
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
-  const setBoards = (board, subject) => {
-    const prevBoards = watch("boards") ?? [];
+  const setBoards = useCallback(
+    (board, subject) => {
+      const prevBoards = watch("boards") ?? [];
 
-    const existingBoard = prevBoards.find(
-      ({ board_name }) => board_name === board,
-    );
-
-    if (existingBoard) {
-      const updatedBoards = prevBoards.map((b) =>
-        b.board_name === board
-          ? {
-              ...b,
-              subjects: b.subjects.includes(subject)
-                ? b.subjects.filter((s) => s !== subject)
-                : [...b.subjects, subject],
-            }
-          : b,
+      const existingBoard = prevBoards.find(
+        ({ board_name }) => board_name === board,
       );
-      setValue("boards", updatedBoards);
-    } else {
-      setValue("boards", [
-        ...prevBoards,
-        { board_name: board, subjects: [subject] },
-      ]);
-    }
-  };
+      if (existingBoard) {
+        const updatedBoards = prevBoards.map((b) =>
+          b.board_name === board
+            ? {
+                ...b,
+                subjects: b.subjects.includes(subject)
+                  ? b.subjects.filter((s) => s !== subject)
+                  : [...b.subjects, subject],
+              }
+            : b,
+        );
+
+        const filtered = updatedBoards.filter((b) => b.subjects.length);
+        setValue("boards", filtered);
+      } else {
+        setValue("boards", [
+          ...prevBoards,
+          { board_name: board, subjects: [subject] },
+        ]);
+      }
+    },
+    [setValue, watch],
+  );
 
   const setFields = (fieldName, option, type) => {
     const prevFields = watch("fields") ?? [];
-
-    const existingBoard = prevFields?.find(
+    const existingField = prevFields?.find(
       (item) => item.fieldName === fieldName,
     );
 
-    if (existingBoard) {
+    if (existingField) {
       const updatedFields = prevFields?.map((f) =>
         f.fieldName === fieldName
           ? {
@@ -132,7 +162,7 @@ export default function CreateCourse({ handleCreate }) {
     } else {
       setValue("fields", [
         ...prevFields,
-        { fieldName: fieldName, options: [option] },
+        { fieldName: fieldName, options: [option], type },
       ]);
     }
   };
@@ -145,21 +175,38 @@ export default function CreateCourse({ handleCreate }) {
       is_demo_class: formData.is_demo_class,
       budgets: formData?.budgets ?? [],
     };
+    if (type === "create") {
+      handleCreate({ ...payload });
+    }
 
-    handleCreate({ ...payload });
+    if (type === "edit") {
+      updateMutation.mutate({ id: tutorCourse.id, data: payload });
+    }
   };
 
   useEffect(() => {
-    // Clear budgets when modes, session types, or categories change
-    remove();
+    // Get the current budget values
+    const existingBudgets = watch("budgets") || [];
+
+    let newBudgets = [];
 
     if (selectedModes.includes("online") && selectedOnlineTypes.length > 0) {
       selectedOnlineTypes.forEach((type) => {
-        append({
-          mode: "online",
-          type,
-          location: null, // No categories for online
-          budget: "",
+        ["per_hour", "per_month", "per_course"].forEach((costing) => {
+          const existingEntry = existingBudgets.find(
+            (b) =>
+              b.mode === "online" && b.type === type && b.costing === costing,
+          );
+
+          newBudgets.push(
+            existingEntry || {
+              mode: "online",
+              type,
+              location: null,
+              budget: "",
+              costing,
+            },
+          );
         });
       });
     }
@@ -171,36 +218,135 @@ export default function CreateCourse({ handleCreate }) {
     ) {
       selectedOfflineTypes.forEach((type) => {
         selectedOfflineLocations.forEach((location) => {
-          append({
-            mode: "offline",
-            type,
-            location,
-            budget: "",
+          ["per_hour", "per_month", "per_course"].forEach((costing) => {
+            const existingEntry = existingBudgets.find(
+              (b) =>
+                b.mode === "offline" &&
+                b.type === type &&
+                b.location === location &&
+                b.costing === costing,
+            );
+
+            newBudgets.push(
+              existingEntry || {
+                mode: "offline",
+                type,
+                location,
+                budget: "",
+                costing,
+              },
+            );
           });
         });
       });
+    }
+
+    // Only update if there are changes to prevent unnecessary re-renders
+    if (JSON.stringify(existingBudgets) !== JSON.stringify(newBudgets)) {
+      setValue("budgets", newBudgets);
     }
   }, [
     selectedModes,
     selectedOnlineTypes,
     selectedOfflineTypes,
     selectedOfflineLocations,
-    append,
-    remove,
+    watch,
+    setValue,
   ]);
 
+  const getUniqueValues = useCallback(
+    (key, mode) =>
+      Array.from(
+        new Set(
+          tutorCourse.budgets.filter((b) => b.mode === mode).map((b) => b[key]),
+        ),
+      ),
+    [tutorCourse?.budgets],
+  );
+
+  useEffect(() => {
+    if (tutorCourse) {
+      // console.log(tutorCourse);
+      setValue("is_demo_class", tutorCourse.is_demo_class);
+      if (tutorCourse.budgets.length) {
+        const modeTypesSet = Array.from(
+          new Set(tutorCourse.budgets.map(({ mode }) => mode)),
+        );
+
+        const selectedOnlineTypes = getUniqueValues("type", "online");
+        setValue("selectedOnlineTypes", selectedOnlineTypes);
+        selectedOnlineTypes.forEach((type) => {
+          append({
+            mode: "online",
+            type,
+            location: null,
+            budget: "",
+            costing: "",
+          });
+        });
+
+        const selectedOfflineTypes = getUniqueValues("type", "offline");
+        setValue("selectedOfflineTypes", selectedOfflineTypes);
+        selectedOfflineLocations.forEach((location) => {
+          append({
+            mode: "offline",
+            type,
+            location,
+            budget: "",
+            costing: "",
+          });
+        });
+
+        setValue(
+          "selectedOfflineLocations",
+          getUniqueValues("location", "offline"),
+        );
+        setValue("class_conduct_mode", modeTypesSet);
+        setValue("budgets", tutorCourse.budgets);
+      }
+      //
+
+      if (tutorCourse.fields.length) {
+        setValue("fields", tutorCourse.fields);
+        tutorCourse.fields.forEach(({ fieldName, options }) => {
+          setValue(
+            `selected.${fieldName}.options`,
+            data.fields.find((f) => f.fieldName === fieldName)?.fieldType ===
+              "radio"
+              ? options[0]
+              : options,
+          );
+        });
+      }
+
+      if (tutorCourse.is_boards) {
+        setValue(
+          "selected_boards",
+          tutorCourse.boards.map(({ board_name }) => board_name),
+        );
+        setValue("boards", tutorCourse.boards);
+
+        tutorCourse.boards.forEach(({ board_name, subjects }) => {
+          setValue(`selected.${board_name}.subjects`, subjects);
+        });
+      }
+    }
+  }, [tutorCourse, setValue, setBoards, watch, getUniqueValues]);
+  // console.log(watch("selected"));
   return (
     <div className="rounded-lg bg-white p-8">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="divide-y *:pt-4">
           <H3 className={"text-center"}>Add course</H3>
 
-          <div className="grid grid-cols-1 pb-4 md:grid-cols-2 lg:grid-cols-3">
-            <div>
-              <Label>Select course</Label>
-              <SubCategorySelect searchParams={searchParams} />
+          {type === "create" && (
+            <div className="grid grid-cols-1 pb-4 md:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <Label>Select course</Label>
+                <SubCategorySelect searchParams={searchParams} />
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="space-y-4 divide-y">
             {/* demo class */}
@@ -362,36 +508,40 @@ export default function CreateCourse({ handleCreate }) {
             {budgets.length > 0 && (
               <div>
                 <h4>Budgets:</h4>
-                {budgets.map((field, index) => (
-                  <div key={field.id}>
-                    <p>
-                      Mode: <strong>{field.mode}</strong>, Type:{" "}
-                      <strong>{field.type}</strong>,
-                      {field.location && (
-                        <>
-                          {" "}
-                          Location: <strong>{field.location}</strong>
-                        </>
-                      )}
-                    </p>
-                    <div>
-                      <Input
-                        type="number"
-                        {...register(`budgets.${index}.budget`, {
-                          min: 0,
-                          valueAsNumber: true,
-                          required: "required*",
-                        })}
-                        placeholder="Enter budget"
-                      />
-                      {errors?.budgets?.[index]?.budget && (
-                        <span className="text-red-500">
-                          {errors?.budgets?.[index]?.budget?.message}
-                        </span>
-                      )}
+                <div className="grid grid-cols-3 gap-4">
+                  {budgets.map((field, index) => (
+                    <div key={field.id}>
+                      <p className="text-sm">
+                        Mode: <strong>{field.mode}</strong>, Type:{" "}
+                        <strong>{field.type}</strong>, Costing:{" "}
+                        <strong>{field?.costing?.split("_").join(" ")}</strong>
+                        {field.location && (
+                          <>
+                            {" "}
+                            Location: <strong>{field.location}</strong>
+                          </>
+                        )}
+                      </p>
+                      <div>
+                        <Input
+                          type="number"
+                          {...register(`budgets.${index}.budget`, {
+                            min: 0,
+                            valueAsNumber: true,
+                            required: "required*",
+                          })}
+                          placeholder={`Enter budget for Mode: ${field.mode}, Type: ${field.type}, Costing: ${field?.costing?.split("_").join(" ")}
+                     `}
+                        />
+                        {errors?.budgets?.[index]?.budget && (
+                          <span className="text-red-500">
+                            {errors?.budgets?.[index]?.budget?.message}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
 
@@ -488,26 +638,28 @@ export default function CreateCourse({ handleCreate }) {
                     )}
                     {item.fieldType === "radio" && (
                       <div className="space-y-1">
-                        {item.options.map((option) => (
-                          <div key={option} className="text-sm text-gray-700">
-                            <Label className="flex items-center justify-between">
-                              <span className="font-normal capitalize">
-                                {option}
-                              </span>
-                              <Input
-                                type="radio"
-                                {...register(
-                                  `selected.${item.fieldName}.options`,
-                                )}
-                                value={option}
-                                className="size-6 accent-primary"
-                                onClick={() =>
-                                  setFields(item.fieldName, option, "radio")
-                                }
-                              />
-                            </Label>
-                          </div>
-                        ))}
+                        {item.options.map((option) => {
+                          return (
+                            <div key={option} className="text-sm text-gray-700">
+                              <Label className="flex items-center justify-between">
+                                <span className="font-normal capitalize">
+                                  {option}
+                                </span>
+                                <Input
+                                  type="radio"
+                                  {...register(
+                                    `selected.${item.fieldName}.options`,
+                                  )}
+                                  value={option}
+                                  className="size-6 accent-primary"
+                                  onClick={() =>
+                                    setFields(item.fieldName, option, "radio")
+                                  }
+                                />
+                              </Label>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                     {item.fieldType === "dropdown" && (

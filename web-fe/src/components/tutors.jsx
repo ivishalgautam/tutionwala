@@ -2,7 +2,12 @@ import TutorCard from "./card/tutor";
 import { cn } from "@/lib/utils";
 import { Muted } from "./ui/typography";
 
-export default function Tutors({ tutors = [], isLoading, className }) {
+export default function Tutors({
+  tutors = [],
+  isLoading,
+  className,
+  searchParams,
+}) {
   if (isLoading) {
     return (
       <div className={cn(className)}>
@@ -19,12 +24,13 @@ export default function Tutors({ tutors = [], isLoading, className }) {
         className,
       )}
     >
-      {tutors?.map((tutor) => (
+      {tutors?.map((tutor, ind) => (
         <TutorCard
-          key={tutor.id}
+          key={ind}
           tutor={tutor.user}
           ratings={tutor.avg_ratings}
           totalReviews={tutor.total_reviews}
+          searchParams={searchParams}
         />
       ))}
     </div>

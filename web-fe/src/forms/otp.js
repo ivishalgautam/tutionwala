@@ -26,19 +26,21 @@ export default function OTPForm({ phone }) {
     watch,
     handleSubmit,
     formState: { errors },
+    setValue,
+    reset,
   } = useForm({
     defaultValues: { otp: "" },
   });
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
-  const [minute] = useState(1.5);
-
+  const [minute] = useState(5);
   const sendMutation = useMutation(sendOtp, {
     onSuccess: (data) => {
       toast.success(data.message);
       setIsResendDisabled(true);
       setRemainingTime(60 * minute);
       setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
+      setValue("otp", "");
     },
     onError: (error) => {
       // console.log(error);

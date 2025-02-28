@@ -5,8 +5,16 @@ import { Badge } from "../ui/badge";
 
 import Review from "../review";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
-export default function TutorCard({ tutor, ratings, totalReviews }) {
+export default function TutorCard({
+  tutor,
+  ratings,
+  totalReviews,
+  searchParams,
+}) {
+  const searchQ = useSearchParams();
+  const mode = searchQ.get("mode");
   return (
     <div className="w-full max-w-full space-y-2 rounded-lg border border-gray-200 bg-white p-4">
       <div className="flex items-start justify-start gap-4">
@@ -21,13 +29,13 @@ export default function TutorCard({ tutor, ratings, totalReviews }) {
         </figure>
         <div className="flex-grow space-y-2">
           <div className="flex items-center justify-between">
-            <Link href={`/tutors/${tutor.tutor_id}`}>
+            <Link href={`/tutors/${tutor.tutor_id}?mode=${mode ?? ""}`}>
               <H4 className={"transition-colors hover:text-primary"}>
                 {tutor.fullname}
               </H4>
             </Link>
             <div className="flex gap-1">
-              <Review rating={ratings} reviews={totalReviews} />
+              <Review rating={ratings ?? 0} reviews={totalReviews ?? 0} />
             </div>
           </div>
           <Muted className={"line-clamp-4 break-all"}>{tutor.experience}</Muted>
@@ -58,7 +66,7 @@ export default function TutorCard({ tutor, ratings, totalReviews }) {
             )}
           </div>
           <div className="text-end">
-            <EnquiryForm tutorId={tutor.tutor_id} />
+            <EnquiryForm tutorId={tutor.tutor_id} searchParams={searchParams} />
           </div>
         </div>
       </div>

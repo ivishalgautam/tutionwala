@@ -208,3 +208,14 @@
 .css-13cymwt-control:focus-visible {
   @apply !border-none !outline-none;
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

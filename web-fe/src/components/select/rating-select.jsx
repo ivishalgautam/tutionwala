@@ -94,7 +94,7 @@ export default function RatingSelect({ searchParams }) {
       newSearchParams.delete("rating");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedOption, router, searchParams, rating]);
 
   return (

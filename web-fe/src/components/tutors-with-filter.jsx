@@ -9,7 +9,7 @@ const Tutors = dynamic(() => import("./tutors"), {
   ),
 });
 import Image from "next/image";
-import { H1, Muted, Small } from "./ui/typography";
+import { H1, Muted, P, Small } from "./ui/typography";
 import { useForm } from "react-hook-form";
 import SubCategorySelect from "./select/sub-category-select";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -50,70 +50,9 @@ export default function TutorsWithFilter() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? 1);
   const limit = Number(searchParams.get("limit") ?? 10);
+  const mode = searchParams.get("mode");
   const router = useRouter();
   const searchParamsStr = searchParams.toString();
-  // show filtered data
-  // const allowedFilterKeys = [
-  //   "category",
-  //   "language",
-  //   "gender",
-  //   "demo",
-  //   "rating",
-  //   "addr",
-  // ];
-
-  // const arrayFilterKeys = useMemo(() => ["category", "language", "rating"], []);
-  // const filters = useCallback(() => {
-  //   const obj = {};
-
-  //   for (const [key, value] of searchParams.entries()) {
-  //     if (!allowedFilterKeys.includes(key)) continue;
-
-  //     if (arrayFilterKeys.includes(key)) {
-  //       obj[key] = obj[key]
-  //         ? [...obj[key], ...value.split(" ")]
-  //         : value.split(" ");
-  //     } else {
-  //       obj[key] = value;
-  //     }
-  //   }
-
-  //   return obj;
-  // }, [searchParams, router]);
-
-  // const selectedFilters = filters();
-
-  // const deleteSearchParam = useCallback(
-  //   (name, eleToDelete = null) => {
-  //     const urlSearchParam = new URLSearchParams(searchParams.toString());
-  //     const param = urlSearchParam.get(name);
-
-  //     if (param) {
-  //       let valueToSet = "";
-
-  //       if (arrayFilterKeys.includes(name)) {
-  //         const values = param.split(" ").filter((el) => el !== eleToDelete);
-  //         valueToSet = values.join(" ");
-  //         if (valueToSet) {
-  //           urlSearchParam.set(name, valueToSet);
-  //         } else {
-  //           urlSearchParam.delete(name);
-  //         }
-  //       } else {
-  //         if (name === "addr") {
-  //           urlSearchParam.delete("addr");
-  //           urlSearchParam.delete("lat");
-  //           urlSearchParam.delete("lng");
-  //         } else {
-  //           urlSearchParam.delete(name);
-  //         }
-  //       }
-  //       router.push(`?${urlSearchParam.toString()}`);
-  //     }
-  //   },
-  //   [searchParams, arrayFilterKeys, router],
-  // );
-
   const { data, isLoading } = useQuery({
     queryFn: () => fetchTutors(searchParamsStr),
     queryKey: ["tutors", searchParamsStr],
@@ -121,19 +60,19 @@ export default function TutorsWithFilter() {
   });
   const paginationCount = Math.ceil(data?.total / limit);
 
-  const createQueryString = useCallback(
-    (name, value) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (params.get(name)) {
-        params.set(name, value);
-      } else {
-        params.append(name, value);
-      }
+  const queryString = useMemo(() => searchParams.toString(), [searchParams]);
+  useEffect(() => {
+    if (mode !== "online") return;
 
-      return params.toString();
-    },
-    [searchParams],
-  );
+    const params = new URLSearchParams(queryString);
+    ["addr", "lat", "lng", "place"].forEach((key) => params.delete(key));
+
+    const newSearch = params.toString();
+
+    if (newSearch !== queryString) {
+      router.replace(`?${newSearch}`, { scroll: false });
+    }
+  }, [mode, router, queryString]);
 
   const onSubmit = (data) => {};
 
@@ -168,31 +107,11 @@ export default function TutorsWithFilter() {
           </div>
         </div>
 
-        {/* selected filters */}
-        {/* <SelectedFilters {...{ selectedFilters, deleteSearchParam }} /> */}
         <div className="inline-block lg:hidden">
           <MobileFilter {...{ searchParams, handleSubmit, onSubmit }} />
         </div>
 
         <div className="text-2xl">{data?.total ?? 0} Tutors found.</div>
-
-        <div className="items-center justify-start space-y-2 divide-y rounded-lg border bg-white p-4 shadow-sm md:flex md:space-y-0 md:divide-x md:divide-y-0 md:py-2">
-          <div className="flex flex-1 items-center justify-start">
-            <span className="flex-grow-0 text-gray-500">
-              <Search />
-            </span>
-            <FilterAddress searchParams={searchParams} />
-          </div>
-
-          <div className="flex flex-1 items-center justify-start gap-1.5 pt-2 md:pl-4 md:pt-0">
-            <span className="flex-grow-0 text-gray-500">
-              <Layers size={20} />
-            </span>
-            <div className="flex-grow">
-              <SubCategorySelect isMulti={true} searchParams={searchParams} />
-            </div>
-          </div>
-        </div>
 
         <div className="grid grid-cols-12 gap-4">
           <div className="hidden w-full lg:col-span-4 lg:block">
@@ -200,13 +119,13 @@ export default function TutorsWithFilter() {
           </div>
 
           <div className="col-span-12 rounded-md md:col-span-12 lg:col-span-8">
-            <Tutors tutors={data?.data ?? []} isLoading={isLoading} />
+            <Tutors
+              tutors={data?.data ?? []}
+              isLoading={isLoading}
+              searchParams={searchParams.toString()}
+            />
             {paginationCount > 1 && (
               <div className="mt-10">
-                {/* <PaginationControl
-                  {...{ page, paginationCount, createQueryString }}
-                /> */}
-
                 <PaginationWithLinks
                   page={page}
                   pageSize={limit}
@@ -225,6 +144,7 @@ export const FilterAddress = ({ searchParams }) => {
   const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
   const router = useRouter();
+  const isOffline = searchParams.get("mode");
   useEffect(() => {
     const addr = searchParams.get("addr");
     addr ? (inputRef.current.value = addr) : (inputRef.current.value = null);
@@ -253,58 +173,10 @@ export const FilterAddress = ({ searchParams }) => {
       newSearchParams.delete("lng");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedPlace, searchParams, router]);
 
-  return (
-    <Input
-      ref={inputRef}
-      className={"w-full border-none bg-transparent text-base"}
-      placeholder="Filter by location"
-    />
-  );
-};
-
-export const SelectedFilters = ({ selectedFilters, deleteSearchParam }) => {
-  const Badge = ({ children, ...args }) => {
-    return (
-      <div
-        className="flex cursor-pointer items-center gap-2 rounded-xl bg-primary-200 px-3 py-1 text-xs font-medium text-black"
-        {...args}
-      >
-        <span>{children}</span>
-        <span>
-          <X size={15} />
-        </span>
-      </div>
-    );
-  };
-
-  return (
-    <div className="flex flex-wrap items-center justify-start gap-2">
-      {Object.keys(selectedFilters)?.map((key, ind) => (
-        <div key={ind} className="rounded bg-white/50 p-2">
-          <Muted className={"text-xs capitalize"}>{key}</Muted>
-          <div className="flex space-x-1">
-            {Array.isArray(selectedFilters[key]) ? (
-              selectedFilters[key].map((filter) => (
-                <Badge
-                  key={filter}
-                  onClick={() => deleteSearchParam(key, filter)}
-                >
-                  {filter}
-                </Badge>
-              ))
-            ) : (
-              <Badge onClick={() => deleteSearchParam(key)}>
-                {selectedFilters[key]}
-              </Badge>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  return <Input ref={inputRef} placeholder="Filter by location" />;
 };
 
 const MobileFilter = ({ searchParams, handleSubmit, onSubmit }) => {

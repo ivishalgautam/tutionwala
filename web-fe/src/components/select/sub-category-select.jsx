@@ -67,7 +67,7 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
       newSearchParams.delete("category");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedOption, router, searchParams]);
 
   useEffect(() => {
@@ -93,6 +93,7 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
       defaultOptions={defaultOptions}
       value={selectedOption}
       menuPortalTarget={document.body}
+      className="rounded border"
     />
   );
 }

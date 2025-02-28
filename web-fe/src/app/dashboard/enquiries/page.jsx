@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import FollowUps from "@/components/tutor-follow-ups";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 async function fetchEnquiries() {
   const { data } = await http().get(endpoints.enquiries.getAll);
@@ -55,18 +56,18 @@ export default function Page() {
   const updateEnqMutation = useMutation(updateEnquiry, {
     onSuccess: () => {
       toast.success("Updated");
-      queryClient.invalidateQueries({ queryKey: ["enquiries"] });
+      queryClient.invalidateQueries(["enquiries"]);
     },
     onError: (error) => {
       toast.error(error?.message ?? "An error occured!");
-      queryClient.invalidateQueries({ queryKey: ["enquiries"] });
+      queryClient.invalidateQueries(["enquiries"]);
     },
   });
 
   const deleteEnqMutation = useMutation(deleteEnquiry, {
     onSuccess: () => {
       toast.success("Enquiry deleted.");
-      queryClient.invalidateQueries({ queryKey: ["enquiries"] });
+      queryClient.invalidateQueries(["enquiries"]);
     },
     onError: (error) => {
       toast.error(error.message ?? "error");

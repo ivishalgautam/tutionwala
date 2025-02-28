@@ -31,6 +31,7 @@ import PhoneInputWithCountrySelect, {
 import ReactSelect from "react-select/async";
 
 import "react-phone-number-input/style.css";
+import { getCurrentCoords } from "@/lib/get-current-coords";
 
 const defaultValues = {
   type: "",
@@ -174,7 +175,7 @@ export default function SignUpTutorForm() {
       sub_categories: data.sub_category.value,
       otp: data.otp,
       role: data.role,
-      location: data.location,
+      coords: data.coords,
     };
     await signUp(payload);
   };
@@ -189,10 +190,20 @@ export default function SignUpTutorForm() {
   }, [isResendDisabled]);
 
   useEffect(() => {
-    if (selectedPlace) {
-      setValue("location", selectedPlace.address);
+    async function getCoords() {
+      const coords = await getCurrentCoords();
+      setValue("coords", coords);
     }
-  }, [selectedPlace]);
+
+    getCoords();
+  }, [setValue]);
+
+  // useEffect(() => {
+  //   if (selectedPlace) {
+  //     setValue("location", selectedPlace.address);
+  //   }
+  // }, [selectedPlace]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center justify-start">
@@ -388,6 +399,7 @@ export default function SignUpTutorForm() {
                       isMulti={false}
                       value={field.value}
                       menuPortalTarget={document.body}
+                      className="rounded-lg border"
                     />
                   )}
                 />
@@ -399,7 +411,7 @@ export default function SignUpTutorForm() {
               </div>
 
               {/* location */}
-              <div>
+              {/* <div>
                 <Label className="text-sm">Location</Label>
                 <Controller
                   control={control}
@@ -414,7 +426,7 @@ export default function SignUpTutorForm() {
                     {errors.location.message}
                   </span>
                 )}
-              </div>
+              </div> */}
             </div>
 
             <div>

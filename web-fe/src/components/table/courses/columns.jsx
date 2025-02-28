@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const CoursesColumns = (handleDelete) => [
   {
@@ -34,6 +35,7 @@ export const CoursesColumns = (handleDelete) => [
     enableHiding: false,
     cell: ({ row }) => {
       const id = row.original.course_id;
+      const slug = row.original.slug;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -44,6 +46,10 @@ export const CoursesColumns = (handleDelete) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link href={`/course/edit/${id}?category=${slug}`}>Edit</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete({ id })}>
               Delete

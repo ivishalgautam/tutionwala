@@ -49,13 +49,20 @@ import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
 
+export const MAX_CHARACTERS = 250;
+export const validateTextLimit = (value) => {
+  return (
+    value.length <= MAX_CHARACTERS ||
+    `Maximum ${MAX_CHARACTERS} characters allowed.`
+  );
+};
+
 const fetchSubCategory = async (id) => {
   const { data } = await http().get(
     `${endpoints.subCategories.getAll}/getById/${id}`,
   );
   return data;
 };
-
 export default function CompleteProfileTutor({
   handleCreate,
   id,
@@ -102,6 +109,7 @@ export default function CompleteProfileTutor({
     },
   });
 
+  const experience = watch("experience", "");
   const {
     fields: budgets,
     append,
@@ -207,7 +215,7 @@ export default function CompleteProfileTutor({
     } else {
       setValue("fields", [
         ...prevFields,
-        { fieldName: fieldName, options: [option] },
+        { fieldName: fieldName, options: [option], type },
       ]);
     }
   };
@@ -222,7 +230,7 @@ export default function CompleteProfileTutor({
             degree: formData.degree,
             class_conduct_mode: formData.class_conduct_mode,
             enquiry_radius: formData.enquiry_radius,
-            coords: coords,
+            // coords: coords,
             is_demo_class: formData.is_demo_class,
             preference: formData.preference,
             availability: formData.availability,
@@ -334,15 +342,6 @@ export default function CompleteProfileTutor({
   }, [data, unregister, setCurrStep]);
 
   useEffect(() => {
-    async function getCoords() {
-      const coords = await getCurrentCoords();
-      setCoords(coords);
-    }
-
-    getCoords();
-  }, []);
-
-  useEffect(() => {
     if (typeof window === "undefined") return;
     const adhaar = window.localStorage.getItem("adhaar");
     const profile = window.localStorage.getItem("profile_picture");
@@ -368,12 +367,29 @@ export default function CompleteProfileTutor({
 
     if (selectedModes.includes("online") && selectedOnlineTypes.length > 0) {
       selectedOnlineTypes.forEach((type) => {
-        append({
-          mode: "online",
-          type,
-          location: null, // No categories for online
-          budget: "",
-        });
+        append([
+          {
+            mode: "online",
+            type,
+            location: null, // No categories for online
+            budget: "",
+            costing: "per_hour",
+          },
+          {
+            mode: "online",
+            type,
+            location: null, // No categories for online
+            budget: "",
+            costing: "per_month",
+          },
+          {
+            mode: "online",
+            type,
+            location: null, // No categories for online
+            budget: "",
+            costing: "per_course",
+          },
+        ]);
       });
     }
 
@@ -384,12 +400,29 @@ export default function CompleteProfileTutor({
     ) {
       selectedOfflineTypes.forEach((type) => {
         selectedOfflineLocations.forEach((location) => {
-          append({
-            mode: "offline",
-            type,
-            location,
-            budget: "",
-          });
+          append([
+            {
+              mode: "offline",
+              type,
+              location,
+              budget: "",
+              costing: "per_hour",
+            },
+            {
+              mode: "offline",
+              type,
+              location,
+              budget: "",
+              costing: "per_month",
+            },
+            {
+              mode: "offline",
+              type,
+              location,
+              budget: "",
+              costing: "per_course",
+            },
+          ]);
         });
       });
     }
@@ -401,11 +434,13 @@ export default function CompleteProfileTutor({
     append,
     remove,
   ]);
+
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
+
   return (
     <div className={"space-y-4 p-8"}>
-      <div className="mx-auto max-w-2xl space-y-2 rounded-lg bg-white p-6">
+      <div className="mx-auto max-w-4xl space-y-2 rounded-lg bg-white p-6">
         <Stepper currStep={currStep} />
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* form 1 */}
@@ -739,36 +774,42 @@ export default function CompleteProfileTutor({
                 {budgets.length > 0 && (
                   <div>
                     <h4>Budgets:</h4>
-                    {budgets.map((field, index) => (
-                      <div key={field.id}>
-                        <p>
-                          Mode: <strong>{field.mode}</strong>, Type:{" "}
-                          <strong>{field.type}</strong>,
-                          {field.location && (
-                            <>
-                              {" "}
-                              Location: <strong>{field.location}</strong>
-                            </>
-                          )}
-                        </p>
-                        <div>
-                          <Input
-                            type="number"
-                            {...register(`budgets.${index}.budget`, {
-                              min: 0,
-                              valueAsNumber: true,
-                              required: "required*",
-                            })}
-                            placeholder="Enter budget"
-                          />
-                          {errors?.budgets?.[index]?.budget && (
-                            <span className="text-red-500">
-                              {errors?.budgets?.[index]?.budget?.message}
-                            </span>
-                          )}
+                    <div className="grid grid-cols-3 gap-4">
+                      {budgets.map((field, index) => (
+                        <div key={field.id}>
+                          <p className="text-sm">
+                            Mode: <strong>{field.mode}</strong>, Type:{" "}
+                            <strong>{field.type}</strong>, Costing:{" "}
+                            <strong>
+                              {field.costing.split("_").join(" ")}
+                            </strong>
+                            {field.location && (
+                              <>
+                                {" "}
+                                Location: <strong>{field.location}</strong>
+                              </>
+                            )}
+                          </p>
+                          <div>
+                            <Input
+                              type="number"
+                              {...register(`budgets.${index}.budget`, {
+                                min: 0,
+                                valueAsNumber: true,
+                                required: "required*",
+                              })}
+                              placeholder={`Enter budget for Mode: ${field.mode}, Type: ${field.type}, Costing: ${field.costing.split("_").join(" ")}
+                            `}
+                            />
+                            {errors?.budgets?.[index]?.budget && (
+                              <span className="text-red-500">
+                                {errors?.budgets?.[index]?.budget?.message}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -823,7 +864,7 @@ export default function CompleteProfileTutor({
 
                 {/* preference */}
                 <div className="space-y-1">
-                  <Label>Are you looking for Private or Group Classes?</Label>
+                  <Label>Are you providing for Private or Group Classes?</Label>
                   <Controller
                     control={control}
                     rules={{ required: "required*" }}
@@ -1223,13 +1264,18 @@ export default function CompleteProfileTutor({
               </H5>
 
               <div>
+                <p className="mt-1 text-end text-sm text-gray-500">
+                  Letter Count: {experience.length} / {MAX_CHARACTERS}
+                </p>
                 <Textarea
                   {...register("experience", {
                     required: "Required*",
+                    validate: validateTextLimit,
                   })}
                   placeholder="Enter background and experience"
                   className="h-[220px]"
                 />
+
                 {errors.experience && (
                   <span className="text-sm text-red-500">
                     {errors.experience.message}

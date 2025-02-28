@@ -56,18 +56,36 @@ export default function Page() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["tutotDetails"],
+    queryKey: ["tutorDetails"],
     queryFn: async () => {
       const { data } = await http().get(
         `${endpoints.tutor.getAll}/getTutorDetail`,
       );
       return data;
     },
+    enabled: !!user && user.role === "tutor",
+  });
+  const {
+    data: student,
+    isLoading: isStudentLoading,
+    isError: isStudentError,
+    error: studentError,
+  } = useQuery({
+    queryKey: ["studentDetails"],
+    queryFn: async () => {
+      const { data } = await http().get(
+        `${endpoints.student.getAll}/getByUser/${user.id}`,
+      );
+      return data;
+    },
+    enabled: !!user && user.role === "student",
   });
 
   const updateMutation = useMutation({
     mutationFn: async (data) => {
-      return await http().put(`${endpoints.tutor.getAll}/${tutor.id}`, data);
+      return user && user.role === "tutor"
+        ? await http().put(`${endpoints.tutor.getAll}/${tutor.id}`, data)
+        : await http().put(`${endpoints.student.getAll}/${student.id}`, data);
     },
     onSuccess: () => {
       toast.success("Updated.");
@@ -84,7 +102,7 @@ export default function Page() {
   const handleUpdateLocation = () => {
     updateMutation.mutate({
       coords: coordinates,
-      id: tutor.id,
+      id: user.role === "tutor" ? tutor.id : student.id,
       location: selectedPlace,
     });
   };
@@ -93,9 +111,26 @@ export default function Page() {
       setCoordinates(tutor.coords);
     }
   }, [tutor]);
+  useEffect(() => {
+    if (student) {
+      setCoordinates(student.coords);
+    }
+  }, [student]);
 
-  if (isLoading) return <Loading />;
-  if (isError) return error.message ?? "error";
+  if (
+    (user?.role === "tutor" && isLoading) ||
+    (user?.role === "student" && isStudentLoading)
+  )
+    return <Loading />;
+  if (
+    (user?.role === "tutor" && isError) ||
+    (user?.role === "student" && isStudentError)
+  )
+    return (
+      (user?.role === "tutor" && error) ||
+      (user?.role === "student" && studentError) ||
+      "error"
+    );
 
   return (
     <div>

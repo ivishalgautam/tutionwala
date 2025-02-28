@@ -32,7 +32,7 @@ export default function LanguageSelect({ searchParams }) {
       newSearchParams.delete("language");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedOption, searchParams, router]);
 
   return (

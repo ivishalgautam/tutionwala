@@ -37,7 +37,7 @@ export default function ClassFlexibilitySelect({ searchParams }) {
       newSearchParams.delete("flexibility");
     }
 
-    router.push(`?${newSearchParams.toString()}`);
+    router.push(`?${newSearchParams.toString()}`, { scroll: false });
   }, [selectedOption, router, searchParams, flexibility]);
 
   return (

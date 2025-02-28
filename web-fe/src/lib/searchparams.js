@@ -7,6 +7,9 @@ import {
 
 export const searchParams = {
   budgetRange: parseAsString,
+  page: parseAsString,
+  limit: parseAsString,
+  q: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

@@ -125,10 +125,6 @@ export default function CompleteProfileStudent({
   const [filteredTutors, setFilteredTutors] = useState({ found: 0, data: [] });
   const [totalSteps, setTotalSteps] = useState(0);
   const [coords, setCoords] = useState([0, 0]);
-  const searchParams = useSearchParams();
-  const addr = searchParams.get("addr");
-  const lat = searchParams.get("lat");
-  const lng = searchParams.get("lng");
 
   const tutors = useMutation({
     mutationKey: [`tutors-${id}`],
@@ -137,6 +133,8 @@ export default function CompleteProfileStudent({
       setFilteredTutors({ found: data.total, data: data.data });
     },
   });
+
+  console.log({ filteredTutors });
 
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
@@ -203,7 +201,7 @@ export default function CompleteProfileStudent({
       fields: formData.fields,
       boards: formData.boards,
       languages: formData.languages,
-      academic_details: formData.academic_details,
+      // academic_details: formData.academic_details,
       coords: coords,
     };
     handleCreate({
@@ -219,8 +217,8 @@ export default function CompleteProfileStudent({
     setProfileStep(data.curr_step);
 
     let totalSteps = data.is_boards
-      ? data.fields?.length + 2 + 5
-      : data.fields?.length + 5;
+      ? data.fields?.length + 2 + 4
+      : data.fields?.length + 4;
 
     setTotalSteps(totalSteps);
   }, [data, setProfileStep]);
@@ -310,32 +308,26 @@ export default function CompleteProfileStudent({
 
   const handlePrev = () => {
     setCurrStep((prev) => prev - 1);
-    tutors.mutate({ ...watch(), lat, lng });
+    tutors.mutate({ ...watch(), lat: coords[0], lng: coords[1] });
   };
 
   const handleNext = async () => {
     if (!(await trigger())) return;
 
     setCurrStep((prev) => prev + 1);
-    tutors.mutate({ ...watch(), lat, lng });
+    tutors.mutate({ ...watch(), lat: coords[0], lng: coords[1] });
   };
 
   useEffect(() => {
     async function getCoords() {
       const coords = await getCurrentCoords();
       setCoords(coords);
+      setValue("lat", coords[0]);
+      setValue("lng", coords[1]);
     }
 
     getCoords();
-  }, []);
-
-  useEffect(() => {
-    if (addr) {
-      setValue("location", addr);
-      setValue("lat", lat);
-      setValue("lng", lng);
-    }
-  }, [addr, lat, lng, setValue]);
+  }, [setValue]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -353,7 +345,6 @@ export default function CompleteProfileStudent({
   }, [setValue]);
 
   if (categoryLoading) return <Loading />;
-  console.log({ errors });
   return (
     <div className={"space-y-4 p-8"}>
       <div className="mx-auto max-w-2xl space-y-2 rounded-lg">
@@ -372,34 +363,7 @@ export default function CompleteProfileStudent({
                   {currStep === 1 && (
                     <div className="space-y-1">
                       <div>
-                        <H6>Enter your location.</H6>
-                      </div>
-                      <div className="space-y-3">
-                        {errors?.location && (
-                          <span className="text-sm text-red-500">
-                            {errors?.location.message}
-                          </span>
-                        )}
-                        <div>
-                          <Label className="capitalize">Location</Label>
-                          <Controller
-                            control={control}
-                            name="location"
-                            rules={{ required: "required*" }}
-                            render={({ field }) => (
-                              <FilterAddress searchParams={searchParams} />
-                            )}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* language */}
-                  {currStep === 2 && (
-                    <div className="space-y-1">
-                      <div>
-                        <H6>Select language.</H6>
+                        <H6>In which language you want to learn.</H6>
                       </div>
                       <div className="space-y-3">
                         {errors?.languages && (
@@ -446,7 +410,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* preference */}
-                  {currStep === 3 && (
+                  {currStep === 2 && (
                     <div className="space-y-1">
                       <Label>
                         Are you looking for Private or Group Classes?
@@ -495,7 +459,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* availability */}
-                  {currStep === 4 && (
+                  {currStep === 3 && (
                     <div className="space-y-1">
                       <Label>
                         What days are you generally available to Classes?
@@ -542,7 +506,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* start_date */}
-                  {currStep === 5 && (
+                  {currStep === 4 && (
                     <div className="space-y-1">
                       <Label>When do you plan to start?</Label>
                       <Controller
@@ -589,7 +553,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* boards */}
-                  {data?.is_boards && currStep === 6 && (
+                  {data?.is_boards && currStep === 5 && (
                     <div>
                       <div className="text-sm font-medium">
                         Which {data?.name} board of education are you looking
@@ -623,10 +587,10 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* board subjects */}
-                  {data?.is_boards && currStep === 7 && (
+                  {data?.is_boards && currStep === 6 && (
                     <div className="space-y-2">
                       <div className="text-sm font-medium">
-                        Which of the following {selectedBoard} subjects fo you
+                        Which of the following {selectedBoard} subjects do you
                         need tution for?
                       </div>
                       <div className="space-y-1">
@@ -658,7 +622,7 @@ export default function CompleteProfileStudent({
                   {/* custom fields */}
                   {data?.fields.map(
                     (field, key) =>
-                      currStep === (data.is_boards ? 2 + key + 6 : key + 6) && (
+                      currStep === (data.is_boards ? 1 + key + 6 : key + 6) && (
                         <div className="space-y-4" key={key}>
                           <div className="mt-3 space-y-4">
                             <div className="text-sm font-medium capitalize">
@@ -890,7 +854,7 @@ export default function CompleteProfileStudent({
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <H5 className={"text-center"}>Academic details</H5>
                 <div className="space-y-8">
                   {academicDetails.map((item, ind) => (
@@ -1026,7 +990,7 @@ export default function CompleteProfileStudent({
                     <PlusIcon size={15} /> Add more
                   </Button>
                 </div>
-              </div>
+              </div> */}
 
               <div className="text-end">
                 <Button>Submit</Button>

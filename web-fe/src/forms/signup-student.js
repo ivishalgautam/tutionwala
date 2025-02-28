@@ -21,13 +21,12 @@ import {
 } from "../components/ui/input-otp";
 import { formatTime } from "@/utils/time";
 import { useRouter } from "next/navigation";
-import useMapLoader from "@/hooks/useMapLoader";
-import { useAutocomplete } from "@/hooks/useAutoComplete";
 import PhoneInputWithCountrySelect, {
   isValidPhoneNumber,
   parsePhoneNumber,
 } from "react-phone-number-input";
 import ReactSelect from "react-select/async";
+import { getCurrentCoords } from "@/lib/get-current-coords";
 
 const defaultValues = {
   type: "",
@@ -61,10 +60,8 @@ export default function SignUpStudentForm() {
   const [remainingTime, setRemainingTime] = useState(0);
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const debounceTimeoutRef = useRef(null);
-  const [minute] = useState(1.5);
+  const [minute] = useState(5);
   const router = useRouter();
-  const { isLoaded } = useMapLoader();
-  const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
 
   const {
     register,
@@ -126,7 +123,7 @@ export default function SignUpStudentForm() {
   }
 
   async function handleSendOtp() {
-    if (!(await trigger())) {
+    if (!isOtpSent && !(await trigger())) {
       return;
     }
 
@@ -154,6 +151,7 @@ export default function SignUpStudentForm() {
         setIsResendDisabled(true);
         setRemainingTime(60 * minute);
         setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
+        setValue("otp", "");
       }
     } catch (error) {
       toast.error(error.response.data.message ?? "error");
@@ -177,7 +175,7 @@ export default function SignUpStudentForm() {
       sub_categories: [data.sub_category.value],
       otp: data.otp,
       role: data.role,
-      location: data.location,
+      coords: data.coords,
     };
     await signUp(payload);
   };
@@ -192,10 +190,13 @@ export default function SignUpStudentForm() {
   }, [isResendDisabled]);
 
   useEffect(() => {
-    if (selectedPlace) {
-      setValue("location", selectedPlace.address);
+    async function getCoords() {
+      const coords = await getCurrentCoords();
+      setValue("coords", coords);
     }
-  }, [selectedPlace]);
+
+    getCoords();
+  }, [setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
@@ -313,30 +314,13 @@ export default function SignUpStudentForm() {
                       isMulti={false}
                       value={field.value}
                       menuPortalTarget={document.body}
+                      className="rounded border"
                     />
                   )}
                 />
                 {errors.sub_category && (
                   <span className="text-sm text-rose-500">
                     {errors.sub_category.message}
-                  </span>
-                )}
-              </div>
-
-              {/* location */}
-              <div>
-                <Label className="text-sm">Location</Label>
-                <Controller
-                  control={control}
-                  name="location"
-                  rules={{ required: "required*" }}
-                  render={({ field: { onChange, value } }) => (
-                    <Input ref={inputRef} value={value} />
-                  )}
-                />
-                {errors.location && (
-                  <span className="text-sm text-rose-500">
-                    {errors.location.message}
                   </span>
                 )}
               </div>

@@ -15,25 +15,37 @@ import ClassFlexibilitySelect from "@/components/select/flexibility-select";
 import ClassPlaceSelect from "@/components/select/place-select";
 import { PriceRangeSlider } from "@/components/price-range-slider";
 import { PriceRangeSliderSelect } from "@/components/select/price-range-slider-select";
+import { FilterAddress } from "@/components/tutors-with-filter";
+import SubCategorySelect from "@/components/select/sub-category-select";
 
 export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
   const router = useRouter();
-  const isOffline = searchParams.get("mode")?.split(" ")?.includes("offline");
-  const newSearchParams = new URLSearchParams(searchParams.toString());
-  if (!isOffline) {
-    newSearchParams.delete("place");
-    router.push(`?${newSearchParams.toString()}`);
-  }
+  const isOffline = searchParams.get("mode") === "offline";
 
   const tabs = [
     {
-      name: "Languages?",
-      comp: <LanguageSelect searchParams={searchParams} />,
+      name: "Mode?",
+      comp: <ClassConductSelect searchParams={searchParams} />,
       className: "",
     },
+    ...(isOffline
+      ? [
+          {
+            name: "Location?",
+            comp: <FilterAddress searchParams={searchParams} />,
+            className: "",
+          },
+        ]
+      : []),
     {
-      name: "Gender?",
-      comp: <GenderSelect searchParams={searchParams} />,
+      name: "Category?",
+      comp: <SubCategorySelect isMulti={true} searchParams={searchParams} />,
+      className: "",
+    },
+
+    {
+      name: "Languages?",
+      comp: <LanguageSelect searchParams={searchParams} />,
       className: "",
     },
     {
@@ -46,11 +58,7 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
       comp: <DemoClassSelect searchParams={searchParams} />,
       className: "",
     },
-    {
-      name: "Class conduct mode?",
-      comp: <ClassConductSelect searchParams={searchParams} />,
-      className: "",
-    },
+
     {
       name: "Flexibility?",
       comp: <ClassFlexibilitySelect searchParams={searchParams} />,
@@ -65,11 +73,6 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
           },
         ]
       : []),
-    {
-      name: "Budget?",
-      comp: <PriceRangeSliderSelect searchParams={searchParams} />,
-      className: "",
-    },
   ];
 
   return (
