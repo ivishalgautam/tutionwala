@@ -48,17 +48,15 @@ export default function TutotProfile({
           {/* Header */}
           <div className="flex flex-col items-start gap-6 rounded-lg border bg-white p-6 md:flex-row">
             <div className="flex size-36 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <figure className="">
-                <Image
-                  src={tutor.profile_picture}
-                  width={150}
-                  height={150}
-                  alt={tutor.fullname}
-                  className={
-                    "h-full w-full rounded-full object-cover object-center shadow-lg"
-                  }
-                />
-              </figure>
+              <Image
+                src={tutor.profile_picture}
+                width={150}
+                height={150}
+                alt={tutor.fullname}
+                className={
+                  "h-full w-full rounded-full object-cover object-center shadow-lg"
+                }
+              />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -197,24 +195,27 @@ export default function TutotProfile({
           </div>
 
           {/* Location Map */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center">
-                <MapPin className="mr-2 h-5 w-5" />
-                Location & Coverage Area
-              </CardTitle>
-              <CardDescription className="sr-only">
-                Located at coordinates: {teacher.coords[0]}, {teacher.coords[1]}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="mt-4">
-              <MapStatic
-                coordinates={teacher.coords}
-                fullAddr={fullAddr}
-                setFullAddr={setFullAddr}
-              />
-            </CardContent>
-          </Card>
+          {teacher.coords[0] !== teacher.coords[1] && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center">
+                  <MapPin className="mr-2 h-5 w-5" />
+                  Location & Coverage Area
+                </CardTitle>
+                <CardDescription className="sr-only">
+                  Located at coordinates: {teacher.coords[0]},{" "}
+                  {teacher.coords[1]}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="mt-4">
+                <MapStatic
+                  coordinates={teacher.coords}
+                  fullAddr={fullAddr}
+                  setFullAddr={setFullAddr}
+                />
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </>
