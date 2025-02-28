@@ -60,7 +60,7 @@ export default function NavbarComponent() {
                   />
                 </figure>
               </Link>
-              {user?.role !== "tutor" && <CategoryMenu />}
+              {/* {user?.role !== "tutor" && <CategoryMenu />} */}
             </div>
           </NavbarBrand>
 
@@ -119,9 +119,6 @@ export default function NavbarComponent() {
           <NavbarCollapseBtn />
 
           <NavbarCollapse className="overflow-auto">
-            {/* <NavbarItem>Projects</NavbarItem>
-          <NavbarItem>Research</NavbarItem>
-          <NavbarItem>Contact</NavbarItem> */}
             {isUserLoading ? (
               <Loader />
             ) : user ? (
