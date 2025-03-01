@@ -29,7 +29,7 @@ export default function TutorCard({
         </figure>
         <div className="flex-grow space-y-2">
           <div className="flex items-center justify-between">
-            <Link href={`/tutors/${tutor.tutor_id}?mode=${mode ?? ""}`}>
+            <Link href={`/tutors/${tutor.tutor_id}`}>
               <H4 className={"transition-colors hover:text-primary"}>
                 {tutor.fullname}
               </H4>

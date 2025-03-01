@@ -15,9 +15,7 @@ const showInfoContent = (fullAddr) => {
 
 export default function MapStatic({ coordinates, fullAddr, setFullAddr }) {
   const [map, setMap] = useState(null);
-  const [autoComplete, setAutoComplete] = useState(null);
   const mapRef = useRef(null);
-  const placeAutoCompleteRef = useRef(null);
   const { isLoaded } = useMapLoader();
 
   useEffect(() => {

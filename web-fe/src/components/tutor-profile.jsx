@@ -1,7 +1,7 @@
 "use client";
 import EnquiryForm from "@/forms/enquiry";
 import Review from "@/components/review";
-import { H3, H4, Muted } from "@/components/ui/typography";
+import { H2, H3, H4, Muted } from "@/components/ui/typography";
 import Image from "next/image";
 import DialogEnquiryForm from "@/forms/enquiry-dialog";
 import {
@@ -31,6 +31,12 @@ import { useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
 
 export default function TutotProfile({
   tutorId,
@@ -47,7 +53,7 @@ export default function TutotProfile({
         <div className="space-y-6">
           {/* Header */}
           <div className="flex flex-col items-start gap-6 rounded-lg border bg-white p-6 md:flex-row">
-            <div className="flex size-36 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex size-36 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Image
                 src={tutor.profile_picture}
                 width={150}
@@ -163,7 +169,7 @@ export default function TutotProfile({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p>{teacher.experience}</p>
+                <p className="break-words">{teacher.experience}</p>
               </CardContent>
             </Card>
 
@@ -187,11 +193,34 @@ export default function TutotProfile({
               </Card>
             )}
 
-            {courses?.map((courseData, ind) => (
-              <div key={ind} className="md:col-span-3">
-                <CourseDetails courseData={courseData} />
-              </div>
-            ))}
+            <Card className="md:col-span-3">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center">
+                  <GraduationCap className="mr-2 h-5 w-5" />
+                  Teaches
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="space-y-1">
+                  {courses?.map((courseData, ind) => (
+                    <div
+                      key={ind}
+                      className="rounded-lg border bg-white px-4 md:col-span-3"
+                    >
+                      <AccordionItem
+                        value={courseData.name}
+                        className="border-none"
+                      >
+                        <AccordionTrigger>{courseData.name}</AccordionTrigger>
+                        <AccordionContent>
+                          <CourseDetails courseData={courseData} />
+                        </AccordionContent>
+                      </AccordionItem>
+                    </div>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Location Map */}
@@ -200,7 +229,7 @@ export default function TutotProfile({
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
                   <MapPin className="mr-2 h-5 w-5" />
-                  Location & Coverage Area
+                  Location
                 </CardTitle>
                 <CardDescription className="sr-only">
                   Located at coordinates: {teacher.coords[0]},{" "}
