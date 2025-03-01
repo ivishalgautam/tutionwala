@@ -15,6 +15,10 @@ export const allRoutes = [
     roles: [ROLES.TUTOR],
   },
   {
+    link: "/aadhaar-kyc",
+    roles: [ROLES.TUTOR, ROLES.STUDENT],
+  },
+  {
     link: "/search/[subCatSlug]",
     roles: [],
   },

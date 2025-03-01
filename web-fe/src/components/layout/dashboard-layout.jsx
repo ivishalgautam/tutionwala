@@ -76,7 +76,7 @@ export const Profile = ({ isUserLoading, user }) => {
           }
           width={100}
           height={100}
-          alt={user?.fullname}
+          alt={user?.fullname ?? ""}
           className="h-full w-full rounded object-cover object-center"
           onError={() => setImageError(true)}
         />

@@ -71,7 +71,7 @@ export default function Stepper({ currStep = 1, role }) {
         </div>
       ) : (
         <div>
-          <ol className="grid grid-cols-1 divide-x divide-gray-100 overflow-hidden rounded-lg border border-gray-100 text-sm text-gray-500 sm:grid-cols-3">
+          <ol className="grid grid-cols-1 divide-x divide-gray-100 overflow-hidden rounded-lg border border-gray-100 text-sm text-gray-500 sm:grid-cols-2">
             <li
               className={cn("flex items-center justify-center gap-2 p-4", {
                 "bg-primary text-white": currStep === 1,
@@ -116,23 +116,6 @@ export default function Stepper({ currStep = 1, role }) {
                 <small className="mt-1">
                   {currStep > 2 ? "Completed" : "Previous experience"}
                 </small>
-              </p>
-            </li>
-
-            <li
-              className={cn("flex items-center justify-center gap-2 p-4", {
-                "bg-primary text-white": currStep === 3,
-              })}
-            >
-              {currStep > 3 ? (
-                <Check className="text-primary" />
-              ) : (
-                <SquareUserRound />
-              )}
-
-              <p className="leading-none">
-                <strong className="block font-medium"> Identity </strong>
-                <small className="mt-1"> Identity details </small>
               </p>
             </li>
           </ol>

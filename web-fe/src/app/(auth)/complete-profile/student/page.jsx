@@ -34,7 +34,7 @@ export default function Page() {
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
-
+  console.log({ data });
   const createMutation = useMutation(createStudentProfile, {
     onSuccess: (data) => {
       toast.success("submitted");
@@ -50,7 +50,6 @@ export default function Page() {
     },
   });
   const handleCreate = (data) => {
-    console.log({ data });
     createMutation.mutate(data);
   };
 

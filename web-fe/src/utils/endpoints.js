@@ -6,6 +6,8 @@ export const endpoints = {
     username: "/auth/username",
     verifyOtp: "/auth/otp/verify",
     sendOtp: "/auth/otp/send",
+    kycOtpRequest: "/zoop/kyc/otp/request",
+    kycOtpVerify: "/zoop/kyc/otp/verify",
   },
 
   profile: "/users/me",

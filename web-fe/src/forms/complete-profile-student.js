@@ -48,7 +48,7 @@ import {
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 import { FilterAddress } from "../components/tutors-with-filter";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Progress } from "../components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -116,6 +116,7 @@ export default function CompleteProfileStudent({
     control,
     name: "academic_details",
   });
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState({ adhaar: false, profile: false });
   const [progress, setProgress] = useState({ adhaar: 0, profile: 0 });
   const [media, setMedia] = useState({
@@ -133,8 +134,6 @@ export default function CompleteProfileStudent({
       setFilteredTutors({ found: data.total, data: data.data });
     },
   });
-
-  console.log({ filteredTutors });
 
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
@@ -203,7 +202,9 @@ export default function CompleteProfileStudent({
       languages: formData.languages,
       // academic_details: formData.academic_details,
       coords: coords,
+      profile_picture: media.profile_picture,
     };
+
     handleCreate({
       ...payload,
       student_id: data.student_id,
@@ -343,6 +344,14 @@ export default function CompleteProfileStudent({
       setMedia((prev) => ({ ...prev, profile_picture: profile }));
     }
   }, [setValue]);
+
+  useEffect(() => {
+    if (data) {
+      if (data.curr_step === 3) {
+        router.replace("/aadhaar-kyc");
+      }
+    }
+  }, [data, router]);
 
   if (categoryLoading) return <Loading />;
   return (
@@ -622,7 +631,7 @@ export default function CompleteProfileStudent({
                   {/* custom fields */}
                   {data?.fields.map(
                     (field, key) =>
-                      currStep === (data.is_boards ? 1 + key + 6 : key + 6) && (
+                      currStep === (data.is_boards ? 2 + key + 5 : key + 5) && (
                         <div className="space-y-4" key={key}>
                           <div className="mt-3 space-y-4">
                             <div className="text-sm font-medium capitalize">

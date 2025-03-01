@@ -145,14 +145,12 @@ export default function SignUpStudentForm() {
           fullname,
         },
       );
-      if (statusText === "OK") {
-        toast.success(data.message);
-        setIsOtpSent(true);
-        setIsResendDisabled(true);
-        setRemainingTime(60 * minute);
-        setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
-        setValue("otp", "");
-      }
+      toast.success(data.message);
+      setIsOtpSent(true);
+      setIsResendDisabled(true);
+      setRemainingTime(60 * minute);
+      setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
+      setValue("otp", "");
     } catch (error) {
       toast.error(error.response.data.message ?? "error");
     }

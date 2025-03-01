@@ -48,6 +48,7 @@ import { useRouter } from "next/navigation";
 import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
+import AadhaarForm from "./adhaar-kyc";
 
 export const MAX_CHARACTERS = 250;
 export const validateTextLimit = (value) => {
@@ -157,7 +158,6 @@ export default function CompleteProfileTutor({
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
-
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
@@ -243,12 +243,7 @@ export default function CompleteProfileTutor({
               profile_picture: media.profile,
               intro_video: media.video,
             }
-          : currStep === 3
-            ? {
-                adhaar: media.adhaar,
-              }
-            : null;
-
+          : null;
     handleCreate({ ...payload, tutor_id: data.tutor_id, curr_step: currStep });
     if (currStep === 3) {
       router.replace("/");
@@ -335,11 +330,12 @@ export default function CompleteProfileTutor({
   useEffect(() => {
     if (data) {
       setCurrStep(data.curr_step);
-      if (data.curr_step !== 1) {
+      if (data.curr_step === 3) {
         unregister("languages");
+        router.replace("/aadhaar-kyc");
       }
     }
-  }, [data, unregister, setCurrStep]);
+  }, [data, unregister, setCurrStep, router]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1392,71 +1388,6 @@ export default function CompleteProfileTutor({
                       <div>No file selected</div>
                     )}
                   </div>
-                </div>
-              </div>
-              <div className="text-end">
-                <Button>Submit</Button>
-              </div>
-            </div>
-          )}
-
-          {/* form 3 */}
-          {currStep === 3 && (
-            <div className="space-y-4 p-6">
-              <H5 className={"text-center"}>Adhaar</H5>
-              <div className="space-y-4">
-                {!media.adhaar && (
-                  <div className="flex flex-col items-center justify-center">
-                    <Input
-                      type="file"
-                      placeholder="Select Adhaar Card"
-                      {...register("adhaar", {
-                        required: "Required*",
-                      })}
-                      onChange={(e) => handleFileChange(e, "adhaar")}
-                      multiple={false}
-                      accept="image/png, image/jpeg, image/jpg, image/webp"
-                      className={`max-w-56 bg-primary text-white`}
-                    />
-                    {errors.adhaar && (
-                      <span className="text-sm text-red-500">
-                        {errors.adhaar.message}
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                <div className="flex items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 p-8">
-                  {isLoading.adhaar && (
-                    <Progress
-                      id="file"
-                      value={progress.adhaar}
-                      max="100"
-                    >{`${progress.adhaar}%`}</Progress>
-                  )}
-                  {media.adhaar ? (
-                    <figure className="relative size-32">
-                      <Image
-                        src={media.adhaar}
-                        width={500}
-                        height={500}
-                        alt="adhaar"
-                        className="h-full w-full"
-                        multiple={false}
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() => deleteFile(media.adhaar, "adhaar")}
-                        className="absolute -right-2 -top-2"
-                        size="icon"
-                      >
-                        <Trash size={20} />
-                      </Button>
-                    </figure>
-                  ) : (
-                    <div>No file selected</div>
-                  )}
                 </div>
               </div>
               <div className="text-end">

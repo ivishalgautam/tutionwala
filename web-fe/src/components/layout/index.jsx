@@ -39,6 +39,7 @@ export default function Layout({ children }) {
       pathname === "/signup/tutor" ||
       pathname === "/signup/student" ||
       pathname === "/verify" ||
+      pathname === "/aadhaar-kyc" ||
       pathname === "/complete-profile/tutor" ||
       pathname === "/complete-profile/student"
     ) {

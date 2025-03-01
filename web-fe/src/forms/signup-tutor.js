@@ -62,9 +62,9 @@ export default function SignUpTutorForm() {
   const [loading, setLoading] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(0);
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const debounceTimeoutRef = useRef(null);
+  const [remainingTime, setRemainingTime] = useState(0);
   const [minute] = useState(1.5);
   const router = useRouter();
   const {
