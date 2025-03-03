@@ -5,7 +5,6 @@ import { Badge } from "../ui/badge";
 
 import Review from "../review";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 
 export default function TutorCard({
   tutor,
@@ -13,8 +12,6 @@ export default function TutorCard({
   totalReviews,
   searchParams,
 }) {
-  const searchQ = useSearchParams();
-  const mode = searchQ.get("mode");
   return (
     <div className="w-full max-w-full space-y-2 rounded-lg border border-gray-200 bg-white p-4">
       <div className="flex items-start justify-start gap-4">
@@ -52,6 +49,7 @@ export default function TutorCard({
                 </div>
               </div>
             )}
+
             {tutor.boards?.[0]?.length > 0 && (
               <div className="space-y-1">
                 <div className="text-xs text-gray-500">Boards: </div>

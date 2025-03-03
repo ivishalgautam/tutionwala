@@ -1,4 +1,3 @@
-import React from "react";
 import CoursesByCategorySlug from "./courses-by-category-slug";
 import { Heading } from "./ui/heading";
 import { Small } from "./ui/typography";
