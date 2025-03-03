@@ -52,7 +52,7 @@ export default function FeaturedCategories() {
           Top Category
         </Small>
         <Heading
-          title={"Explore our top categories"}
+          title={"Explore your learning category"}
           description={
             "You'll find something to spark your curiosity and enhance"
           }
