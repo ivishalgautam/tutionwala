@@ -17,9 +17,7 @@ import { Heading } from "./ui/heading";
 import dynamic from "next/dynamic";
 
 async function fetchFeaturedCategories() {
-  const { data } = await http().get(
-    `${endpoints.categories.getAll}?featured=true`,
-  );
+  const { data } = await http().get(`${endpoints.categories.getAll}`);
 
   return data;
 }

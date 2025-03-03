@@ -25,6 +25,7 @@ export default function CategoriesTabs() {
   } = useQuery({
     queryFn: fetchCategoriesTabs,
     queryKey: ["categories-tabs"],
+    keepPreviousData: true,
   });
 
   const tabs = useMemo(() => data, [data]);

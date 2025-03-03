@@ -76,6 +76,7 @@ const AadhaarForm = () => {
       setIsResendDisabled(true);
       setRemainingTime(60 * minute);
       setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
+      otpForm.setValue("otp", "");
     },
     onError: (error) => {
       console.error(

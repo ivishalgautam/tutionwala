@@ -271,7 +271,7 @@ export default function PersonalInfoForm({ user, setUser }) {
             variant="destructive"
             onClick={() => setOpen(true)}
           >
-            Close Account
+            Delete Account
           </Button>
           <Button>Submit</Button>
         </div>
