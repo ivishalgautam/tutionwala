@@ -38,7 +38,7 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 
-export default function TutotProfile({
+export default function TutorProfile({
   tutorId,
   user: tutor,
   courses,

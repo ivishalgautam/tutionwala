@@ -36,14 +36,13 @@ export default function ContactForm() {
     createMutation.mutate(data);
   };
 
-  const className =
-    "border-primary focus-visible:border-white/40 bg-black/10 text-white placeholder:text-white";
+  const className = "bg-gray-50 text-black";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <H2 className={"border-none text-white"}>Contact Us</H2>
+      <H2 className={"border-none text-black"}>Contact Us</H2>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* name */}
         <div>
           <Input
@@ -55,7 +54,9 @@ export default function ContactForm() {
             className={className}
           />
           {errors.name && (
-            <span className="text-white">{errors.name.message}</span>
+            <p className="text-start text-sm text-red-500">
+              {errors.name.message}
+            </p>
           )}
         </div>
 
@@ -70,7 +71,9 @@ export default function ContactForm() {
             className={className}
           />
           {errors.email && (
-            <span className="text-white">{errors.email.message}</span>
+            <p className="text-start text-sm text-red-500">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -85,7 +88,9 @@ export default function ContactForm() {
             className={className}
           />
           {errors.address && (
-            <span className="text-white">{errors.address.message}</span>
+            <p className="text-start text-sm text-red-500">
+              {errors.address.message}
+            </p>
           )}
         </div>
 
@@ -102,7 +107,9 @@ export default function ContactForm() {
             className={className}
           />
           {errors.phone && (
-            <span className="text-white">{errors.phone.message}</span>
+            <p className="text-start text-sm text-red-500">
+              {errors.phone.message}
+            </p>
           )}
         </div>
 
@@ -117,7 +124,9 @@ export default function ContactForm() {
             className={className}
           />
           {errors.subject && (
-            <span className="text-white">{errors.subject.message}</span>
+            <p className="text-start text-sm text-red-500">
+              {errors.subject.message}
+            </p>
           )}
         </div>
 
@@ -131,15 +140,15 @@ export default function ContactForm() {
             className={cn(`min-h-[200px] outline-none ring-0`, className)}
           />
           {errors.message && (
-            <span className="text-white">{errors.message.message}</span>
+            <p className="text-start text-sm text-red-500">
+              {errors.message.message}
+            </p>
           )}
         </div>
       </div>
 
       <div className="mt-4">
-        <Button className="w-full bg-white text-gray-700 transition-colors hover:bg-white/90">
-          Submit
-        </Button>
+        <Button className="w-full">Submit</Button>
       </div>
     </form>
   );
