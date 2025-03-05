@@ -46,6 +46,7 @@ export default function TutorProfile({
   total_reviews,
   ...teacher
 }) {
+  // console.log(courses);
   const [fullAddr, setFullAddr] = useState("");
   return (
     <>
@@ -255,12 +256,6 @@ function CourseDetails({ courseData }) {
   const [selectedMode, setSelectedMode] = useState("online");
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  // Format subject names to be capitalized
-  const formatSubjectName = (subject) => {
-    return subject.charAt(0).toUpperCase() + subject.slice(1);
-  };
-
-  // Filter budgets based on selected mode and location
   const filteredBudgets = courseData.details.budgets.filter((budget) => {
     if (selectedMode === "online") {
       return budget.mode === "online";
@@ -306,8 +301,12 @@ function CourseDetails({ courseData }) {
                       </div>
                       <div className="ml-6 flex flex-wrap gap-2">
                         {board.subjects.map((subject, idx) => (
-                          <Badge key={idx} variant="outline">
-                            {formatSubjectName(subject)}
+                          <Badge
+                            key={idx}
+                            variant="outline"
+                            className={"capitalize"}
+                          >
+                            {subject}
                           </Badge>
                         ))}
                       </div>
@@ -442,13 +441,7 @@ function PricingCard({ budget }) {
   return (
     <Card className="border-2 transition-colors hover:border-primary/50">
       <CardContent className="pt-6">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {getIcon(budget.costing)}
-            <span className="text-sm font-medium">
-              {formatCosting(budget.costing)}
-            </span>
-          </div>
+        <div className="mb-4 flex items-center justify-center">
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm capitalize text-muted-foreground">
