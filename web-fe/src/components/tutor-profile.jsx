@@ -171,7 +171,7 @@ export default function TutorProfile({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="break-words">{teacher.experience}</p>
+                <Muted className="break-words">{teacher.experience}</Muted>
               </CardContent>
             </Card>
 
@@ -324,7 +324,7 @@ function CourseDetails({ courseData }) {
           <Card>
             <CardHeader>
               <CardTitle>Pricing Options</CardTitle>
-              <CardDescription>
+              <CardDescription className="sr-only">
                 Choose your preferred mode and pricing
               </CardDescription>
             </CardHeader>
@@ -440,7 +440,7 @@ function PricingCard({ budget }) {
   };
 
   return (
-    <Card className="border-2 transition-colors hover:border-primary/50">
+    <Card className="border-2">
       <CardContent className="pt-6">
         <div className="mb-4 flex items-center justify-center">
           <div className="flex items-center gap-1">
@@ -450,12 +450,12 @@ function PricingCard({ budget }) {
             </span>
           </div>
         </div>
-        <div className="text-center">
+        <div className="space-y-2 text-center">
           <div className="text-3xl font-bold">
             {rupee.format(budget.budget)}
           </div>
-          <p className="text-sm text-muted-foreground">
-            {formatCosting(budget.costing)}
+          <p className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
+            {getIcon(budget.costing)} {formatCosting(budget.costing)}
           </p>
         </div>
       </CardContent>
