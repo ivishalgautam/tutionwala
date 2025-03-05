@@ -37,6 +37,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import { rupee } from "@/lib/Intl";
 
 export default function TutorProfile({
   tutorId,
@@ -450,7 +451,9 @@ function PricingCard({ budget }) {
           </div>
         </div>
         <div className="text-center">
-          <div className="text-3xl font-bold">₹{budget.budget}</div>
+          <div className="text-3xl font-bold">
+            {rupee.format(budget.budget)}
+          </div>
           <p className="text-sm text-muted-foreground">
             {formatCosting(budget.costing)}
           </p>
