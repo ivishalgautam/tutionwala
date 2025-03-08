@@ -17,6 +17,7 @@ import { Blockquote, Muted } from "./ui/typography";
 import Link from "next/link";
 import moment from "moment";
 import http from "@/utils/http";
+import Loading from "./loading";
 
 export default function Notification() {
   const [notificationsCount, setNotificationsCount] = useState(0);
@@ -26,7 +27,12 @@ export default function Notification() {
   let wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}${endpoints.notifications.getAll}?at=${token}`;
 
   const queryClient = useQueryClient();
-  const { data: notifications } = useQuery({
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryFn: async () => {
       const { data } = await http().get(
         endpoints.notifications.getAll + "/all",
@@ -41,16 +47,16 @@ export default function Notification() {
     socketRef.current = new ReconnectingWebSocket(wsUrl);
 
     socketRef.current.addEventListener("open", (event) => {
-      console.log("WebSocket connected!", event);
+      console.log("WebSocket connected!");
     });
 
     socketRef.current.addEventListener("message", (event) => {
-      const parsedData = JSON.parse(event.data);
-
       setNotificationsCount((prev) => prev + 1);
-      queryClient.setQueryData([`notifications`], (oldChats = []) => {
-        return [...oldChats, parsedData];
-      });
+
+      //   const parsedData = JSON.parse(event.data);
+      //   queryClient.setQueryData([`notifications`], (oldChats = []) => {
+      //     return [...oldChats, parsedData];
+      //   });
     });
 
     socketRef.current.addEventListener("close", () => {
@@ -60,7 +66,10 @@ export default function Notification() {
     return () => {
       socketRef.current.close();
     };
-  }, [token, wsUrl, queryClient]);
+  }, [token, wsUrl]);
+
+  if (isLoading) return <Loading />;
+  if (isError) return error?.message ?? "Error";
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

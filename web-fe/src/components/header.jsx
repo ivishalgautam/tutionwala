@@ -88,8 +88,7 @@ export default function NavbarComponent() {
             <Loader />
           ) : user ? (
             <NavbarList>
-              {/* <Notification /> */}
-
+              <Notification />
               <Link
                 className={buttonVariants({ variant: "default" })}
                 href={"/dashboard/enquiries"}
