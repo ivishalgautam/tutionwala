@@ -345,13 +345,13 @@ export default function CompleteProfileStudent({
     }
   }, [setValue]);
 
-  useEffect(() => {
-    if (data) {
-      if (data.curr_step === 3) {
-        router.replace("/aadhaar-kyc");
-      }
-    }
-  }, [data, router]);
+  // useEffect(() => {
+  //   if (data) {
+  //     if (data.curr_step === 3) {
+  //       router.replace("/aadhaar-kyc");
+  //     }
+  //   }
+  // }, [data, router]);
 
   if (categoryLoading) return <Loading />;
   return (

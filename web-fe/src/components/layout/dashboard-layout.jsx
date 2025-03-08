@@ -17,7 +17,9 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { AlignLeft, ChevronLeft } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Warning } from "phosphor-react";
 
 const tabs = [
   { value: "students", label: "Students", roles: ["tutor"] },
@@ -29,6 +31,8 @@ const tabs = [
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
+  const { user } = useContext(MainContext);
+
   return (
     <div className="min-h-screen bg-gray-200 py-4">
       <div className="container grid grid-cols-12 gap-4">
@@ -48,6 +52,42 @@ export default function DashboardLayout({ children }) {
             <ChevronLeft size={20} />
             Back
           </Button>
+
+          {!user.is_aadhaar_verified && (
+            <Alert variant="destructive" className="!mb-2 bg-white">
+              <Warning className="h-4 w-4" />
+              <AlertDescription className="flex items-center justify-between">
+                <span>
+                  Your KYC is not completed. Please complete your KYC.
+                </span>
+                <Link
+                  href={"/aadhaar-kyc"}
+                  className={`h-6 ${buttonVariants({ variant: "destructive" })}`}
+                >
+                  Complete
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
+          {!user.is_email_verified && (
+            <Alert variant="destructive" className="!mb-2 bg-white">
+              <AlertDescription className="flex items-center justify-between">
+                <div className="flex items-center justify-start gap-3">
+                  <Warning className="h-4 w-4" />
+                  <span>
+                    Your Email is not verified. Please verify your email.
+                  </span>
+                </div>
+                <Link
+                  href={"/email-verification"}
+                  className={`h-6 ${buttonVariants({ variant: "destructive" })}`}
+                >
+                  Verify
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="rounded bg-white p-4">{children}</div>
         </div>
       </div>

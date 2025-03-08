@@ -19,6 +19,10 @@ export const allRoutes = [
     roles: [ROLES.TUTOR, ROLES.STUDENT],
   },
   {
+    link: "/email-verification",
+    roles: [ROLES.TUTOR, ROLES.STUDENT],
+  },
+  {
     link: "/search/[subCatSlug]",
     roles: [],
   },

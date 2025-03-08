@@ -21,9 +21,12 @@ export default function Page() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation(createTutorProfile, {
-    onSuccess: (data) => {
+    onSuccess: ({ data }) => {
+      if (data.curr_step == "2" && data.is_profile_completed) {
+        router.replace("/dashboard/enquiries");
+      }
       toast.success("submitted");
-      queryClient.invalidateQueries([`subCategory-${id}`]);
+      queryClient.invalidateQueries([`subCategory`, id]);
     },
     onError: (error) => {
       // console.log({ error });

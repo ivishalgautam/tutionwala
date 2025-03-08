@@ -34,6 +34,24 @@ export const columns = (
     },
   },
   {
+    accessorKey: "sub_category_name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Category
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const category = row.getValue("sub_category_name");
+      return <span>{category ?? "N/a"}</span>;
+    },
+  },
+  {
     accessorKey: "created_at",
     header: ({ column }) => {
       return (

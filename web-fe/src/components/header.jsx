@@ -35,6 +35,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import SignUpAs from "./sign-up-as";
+import Notification from "./notification";
 
 export default function NavbarComponent() {
   const { user, setUser, isUserLoading } = useContext(MainContext);
@@ -87,6 +88,8 @@ export default function NavbarComponent() {
             <Loader />
           ) : user ? (
             <NavbarList>
+              <Notification />
+
               <Link
                 className={buttonVariants({ variant: "default" })}
                 href={"/dashboard/enquiries"}

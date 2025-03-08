@@ -6,12 +6,17 @@ export const endpoints = {
     username: "/auth/username",
     verifyOtp: "/auth/otp/verify",
     sendOtp: "/auth/otp/send",
+
     kycOtpRequest: "/zoop/kyc/otp/request",
     kycOtpVerify: "/zoop/kyc/otp/verify",
   },
 
   profile: "/users/me",
-  users: { getAll: "/users" },
+  users: {
+    getAll: "/users",
+    verifyEmailOtp: "/users/email/otp/verify",
+    sendEmailOtp: "/users/email/otp/send",
+  },
   products: {
     getAll: "/products",
     admin: "/products/admin/getAll",
@@ -62,6 +67,9 @@ export const endpoints = {
   },
   myStudents: {
     getAll: "/tutor-student-map",
+  },
+  notifications: {
+    getAll: "/notifications",
   },
   reviews: {
     getAll: "/reviews",

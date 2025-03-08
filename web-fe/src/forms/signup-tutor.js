@@ -293,7 +293,7 @@ export default function SignUpTutorForm() {
               <div className="grid grid-cols-2 gap-2">
                 {/* fullname */}
                 <div>
-                  <Label className="text-sm">Fullname</Label>
+                  <Label className="text-sm">Fullname as per aadhaar</Label>
                   <Input
                     type="text"
                     {...register("fullname", {

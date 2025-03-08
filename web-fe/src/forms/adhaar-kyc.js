@@ -122,6 +122,7 @@ const AadhaarForm = () => {
     const payload = {
       otp: data.otp,
       request_id: aadhaarData.request_id,
+      customer_aadhaar_number: aadhaarData.customer_aadhaar_number,
     };
     verifyOtpMutation.mutate(payload);
   };

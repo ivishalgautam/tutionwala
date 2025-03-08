@@ -187,13 +187,16 @@ export const TutorEnquiries = ({
         setTutorId,
         setEnquiryId,
       )}
-      data={enquiries?.map(({ id, tutor, created_at, status }) => ({
-        id,
-        created_at,
-        status,
-        fullname: tutor[0].fullname,
-        tutorId: tutor[0].tutor_id,
-      }))}
+      data={enquiries?.map(
+        ({ id, tutor, created_at, status, sub_category_name }) => ({
+          id,
+          sub_category_name,
+          created_at,
+          status,
+          fullname: tutor[0].fullname,
+          tutorId: tutor[0].tutor_id,
+        }),
+      )}
     />
   );
 };
@@ -202,16 +205,19 @@ export const StudentEnquiries = ({ enquiries, handleDelete, handleUpdate }) => {
   return (
     <StudentsEnquiryDataTable
       columns={studentColumns(handleDelete, handleUpdate)}
-      data={enquiries?.map(({ id, status, student, created_at }) => ({
-        id,
-        created_at,
-        status,
-        fullname: student[0].fullname,
-        userId: student[0].user_id,
-        studentId: student[0].student_id,
-        email: student[0].email,
-        mobile_number: student[0].mobile_number,
-      }))}
+      data={enquiries?.map(
+        ({ id, status, student, created_at, sub_category_name }) => ({
+          id,
+          sub_category_name,
+          created_at,
+          status,
+          fullname: student[0].fullname,
+          userId: student[0].user_id,
+          studentId: student[0].student_id,
+          email: student[0].email,
+          mobile_number: student[0].mobile_number,
+        }),
+      )}
     />
   );
 };

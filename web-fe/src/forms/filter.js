@@ -39,7 +39,7 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
       : []),
     {
       name: "Category?",
-      comp: <SubCategorySelect isMulti={true} searchParams={searchParams} />,
+      comp: <SubCategorySelect isMulti={false} searchParams={searchParams} />,
       className: "",
     },
 

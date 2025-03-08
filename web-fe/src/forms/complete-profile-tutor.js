@@ -135,8 +135,6 @@ export default function CompleteProfileTutor({
     profile: false,
     video: false,
   });
-  const [coords, setCoords] = useState([0, 0]);
-  const { token } = useLocalStorage("token");
 
   const {
     fields: languages,
@@ -154,7 +152,7 @@ export default function CompleteProfileTutor({
     error,
     isFetching,
   } = useQuery({
-    queryKey: [`subCategory-${id}`],
+    queryKey: [`subCategory`, id],
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
@@ -330,9 +328,9 @@ export default function CompleteProfileTutor({
   useEffect(() => {
     if (data) {
       setCurrStep(data.curr_step);
-      if (data.curr_step === 3) {
+      if (data.curr_step === 2) {
         unregister("languages");
-        router.replace("/aadhaar-kyc");
+        router.replace("/dashboard/enquiries");
       }
     }
   }, [data, unregister, setCurrStep, router]);
@@ -734,32 +732,30 @@ export default function CompleteProfileTutor({
                       <div>
                         <Label>Location:</Label>
                         <div className="flex items-center justify-start gap-2">
-                          {["tutorPlace", "studentPlace", "other"].map(
-                            (mode) => (
-                              <Controller
-                                key={mode}
-                                control={control}
-                                rules={{ required: "required*" }}
-                                name="selectedOfflineLocations"
-                                render={({ field }) => (
-                                  <div className="flex items-center gap-1">
-                                    <Checkbox
-                                      checked={field.value?.includes(mode)}
-                                      onCheckedChange={(checked) => {
-                                        const newValue = checked
-                                          ? [...field.value, mode]
-                                          : field.value.filter(
-                                              (val) => val !== mode,
-                                            );
-                                        field.onChange(newValue);
-                                      }}
-                                    />
-                                    <Label className="capitalize">{mode}</Label>
-                                  </div>
-                                )}
-                              />
-                            ),
-                          )}
+                          {["tutorPlace", "studentPlace"].map((mode) => (
+                            <Controller
+                              key={mode}
+                              control={control}
+                              rules={{ required: "required*" }}
+                              name="selectedOfflineLocations"
+                              render={({ field }) => (
+                                <div className="flex items-center gap-1">
+                                  <Checkbox
+                                    checked={field.value?.includes(mode)}
+                                    onCheckedChange={(checked) => {
+                                      const newValue = checked
+                                        ? [...field.value, mode]
+                                        : field.value.filter(
+                                            (val) => val !== mode,
+                                          );
+                                      field.onChange(newValue);
+                                    }}
+                                  />
+                                  <Label className="capitalize">{mode}</Label>
+                                </div>
+                              )}
+                            />
+                          ))}
                         </div>
                       </div>
                     )}

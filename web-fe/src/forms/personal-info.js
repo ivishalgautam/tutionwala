@@ -41,6 +41,7 @@ const fetchProfile = async (id) => {
 };
 
 export default function PersonalInfoForm({ user, setUser }) {
+  console.log({ user });
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [media, setMedia] = useState({
@@ -60,6 +61,7 @@ export default function PersonalInfoForm({ user, setUser }) {
       fullname: user?.fullname ?? "",
       email: user?.email ?? "",
       profile_picture: user?.profile_picture ?? "",
+      dob: user?.dob ?? "",
     },
   });
 
@@ -247,6 +249,7 @@ export default function PersonalInfoForm({ user, setUser }) {
               type="text"
               {...register("fullname", { required: "required*" })}
               placeholder={"Enter Fullname"}
+              disabled
             />
             {errors.fullname && (
               <span className="text-red-500">{errors.fullname.message}</span>
@@ -262,6 +265,17 @@ export default function PersonalInfoForm({ user, setUser }) {
             />
             {errors.email && (
               <span className="text-red-500">{errors.email.message}</span>
+            )}
+          </div>
+          <div>
+            <Label>DOB</Label>
+            <Input
+              type="date"
+              {...register("dob", { required: "required*" })}
+              placeholder={"Select DOB"}
+            />
+            {errors.dob && (
+              <span className="text-red-500">{errors.dob.message}</span>
             )}
           </div>
         </div>
