@@ -68,9 +68,6 @@ export default function Notification() {
     };
   }, [token, wsUrl]);
 
-  if (isLoading) return <Loading />;
-  if (isError) return error?.message ?? "Error";
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
@@ -93,7 +90,11 @@ export default function Notification() {
             <CardTitle className="text-base">Notifications</CardTitle>
           </CardHeader>
           <CardContent className="max-h-[300px] overflow-auto px-0 py-0">
-            {notifications?.length > 0 ? (
+            {isLoading ? (
+              <Loading />
+            ) : isError ? (
+              (error?.message ?? "Error")
+            ) : notifications?.length > 0 ? (
               <div>
                 {notifications?.map((notification) => (
                   <DropdownMenuItem
