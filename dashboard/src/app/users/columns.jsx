@@ -37,6 +37,21 @@ export const columns = (
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const id = row.original.tutor_id;
+      const role = row.original.role;
+      const fullname = row.getValue("fullname");
+      return role === "tutor" ? (
+        <a
+          href={`${process.env.NEXT_PUBLIC_WEBSITE_DOMAIN}/tutors/${id}`}
+          target="_blank"
+        >
+          {fullname}
+        </a>
+      ) : (
+        fullname
+      );
+    },
   },
   {
     accessorKey: "mobile_number",
@@ -103,6 +118,7 @@ export const columns = (
     cell: ({ row }) => {
       const id = row.original.id;
       const role = row.original.role;
+      const is_aadhaar_verified = row.original.is_aadhaar_verified;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -117,11 +133,24 @@ export const columns = (
             <DropdownMenuItem
               onClick={() => {
                 setUserId(id);
-                openModal();
+                openModal("user");
               }}
             >
               Edit
             </DropdownMenuItem>
+            {is_aadhaar_verified && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    setUserId(id);
+                    openModal("aadhaar");
+                  }}
+                >
+                  Aadhaar details
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete({ id })}>
               Delete

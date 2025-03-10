@@ -34,6 +34,7 @@ export default function UserForm({ type, handleUpdate, userId }) {
     formState: { errors },
     control,
     setValue,
+    watch,
   } = useForm({ defaultValues });
 
   const { data, isLoading, isError, error } = useQuery({
@@ -66,12 +67,20 @@ export default function UserForm({ type, handleUpdate, userId }) {
   };
   useEffect(() => {
     if (data) {
+      console.log({ data });
       setValue("fullname", data.fullname);
       setValue("gender", data.gender);
       setValue("email", data.email);
+      setValue("tutor_type", data.tutor_type);
       setValue("mobile_number", `+${data.country_code}${data.mobile_number}`);
+      if (data.role && data.tutor_type === "institute") {
+        setValue("institute_name", data.institute_name);
+        setValue("institute_contact_name", data.institute_contact_name);
+      }
     }
-  }, [data]);
+  }, [data, setValue]);
+
+  const tutorType = watch("tutor_type");
 
   if (isLoading) return <Loader />;
   if (isError) return error?.message ?? "error fetching user";
@@ -83,6 +92,34 @@ export default function UserForm({ type, handleUpdate, userId }) {
           <H4>{type === "edit" ? "Edit Tutor" : "Create Tutor"}</H4>
           <div className="space-y-2">
             <div className="grid grid-cols-2 gap-2">
+              {/* institute details */}
+              {tutorType === "institute" && (
+                <>
+                  <div>
+                    <Label className="text-sm">Institute Name</Label>
+                    <Input
+                      type="text"
+                      {...register("institute_name", {
+                        required: "required*",
+                      })}
+                      className="rounded-lg bg-gray-100"
+                      disabled
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm">Institute Contact Name</Label>
+                    <Input
+                      type="text"
+                      {...register("institute_contact_name", {
+                        required: "required*",
+                      })}
+                      className="rounded-lg bg-gray-100"
+                      disabled
+                    />
+                  </div>
+                </>
+              )}
+
               {/* fullname */}
               <div>
                 <Label className="text-sm">Fullname</Label>

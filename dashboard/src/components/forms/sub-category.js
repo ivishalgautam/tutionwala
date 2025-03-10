@@ -119,7 +119,6 @@ export function SubCategoryForm({
           },
         },
       );
-      console.log({ data });
       setImage(data[0]);
     } catch (error) {
       console.error("Error uploading image:", error);

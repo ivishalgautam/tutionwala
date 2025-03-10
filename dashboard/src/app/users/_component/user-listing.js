@@ -18,9 +18,11 @@ import {
   updateUser,
   updateUserStatus,
 } from "@/server/users";
+import AadhaarDialog from "./aadhar-dialog";
 
 export default function UserListing() {
   const [isModal, setIsModal] = useState(false);
+  const [isAadhaarModal, setIsAadhaarModal] = useState(false);
   const [userId, setUserId] = useState("");
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -85,6 +87,15 @@ export default function UserListing() {
     }
   }, [searchParamsStr, router]);
 
+  const openModal = (type) => {
+    if (type === "user") {
+      setIsModal(true);
+    }
+    if (type === "aadhaar") {
+      setIsAadhaarModal(true);
+    }
+  };
+
   if (isLoading || isFetching)
     return <DataTableSkeleton columnCount={6} rowCount={10} />;
 
@@ -93,9 +104,7 @@ export default function UserListing() {
   return (
     <div className="border-input w-full rounded-lg">
       <DataTable
-        columns={columns(handleDelete, handleUserStatus, setUserId, () =>
-          setIsModal(true),
-        )}
+        columns={columns(handleDelete, handleUserStatus, setUserId, openModal)}
         data={data.data}
         totalItems={data.total}
       />
@@ -108,6 +117,12 @@ export default function UserListing() {
           type={"edit"}
         />
       )}
+
+      <AadhaarDialog
+        isOpen={isAadhaarModal}
+        setIsOpen={setIsAadhaarModal}
+        userId={userId}
+      />
     </div>
   );
 }

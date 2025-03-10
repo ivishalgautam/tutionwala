@@ -7,7 +7,7 @@ export const endpoints = {
   },
 
   profile: "/users/me",
-  users: { getAll: "/users" },
+  users: { getAll: "/users", getAadhaar: "/users/get-aadhaar-details" },
   leads: { getAll: "/leads" },
   files: {
     upload: "/upload/files",
