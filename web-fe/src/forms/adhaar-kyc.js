@@ -9,7 +9,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,6 +27,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { formatTime } from "@/utils/time";
+import Link from "next/link";
 
 // For the Muted component from your example
 
@@ -46,7 +47,7 @@ const AadhaarForm = () => {
       name_to_match: "",
       consent: false,
       consent_text:
-        "I hereby declare my consent agreement for fetching my information via ZOOP API",
+        "I hear by declare my consent agreement for fetching my information via ZOOP API",
     },
   });
 
@@ -236,15 +237,23 @@ const AadhaarForm = () => {
                       {aadhaarForm.formState.errors.consent.message}
                     </p>
                   )}
+                  <div className="flex items-center justify-center gap-2">
+                    <Link
+                      href={"/"}
+                      className={`w-full ${buttonVariants({ variant: "outline" })}`}
+                    >
+                      I will do it later
+                    </Link>
 
-                  <Button
-                    className="w-full"
-                    disabled={requestOtpMutation.isLoading}
-                  >
-                    {requestOtpMutation.isLoading
-                      ? "Processing..."
-                      : "Request OTP"}
-                  </Button>
+                    <Button
+                      className="w-full"
+                      disabled={requestOtpMutation.isLoading}
+                    >
+                      {requestOtpMutation.isLoading
+                        ? "Processing..."
+                        : "Request OTP"}
+                    </Button>
+                  </div>
                 </form>
               </FormProvider>
             </CardContent>

@@ -278,10 +278,6 @@ export default function CompleteProfileStudent({
     }
   };
 
-  // const fileMetaData = Array.from(data.file).map((file) => ({
-  //   type: file.type,
-  //   size: file.size,
-  // }));
   const deleteFile = async (filePath, type) => {
     const key = filePath.split(".com/")[1];
     try {
@@ -344,14 +340,6 @@ export default function CompleteProfileStudent({
       setMedia((prev) => ({ ...prev, profile_picture: profile }));
     }
   }, [setValue]);
-
-  // useEffect(() => {
-  //   if (data) {
-  //     if (data.curr_step === 3) {
-  //       router.replace("/aadhaar-kyc");
-  //     }
-  //   }
-  // }, [data, router]);
 
   if (categoryLoading) return <Loading />;
   return (

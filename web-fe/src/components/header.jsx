@@ -9,13 +9,6 @@ import {
   NavbarList,
 } from "keep-react";
 
-const CategoryMenu = dynamic(
-  () => import("./category-menu").then((data) => data.CategoryMenu),
-  {
-    loading: () => <CategoryMenuLoader />,
-  },
-);
-
 import Link from "next/link";
 import { useContext, useState } from "react";
 import { MainContext } from "@/store/context";
@@ -23,8 +16,6 @@ import { Button, buttonVariants } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { LucideLogOut, X } from "lucide-react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
-import CategoryMenuLoader from "./loaders/category-menu";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -65,66 +56,54 @@ export default function NavbarComponent() {
             </div>
           </NavbarBrand>
 
-          {user?.role !== "tutor" && (
-            <NavbarList>
-              <NavbarItem active={pathname === "/"}>
-                <Link href={"/"}>Home</Link>
-              </NavbarItem>
+          {user?.role !== "tutor" && <Navigation pathname={pathname} />}
 
-              <NavbarItem active={pathname === "/tutors"}>
-                <Link href={"/tutors"}>Find Tutors</Link>
-              </NavbarItem>
-
-              <NavbarItem active={pathname === "/about"}>
-                <Link href={"/about"}>About Us</Link>
-              </NavbarItem>
-
-              <NavbarItem active={pathname === "/contact"}>
-                <Link href={"/contact"}>Contact Us</Link>
-              </NavbarItem>
-            </NavbarList>
-          )}
-          {isUserLoading ? (
-            <Loader />
-          ) : user ? (
-            <NavbarList>
-              {/* <Notification /> */}
-              <Link
-                className={buttonVariants({ variant: "default" })}
-                href={"/dashboard/enquiries"}
-              >
-                Dashboard
-              </Link>
-              <Button
-                type="button"
-                onClick={() => {
-                  localStorage.clear();
-                  setUser("");
-                  router.replace("/login");
-                }}
-                variant="outline"
-              >
-                <LucideLogOut size={15} />
-                &nbsp;Logout
-              </Button>
-            </NavbarList>
-          ) : (
-            <NavbarList>
-              <NavbarItem>
-                <Link href={"/login"}>Login</Link>
-              </NavbarItem>
-              <NavbarItem active={true} onClick={() => setIsModal(true)}>
-                Signup
-              </NavbarItem>
-            </NavbarList>
-          )}
-          <NavbarCollapseBtn />
+          <div className="mr-2 flex items-center justify-end gap-3">
+            {isUserLoading ? (
+              <Loader />
+            ) : user ? (
+              <>
+                <Notification />
+                <NavbarList className="">
+                  <Link
+                    className={buttonVariants({ variant: "default" })}
+                    href={"/dashboard/enquiries"}
+                  >
+                    Dashboard
+                  </Link>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      localStorage.clear();
+                      setUser("");
+                      router.replace("/login");
+                    }}
+                    variant="outline"
+                  >
+                    <LucideLogOut size={15} />
+                    &nbsp;Logout
+                  </Button>
+                </NavbarList>
+              </>
+            ) : (
+              <NavbarList>
+                <NavbarItem>
+                  <Link href={"/login"}>Login</Link>
+                </NavbarItem>
+                <NavbarItem active={true} onClick={() => setIsModal(true)}>
+                  Signup
+                </NavbarItem>
+              </NavbarList>
+            )}
+            <NavbarCollapseBtn />
+          </div>
 
           <NavbarCollapse className="overflow-auto">
             {isUserLoading ? (
               <Loader />
             ) : user ? (
               <>
+                {user?.role !== "tutor" && <Navigation pathname={pathname} />}
                 <Link
                   className={buttonVariants({ variant: "default" })}
                   href={"/dashboard/enquiries"}
@@ -146,25 +125,7 @@ export default function NavbarComponent() {
               </>
             ) : (
               <>
-                {user?.role !== "tutor" && (
-                  <>
-                    <NavbarItem active={pathname === "/"}>
-                      <Link href={"/"}>Home</Link>
-                    </NavbarItem>
-
-                    <NavbarItem active={pathname === "/tutors"}>
-                      <Link href={"/tutors"}>Tutors</Link>
-                    </NavbarItem>
-
-                    <NavbarItem active={pathname === "/about"}>
-                      <Link href={"/about"}>About Us</Link>
-                    </NavbarItem>
-
-                    <NavbarItem active={pathname === "/contact"}>
-                      <Link href={"/contact"}>Contact Us</Link>
-                    </NavbarItem>
-                  </>
-                )}
+                {user?.role !== "tutor" && <Navigation pathname={pathname} />}
                 <NavbarItem>
                   <Link href={"/login"}>Login</Link>
                 </NavbarItem>
@@ -208,6 +169,28 @@ export function Loader() {
     <NavbarList className="flex">
       <Button className="pointer-events-none w-24 animate-pulse bg-gray-200"></Button>
       <Button className="pointer-events-none w-24 animate-pulse bg-gray-200"></Button>
+    </NavbarList>
+  );
+}
+
+function Navigation({ pathname }) {
+  return (
+    <NavbarList>
+      <NavbarItem active={pathname === "/"}>
+        <Link href={"/"}>Home</Link>
+      </NavbarItem>
+
+      <NavbarItem active={pathname === "/tutors"}>
+        <Link href={"/tutors"}>Find Tutors</Link>
+      </NavbarItem>
+
+      <NavbarItem active={pathname === "/about"}>
+        <Link href={"/about"}>About Us</Link>
+      </NavbarItem>
+
+      <NavbarItem active={pathname === "/contact"}>
+        <Link href={"/contact"}>Contact Us</Link>
+      </NavbarItem>
     </NavbarList>
   );
 }

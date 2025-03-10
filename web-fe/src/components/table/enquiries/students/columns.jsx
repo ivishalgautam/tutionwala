@@ -20,7 +20,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const columns = (handleDelete, handleUpdate) => [
+export const columns = (
+  handleDelete,
+  handleUpdate,
+  setStudentId,
+  setIsModal,
+) => [
   {
     accessorKey: "fullname",
     header: ({ column }) => {
@@ -119,8 +124,13 @@ export const columns = (handleDelete, handleUpdate) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Link href={`/follow-ups/${studentId}`}>Follow ups</Link>
+            <DropdownMenuItem
+              onClick={() => {
+                setStudentId(studentId);
+                setIsModal(true);
+              }}
+            >
+              Add follow up
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>

@@ -328,8 +328,7 @@ export default function CompleteProfileTutor({
   useEffect(() => {
     if (data) {
       setCurrStep(data.curr_step);
-      if (data.curr_step === 2) {
-        unregister("languages");
+      if (data.curr_step === 2 && data.is_profile_completed) {
         router.replace("/dashboard/enquiries");
       }
     }

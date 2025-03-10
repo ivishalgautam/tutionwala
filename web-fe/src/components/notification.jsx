@@ -1,9 +1,7 @@
 "use client";
 import { endpoints } from "@/utils/endpoints";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useRef, useState } from "react";
-import ReconnectingWebSocket from "reconnecting-websocket";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Bell } from "lucide-react";
 import {
@@ -13,20 +11,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Blockquote, Muted } from "./ui/typography";
+import { Muted } from "./ui/typography";
 import Link from "next/link";
 import moment from "moment";
 import http from "@/utils/http";
 import Loading from "./loading";
+import { Skeleton } from "./ui/skeleton";
 
 export default function Notification() {
-  const [notificationsCount, setNotificationsCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const socketRef = useRef();
-  const [token] = useLocalStorage("token");
-  let wsUrl = `${process.env.NEXT_PUBLIC_SOCKET_URL}${endpoints.notifications.getAll}?at=${token}`;
-
-  const queryClient = useQueryClient();
   const {
     data: notifications,
     isLoading,
@@ -39,34 +32,10 @@ export default function Notification() {
       );
       return data;
     },
-    queryKey: ["notifications", isOpen],
-    enabled: isOpen,
+    queryKey: ["notifications"],
   });
 
-  useEffect(() => {
-    socketRef.current = new ReconnectingWebSocket(wsUrl);
-
-    socketRef.current.addEventListener("open", (event) => {
-      console.log("WebSocket connected!");
-    });
-
-    socketRef.current.addEventListener("message", (event) => {
-      setNotificationsCount((prev) => prev + 1);
-
-      //   const parsedData = JSON.parse(event.data);
-      //   queryClient.setQueryData([`notifications`], (oldChats = []) => {
-      //     return [...oldChats, parsedData];
-      //   });
-    });
-
-    socketRef.current.addEventListener("close", () => {
-      console.log("Disconnected");
-    });
-
-    return () => {
-      socketRef.current.close();
-    };
-  }, [token, wsUrl]);
+  if (isLoading) return <Skeleton className={"size-10"} />;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -77,9 +46,9 @@ export default function Notification() {
           className="relative focus-visible:outline-0 focus-visible:ring-0"
         >
           <Bell className="h-5 w-5" />
-          {notificationsCount > 0 && (
+          {notifications.length > 0 && (
             <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-              {notificationsCount}
+              {notifications.length}
             </span>
           )}
         </Button>
@@ -90,10 +59,8 @@ export default function Notification() {
             <CardTitle className="text-base">Notifications</CardTitle>
           </CardHeader>
           <CardContent className="max-h-[300px] overflow-auto px-0 py-0">
-            {isLoading ? (
-              <Loading />
-            ) : isError ? (
-              (error?.message ?? "Error")
+            {isError ? (
+              (error?.message ?? "Error loading notifications.")
             ) : notifications?.length > 0 ? (
               <div>
                 {notifications?.map((notification) => (
@@ -107,7 +74,9 @@ export default function Notification() {
                       href={
                         notification.type === "enquiry"
                           ? `/dashboard/enquiries/${notification.enquiry_id}/chat`
-                          : "#"
+                          : notification.type === "chat"
+                            ? `/dashboard/tutor-student-chats/${notification.chat_id}`
+                            : "#"
                       }
                       className="w-full"
                     >

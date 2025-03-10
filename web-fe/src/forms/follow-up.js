@@ -74,114 +74,112 @@ export default function CreateFollowUpForm({
         setValue("followupTime", followUpTime);
       })();
     }
-  }, [followUpId, type]);
+  }, [followUpId, type, setValue]);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-4">
-          <H4>{type === "create" ? "Create" : "Update"}</H4>
-          <div className="space-y-2">
-            {/* title */}
-            <div>
-              <Label>Title</Label>
-              <Input
-                {...register("title", {
-                  required: "required*",
-                })}
-                placeholder="Enter title"
-              />
-              {errors.title && (
-                <span className="text-rose-500">{errors.title.message}</span>
-              )}
-            </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+      <div className="space-y-4">
+        <H4>{type === "create" ? "Create" : "Update"}</H4>
+        <div className="space-y-2">
+          {/* title */}
+          <div>
+            <Label>Title</Label>
+            <Input
+              {...register("title", {
+                required: "required*",
+              })}
+              placeholder="Enter title"
+            />
+            {errors.title && (
+              <span className="text-rose-500">{errors.title.message}</span>
+            )}
+          </div>
 
-            {/* content */}
-            <div>
-              <Label>Content</Label>
-              <Textarea
-                {...register("content", {
-                  required: "required*",
-                })}
-                placeholder="Enter content"
-              />
-              {errors.content && (
-                <span className="text-rose-500">{errors.content.message}</span>
-              )}
-            </div>
+          {/* content */}
+          <div>
+            <Label>Content</Label>
+            <Textarea
+              {...register("content", {
+                required: "required*",
+              })}
+              placeholder="Enter content"
+            />
+            {errors.content && (
+              <span className="text-rose-500">{errors.content.message}</span>
+            )}
+          </div>
 
-            {/* time */}
-            <div>
-              <Label>Follow up date</Label>
-              <div className="flex items-center justify-start gap-2">
-                <div>
-                  <Controller
-                    control={control}
-                    name="followupDate"
-                    rules={{ required: "required*" }}
-                    render={({ field }) => {
-                      return (
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-[280px] justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              initialFocus
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              //   disabled={(date) =>
-                              //     date > new Date() || date < new Date("1900-01-01")
-                              //   }
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      );
-                    }}
-                  />
-                  <br />
-                  {errors.followupDate && (
-                    <span className="text-red-600">
-                      {errors.followupDate.message}
-                    </span>
-                  )}
-                </div>
-                <div>
-                  <Input
-                    type="time"
-                    className="w-[100px]"
-                    {...register("followupTime", {
-                      required: "required*",
-                    })}
-                  />
-                  {errors.followupTime && (
-                    <span className="text-red-600">
-                      {errors.followupTime.message}
-                    </span>
-                  )}
-                </div>
+          {/* time */}
+          <div>
+            <Label>Follow up date</Label>
+            <div className="flex items-center justify-start gap-2">
+              <div>
+                <Controller
+                  control={control}
+                  name="followupDate"
+                  rules={{ required: "required*" }}
+                  render={({ field }) => {
+                    return (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[280px] justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            initialFocus
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            //   disabled={(date) =>
+                            //     date > new Date() || date < new Date("1900-01-01")
+                            //   }
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    );
+                  }}
+                />
+                <br />
+                {errors.followupDate && (
+                  <span className="text-red-600">
+                    {errors.followupDate.message}
+                  </span>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="time"
+                  className="w-[100px]"
+                  {...register("followupTime", {
+                    required: "required*",
+                  })}
+                />
+                {errors.followupTime && (
+                  <span className="text-red-600">
+                    {errors.followupTime.message}
+                  </span>
+                )}
               </div>
             </div>
           </div>
-          <div className="text-end">
-            <Button>Submit</Button>
-          </div>
         </div>
-      </form>
-    </div>
+        <div className="text-end">
+          <Button>Submit</Button>
+        </div>
+      </div>
+    </form>
   );
 }

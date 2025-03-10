@@ -19,6 +19,7 @@ import { useSearchParams } from "next/navigation";
 import FollowUps from "@/components/tutor-follow-ups";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { CreateFollowUpDialog } from "./_components/create-followup-dialog";
 
 async function fetchEnquiries() {
   const { data } = await http().get(endpoints.enquiries.getAll);
@@ -202,22 +203,38 @@ export const TutorEnquiries = ({
 };
 
 export const StudentEnquiries = ({ enquiries, handleDelete, handleUpdate }) => {
+  const [studentId, setStudentId] = useState(null);
+  const [isModal, setIsModal] = useState(false);
+
   return (
-    <StudentsEnquiryDataTable
-      columns={studentColumns(handleDelete, handleUpdate)}
-      data={enquiries?.map(
-        ({ id, status, student, created_at, sub_category_name }) => ({
-          id,
-          sub_category_name,
-          created_at,
-          status,
-          fullname: student[0].fullname,
-          userId: student[0].user_id,
-          studentId: student[0].student_id,
-          email: student[0].email,
-          mobile_number: student[0].mobile_number,
-        }),
-      )}
-    />
+    <>
+      <StudentsEnquiryDataTable
+        columns={studentColumns(
+          handleDelete,
+          handleUpdate,
+          setStudentId,
+          setIsModal,
+        )}
+        data={enquiries?.map(
+          ({ id, status, student, created_at, sub_category_name }) => ({
+            id,
+            sub_category_name,
+            created_at,
+            status,
+            fullname: student[0].fullname,
+            userId: student[0].user_id,
+            studentId: student[0].student_id,
+            email: student[0].email,
+            mobile_number: student[0].mobile_number,
+          }),
+        )}
+      />
+
+      <CreateFollowUpDialog
+        setIsModal={setIsModal}
+        studentId={studentId}
+        isModal={isModal}
+      />
+    </>
   );
 };

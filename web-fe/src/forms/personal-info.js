@@ -59,9 +59,10 @@ export default function PersonalInfoForm({ user, setUser }) {
     defaultValues: {
       id: user?.id,
       fullname: user?.fullname ?? "",
+      father_name: user?.father_name ?? "",
       email: user?.email ?? "",
       profile_picture: user?.profile_picture ?? "",
-      dob: user?.dob ?? "",
+      dob: user?.dob ?? null,
     },
   });
 
@@ -255,6 +256,7 @@ export default function PersonalInfoForm({ user, setUser }) {
               <span className="text-red-500">{errors.fullname.message}</span>
             )}
           </div>
+
           <div>
             <Label>Email</Label>
             <Input
@@ -267,16 +269,25 @@ export default function PersonalInfoForm({ user, setUser }) {
               <span className="text-red-500">{errors.email.message}</span>
             )}
           </div>
+
+          <div>
+            <Label>Father name</Label>
+            <Input
+              type="text"
+              {...register("father_name", { required: "required*" })}
+              placeholder={"Enter father name"}
+            />
+            {errors.father_name && (
+              <span className="text-red-500">{errors.father_name.message}</span>
+            )}
+          </div>
           <div>
             <Label>DOB</Label>
             <Input
               type="date"
-              {...register("dob", { required: "required*" })}
+              {...register("dob")}
               placeholder={"Select DOB"}
             />
-            {errors.dob && (
-              <span className="text-red-500">{errors.dob.message}</span>
-            )}
           </div>
         </div>
         <div className="flex items-center justify-between">
