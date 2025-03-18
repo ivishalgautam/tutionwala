@@ -42,10 +42,7 @@ export const columns = (
       const role = row.original.role;
       const fullname = row.getValue("fullname");
       return role === "tutor" ? (
-        <a
-          href={`${process.env.NEXT_PUBLIC_WEBSITE_DOMAIN}/tutors/${id}`}
-          target="_blank"
-        >
+        <a href={`https://www.tutionwala.com/tutors/${id}`} target="_blank">
           {fullname}
         </a>
       ) : (
