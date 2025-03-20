@@ -89,7 +89,13 @@ export default function UserForm({ type, handleUpdate, userId }) {
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex items-center justify-start">
         <div className="w-full space-y-6">
-          <H4>{type === "edit" ? "Edit Tutor" : "Create Tutor"}</H4>
+          <H4>
+            {type === "edit"
+              ? data?.role === "tutor"
+                ? "Edit Tutor"
+                : "Edit Student"
+              : ""}
+          </H4>
           <div className="space-y-2">
             <div className="grid grid-cols-2 gap-2">
               {/* institute details */}

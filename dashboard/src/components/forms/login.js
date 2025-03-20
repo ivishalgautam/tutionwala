@@ -7,6 +7,9 @@ import { endpoints } from "@/utils/endpoints";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import { LoaderCircle } from "lucide-react";
+import Image from "next/image";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -44,43 +47,45 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="bg-gray-1 dark:bg-dark lg:py-[120px]">
-      <div className="container mx-auto">
-        <div className="-mx-4 flex flex-wrap">
-          <div className="w-full px-4">
-            <div className="dark:bg-dark-2 relative mx-auto max-w-[525px] overflow-hidden rounded-lg bg-white px-10 py-16 text-center shadow sm:px-12 md:px-[60px]">
-              <div className="mb-10 text-center md:mb-16">
-                <p
-                  href="/#"
-                  className="mx-auto inline-block text-2xl font-bold"
-                >
-                  Login
-                </p>
-              </div>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <InputBox
-                  type="text"
-                  name="username"
-                  placeholder="Enter username"
-                  register={register}
-                  errors={errors}
-                />
-                <InputBox
-                  type="password"
-                  name="password"
-                  placeholder="Enter password"
-                  register={register}
-                  errors={errors}
-                />
-                <div className="mb-10">
-                  <input
-                    type="submit"
-                    value="Sign In"
-                    className="w-full cursor-pointer rounded-md border border-primary bg-primary px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90"
-                  />
-                </div>
-              </form>
-              {/* <a
+    <div className="w-full px-4">
+      <div className="mx-auto w-full max-w-md space-y-8">
+        <Image
+          src={"/images/logo.png"}
+          width={150}
+          height={150}
+          alt="Tutionwala"
+          className="mx-auto rounded-lg"
+        />
+
+        <div className="space-y-2 text-center">
+          <h1 className="text-3xl font-bold">Welcome back</h1>
+          <p className="text-muted-foreground">
+            Enter your credentials to sign in to your account
+          </p>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputBox
+            type="text"
+            name="username"
+            placeholder="Enter username"
+            register={register}
+            errors={errors}
+          />
+          <InputBox
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            register={register}
+            errors={errors}
+          />
+          <div className="mb-10">
+            <Button disable={loading} variant="primary" className="w-full">
+              {loading && <LoaderCircle className="mr-1 size-4 animate-spin" />}{" "}
+              Submit
+            </Button>
+          </div>
+        </form>
+        {/* <a
                 href="/#"
                 className="text-dark mb-2 inline-block text-base hover:text-primary hover:underline dark:text-white"
               >
@@ -92,9 +97,6 @@ const LoginForm = () => {
                   Sign Up
                 </a>
               </p> */}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -133,7 +133,7 @@ export const columns = (
                 openModal("user");
               }}
             >
-              Edit
+              View
             </DropdownMenuItem>
             {is_aadhaar_verified && (
               <>

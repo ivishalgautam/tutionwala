@@ -29,6 +29,7 @@ export default function UserTableActions() {
         options={[
           { label: "Student", value: "student" },
           { label: "Tutor", value: "tutor" },
+          { label: "Institute", value: "institute" },
         ]}
         setFilterValue={setRoleFilter}
         filterValue={roleFilter}
