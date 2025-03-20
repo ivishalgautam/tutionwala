@@ -36,7 +36,7 @@ export default function EmailVerificationForm() {
   const [step, setStep] = useState("email");
   const [submittedEmail, setSubmittedEmail] = useState("");
 
-  const [minute] = useState(1.5);
+  const [minute] = useState(1);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
   const { user } = useContext(MainContext);

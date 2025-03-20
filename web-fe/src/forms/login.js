@@ -6,7 +6,6 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "../components/ui/input";
 import { Button, buttonVariants } from "../components/ui/button";
 
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
@@ -20,7 +19,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
-import Image from "next/image";
 import { X } from "lucide-react";
 import SignUpAs from "@/components/sign-up-as";
 
