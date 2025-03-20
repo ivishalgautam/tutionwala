@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import moment from "moment";
 import Link from "next/link";
 import {
@@ -19,6 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Chat } from "phosphor-react";
+import { cn } from "@/lib/utils";
 
 export const columns = (
   handleDelete,
@@ -39,6 +42,15 @@ export const columns = (
         </Button>
       );
     },
+    // cell: ({ row }) => {
+    //   const fullname = row.getValue("fullname");
+    //   const count = row.original.unread_chat_count;
+    //   return (
+    //     <div className="space-x-1">
+    //       <span>{fullname}</span> {count > 1 && <Badge>{count}</Badge>}
+    //     </div>
+    //   );
+    // },
   },
   {
     accessorKey: "sub_category_name",
@@ -108,6 +120,32 @@ export const columns = (
     },
   },
   {
+    id: "chat",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const count = row.original.unread_chat_count;
+      const name = row.original.fullname;
+
+      return (
+        <Link
+          href={`/dashboard/enquiries/${id}/chat?name=${name.split(" ").join("+")}`}
+          className={cn(buttonVariants({}), "h-9")}
+        >
+          <Chat className="mr-1 size-4" /> Chat{" "}
+          {count > 0 && (
+            <Badge
+              className={"ml-1 bg-white text-black hover:bg-white/80"}
+              variant={"secondary"}
+            >
+              {count}
+            </Badge>
+          )}
+        </Link>
+      );
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -131,10 +169,6 @@ export const columns = (
               }}
             >
               Add follow up
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href={`/dashboard/enquiries/${id}/chat`}>Chat</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete(id)}>

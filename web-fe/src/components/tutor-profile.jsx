@@ -47,7 +47,7 @@ export default function TutorProfile({
   total_reviews,
   ...teacher
 }) {
-  // console.log(courses);
+  console.log(courses);
   const [fullAddr, setFullAddr] = useState("");
   return (
     <>
@@ -93,7 +93,13 @@ export default function TutorProfile({
                 </Badge>
               </div>
               <div className="mt-2">
-                <DialogEnquiryForm tutorId={tutorId} />
+                <DialogEnquiryForm
+                  tutorId={tutorId}
+                  courses={courses.map(({ name: label, slug: value }) => ({
+                    label,
+                    value,
+                  }))}
+                />
               </div>
             </div>
           </div>

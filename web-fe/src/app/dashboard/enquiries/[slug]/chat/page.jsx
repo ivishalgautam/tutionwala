@@ -2,7 +2,7 @@
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {
   Card,
@@ -17,8 +17,13 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import Loading from "@/components/loading";
 import { useForm } from "react-hook-form";
 import { Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ChatBubbleIcon } from "@radix-ui/react-icons";
+import { useSearchParams } from "next/navigation";
 
 export default function ChatPage({ params: { slug: enquiryId } }) {
+  const [name, setName] = useState("");
+  const searchParams = useSearchParams();
   const socketRef = useRef();
   const chatContainerRef = useRef(null);
   const [token] = useLocalStorage("token");
@@ -30,7 +35,8 @@ export default function ChatPage({ params: { slug: enquiryId } }) {
     const { data } = await http().get(
       `${endpoints.enquiries.getAll}/${enquiryId}/chats`,
     );
-    return data;
+    setName(data?.name ?? "");
+    return data.chats;
   };
 
   const { data: chats, isLoading: isChatsLoading } = useQuery({
@@ -95,6 +101,10 @@ export default function ChatPage({ params: { slug: enquiryId } }) {
 
   return (
     <div className="space-y-6">
+      <Badge variant={"outline"} className={"p-4 py-2"}>
+        <ChatBubbleIcon className="size-5" />{" "}
+        <span className="ml-2">{name || searchParams.get("name")}</span>
+      </Badge>
       <div className="flex items-center justify-center bg-gray-100">
         <Card className="w-full ">
           <CardHeader>

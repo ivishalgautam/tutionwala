@@ -27,8 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { H3, H5, H6 } from "@/components/ui/typography";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { H3, H5, H6, Muted, Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
@@ -42,15 +41,13 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Progress } from "../components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
-import { getCurrentCoords } from "@/lib/get-current-coords";
 import { Checkbox } from "../components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
-import AadhaarForm from "./adhaar-kyc";
 
-export const MAX_CHARACTERS = 250;
+export const MAX_CHARACTERS = 1000;
 export const validateTextLimit = (value) => {
   return (
     value.length <= MAX_CHARACTERS ||
@@ -123,6 +120,7 @@ export default function CompleteProfileTutor({
   const selectedOnlineTypes = watch("selectedOnlineTypes");
   const selectedOfflineTypes = watch("selectedOfflineTypes");
   const selectedOfflineLocations = watch("selectedOfflineLocations");
+  const isOffline = selectedModes.includes("offline");
 
   const [media, setMedia] = useState({
     profile: "",
@@ -156,6 +154,8 @@ export default function CompleteProfileTutor({
     queryFn: () => fetchSubCategory(id),
     enabled: !!id,
   });
+
+  console.log({ data });
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
@@ -227,7 +227,7 @@ export default function CompleteProfileTutor({
             languages: formData.languages,
             degree: formData.degree,
             class_conduct_mode: formData.class_conduct_mode,
-            enquiry_radius: formData.enquiry_radius,
+            enquiry_radius: formData.enquiry_radius || 0,
             // coords: coords,
             is_demo_class: formData.is_demo_class,
             preference: formData.preference,
@@ -827,31 +827,33 @@ export default function CompleteProfileTutor({
                 </div>
 
                 {/* radius */}
-                <div className="relative">
-                  <Label>Enquiry radius under</Label>
-                  <Input
-                    type="number"
-                    placeholder="Enter radius in km"
-                    {...register("enquiry_radius", {
-                      required: "required*",
-                      valueAsNumber: true,
-                      validate: (value) => {
-                        if (value > 25) {
-                          return "Radius should be under 25 km";
-                        }
-                      },
-                    })}
-                  />
-                  <span className="absolute right-0 text-xs text-primary">
-                    Max 25 km.
-                  </span>
-
-                  {errors.enquiry_radius && (
-                    <span className="text-sm text-red-500">
-                      {errors.enquiry_radius.message}
+                {isOffline && (
+                  <div className="relative">
+                    <Label>Enquiry radius under</Label>
+                    <Input
+                      type="number"
+                      placeholder="Enter radius in km"
+                      {...register("enquiry_radius", {
+                        required: "required*",
+                        valueAsNumber: true,
+                        validate: (value) => {
+                          if (value > 25) {
+                            return "Radius should be under 25 km";
+                          }
+                        },
+                      })}
+                    />
+                    <span className="absolute right-0 text-xs text-primary">
+                      Max 25 km.
                     </span>
-                  )}
-                </div>
+
+                    {errors.enquiry_radius && (
+                      <span className="text-sm text-red-500">
+                        {errors.enquiry_radius.message}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 {/* preference */}
                 <div className="space-y-1">
@@ -988,14 +990,14 @@ export default function CompleteProfileTutor({
 
                 {/* board */}
                 {data?.is_boards && (
-                  <div>
+                  <div className="space-y-2">
                     <div className="text-sm font-medium">
                       Which {data?.name} boards do you teach?
                     </div>
-                    <div className="space-y-1">
+                    <div className="flex items-center justify-start gap-2">
                       {boardNames.map((option) => (
                         <div key={option} className="text-sm text-gray-700">
-                          <Label className="flex items-center justify-between">
+                          <Label className="flex cursor-pointer items-center justify-between gap-2 rounded border p-2 hover:bg-gray-200">
                             <span className="font-normal uppercase">
                               {option}
                             </span>
@@ -1005,7 +1007,7 @@ export default function CompleteProfileTutor({
                               {...register("selected_boards", {
                                 required: "required*",
                               })}
-                              className="size-6 accent-primary"
+                              className="size-5 accent-primary"
                             />
                           </Label>
                         </div>
@@ -1038,14 +1040,14 @@ export default function CompleteProfileTutor({
                                   key={subject}
                                   className="text-sm text-gray-700"
                                 >
-                                  <Label className="flex items-center justify-between">
+                                  <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                                     <span className="capitalize">
                                       {subject}
                                     </span>
                                     <input
                                       type="checkbox"
                                       value={subject}
-                                      className="size-6 accent-primary"
+                                      className="size-5 accent-primary"
                                       {...register(
                                         `selected.${board}.subjects`,
                                         {
@@ -1071,7 +1073,7 @@ export default function CompleteProfileTutor({
                 {/* custom fields */}
                 <div className="space-y-4 divide-y *:pt-4">
                   {data?.fields.map((item, ind) => (
-                    <div key={ind} className="mt-3 space-y-4">
+                    <div key={ind} className="mt-3 space-y-2">
                       <div className="text-sm font-medium capitalize">
                         {item.questionForTutor}
                       </div>
@@ -1083,7 +1085,7 @@ export default function CompleteProfileTutor({
                                 key={option}
                                 className="text-sm text-gray-700"
                               >
-                                <Label className="flex items-center justify-between">
+                                <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                                   <span className="font-normal capitalize">
                                     {option}
                                   </span>
@@ -1094,7 +1096,7 @@ export default function CompleteProfileTutor({
                                       { required: "required*" },
                                     )}
                                     value={option}
-                                    className="size-6 accent-primary"
+                                    className="size-5 accent-primary"
                                     onClick={() =>
                                       setFields(
                                         item.fieldName,
@@ -1123,7 +1125,7 @@ export default function CompleteProfileTutor({
                                 key={option}
                                 className="text-sm text-gray-700"
                               >
-                                <Label className="flex items-center justify-between">
+                                <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                                   <span className="font-normal capitalize">
                                     {option}
                                   </span>
@@ -1134,7 +1136,7 @@ export default function CompleteProfileTutor({
                                       { required: "required*" },
                                     )}
                                     value={option}
-                                    className="size-6 accent-primary"
+                                    className="size-5 accent-primary"
                                     onClick={() =>
                                       setFields(item.fieldName, option, "radio")
                                     }
@@ -1228,7 +1230,7 @@ export default function CompleteProfileTutor({
                               <Input
                                 type="radio"
                                 value={option}
-                                className="size-6 accent-primary"
+                                className="size-5 accent-primary"
                               />
                             </Label>
                           </div>
@@ -1333,7 +1335,12 @@ export default function CompleteProfileTutor({
 
                 {/* intro video */}
                 <div className="flex-1 space-y-4">
-                  <H5 className={"text-center"}>Intro Video</H5>
+                  <H5 className={"text-center"}>
+                    Intro Video{" "}
+                    <Small className={"font-normal text-gray-500"}>
+                      (optional)
+                    </Small>
+                  </H5>
                   {!media.video && (
                     <div className="flex flex-col items-center justify-center">
                       <Input

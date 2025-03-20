@@ -27,7 +27,7 @@ function Context({ children }) {
           setIsUserLoading(false);
         });
     }
-    if (!["/login", "/signup/student", "/signup/tutor"].includes(pathname)) {
+    if (!["/login"].includes(pathname)) {
       fetchData();
     } else {
       setIsUserLoading(false);

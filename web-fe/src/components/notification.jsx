@@ -73,10 +73,12 @@ export default function Notification() {
                     <Link
                       href={
                         notification.type === "enquiry"
-                          ? `/dashboard/enquiries/${notification.enquiry_id}/chat`
+                          ? `/dashboard/enquiries`
                           : notification.type === "chat"
                             ? `/dashboard/tutor-student-chats/${notification.chat_id}`
-                            : "#"
+                            : notification.type === "enquiry_chat"
+                              ? `/dashboard/enquiries/${notification.enquiry_id}/chat`
+                              : "#"
                       }
                       className="w-full"
                     >

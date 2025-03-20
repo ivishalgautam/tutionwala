@@ -65,7 +65,7 @@ export default function SignUpTutorForm() {
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const debounceTimeoutRef = useRef(null);
   const [remainingTime, setRemainingTime] = useState(0);
-  const [minute] = useState(1.5);
+  const [minute] = useState(1);
   const router = useRouter();
   const {
     register,
@@ -129,7 +129,7 @@ export default function SignUpTutorForm() {
   }
   //
   async function handleSendOtp() {
-    if (!(await trigger())) {
+    if (!isOtpSent && !(await trigger())) {
       return;
     }
     try {
@@ -293,7 +293,7 @@ export default function SignUpTutorForm() {
               <div className="grid grid-cols-2 gap-2">
                 {/* fullname */}
                 <div>
-                  <Label className="text-sm">Fullname as per aadhaar</Label>
+                  <Label className="text-sm">Full name as per Aadhaar</Label>
                   <Input
                     type="text"
                     {...register("fullname", {
@@ -393,7 +393,9 @@ export default function SignUpTutorForm() {
                   render={({ field }) => (
                     <ReactSelect
                       loadOptions={handleInputChange}
-                      placeholder={"Search..."}
+                      placeholder={
+                        "What do you want to teach e.g: Maths, Class 12th"
+                      }
                       isLoading={isFetching && isLoading}
                       onChange={field.onChange}
                       isMulti={false}

@@ -27,6 +27,7 @@ const tabs = [
   { value: "enquiries", label: "Enquiries", roles: ["student", "tutor"] },
   { value: "courses", label: "Courses", roles: ["tutor"] },
   { value: "profile", label: "Profile", roles: ["tutor", "student"] },
+  { value: "chats", label: "Chats", roles: ["tutor", "student"] },
 ];
 
 export default function DashboardLayout({ children }) {

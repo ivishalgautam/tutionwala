@@ -20,21 +20,30 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Apple, CreditCard } from "lucide-react";
 import { LiaPaypal } from "react-icons/lia";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 const enquiry = async (id, searchParams = "") => {
   return await http().post(
     `${endpoints.enquiries.getAll}/${id}?${searchParams}`,
   );
 };
 
-export default function DialogEnquiryForm({ tutorId }) {
+export default function DialogEnquiryForm({ tutorId, courses = [] }) {
   const [mode, setMode] = useState(null);
+  const [category, setCategory] = useState(null);
   const [open, setOpen] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [phone, setPhone] = useState("");
   const [isModal, setIsModal] = useState(false);
   const { user } = useContext(MainContext);
   const { mutate, isLoading } = useMutation({
-    mutationFn: ({ id }) => enquiry(id, `mode=${mode}`),
+    mutationFn: ({ id }) => enquiry(id, `mode=${mode}&category=${category}`),
     onSuccess: (data) => {
       toast.success(data.message ?? "Enquiry submit.");
     },
@@ -59,6 +68,11 @@ export default function DialogEnquiryForm({ tutorId }) {
     if (!mode) {
       setOpen(true);
       return open ? toast.warning("Select a mode!") : null;
+    }
+
+    if (!category) {
+      setOpen(true);
+      return open ? toast.warning("Select a category!") : null;
     }
 
     mutate({ id: tutorId });
@@ -130,6 +144,22 @@ export default function DialogEnquiryForm({ tutorId }) {
                 </label>
               </div>
             </RadioGroup>
+
+            <div>
+              <Label>Course</Label>
+              <Select onValueChange={setCategory}>
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Select Course" />
+                </SelectTrigger>
+                <SelectContent>
+                  {courses?.map(({ value, label }) => (
+                    <SelectItem value={value} key={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             <Button disabled={isLoading} onClick={handleSubmit}>
               {isLoading ? "Sending..." : "Enquire now"}

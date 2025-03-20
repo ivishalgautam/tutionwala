@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/popover";
 
 // third party imports
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -37,27 +37,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 // icons
-import {
-  CheckIcon,
-  MoveLeft,
-  MoveRight,
-  Plus,
-  PlusIcon,
-  Trash,
-} from "lucide-react";
+import { CheckIcon, MoveLeft, MoveRight, Plus, Trash } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { getCurrentCoords } from "@/lib/get-current-coords";
-import { FilterAddress } from "../components/tutors-with-filter";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Progress } from "../components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const limit = 6;
 
@@ -341,6 +326,10 @@ export default function CompleteProfileStudent({
     }
   }, [setValue]);
 
+  const sortedLanguages = languages.sort((a, b) =>
+    a.label.localeCompare(b.label),
+  );
+
   if (categoryLoading) return <Loading />;
   return (
     <div className={"space-y-4 p-8"}>
@@ -368,40 +357,47 @@ export default function CompleteProfileStudent({
                             {errors?.languages.message}
                           </span>
                         )}
-                        {languages.map((language, ind) => (
-                          <div
-                            key={ind}
-                            className="flex items-center justify-between"
-                          >
-                            <Label className="capitalize">
-                              {language.label}
-                            </Label>
-                            <Controller
-                              control={control}
-                              name="languages"
-                              rules={{ required: "required*" }}
-                              render={({ field }) => (
-                                <Checkbox
-                                  checked={field.value?.includes(
-                                    language.value,
-                                  )}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          language.value,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== language.value,
-                                          ),
-                                        );
-                                  }}
-                                />
-                              )}
-                            />
-                          </div>
-                        ))}
+                        <div className="flex flex-wrap items-center justify-start gap-2">
+                          {sortedLanguages.map((language, ind) => (
+                            <div
+                              key={ind}
+                              className="flex items-center justify-between rounded border pr-2 hover:bg-gray-200"
+                            >
+                              <Label
+                                className="cursor-pointer  p-2 capitalize"
+                                htmlFor={language.label}
+                              >
+                                {language.label}
+                              </Label>
+                              <Controller
+                                control={control}
+                                name="languages"
+                                rules={{ required: "required*" }}
+                                render={({ field }) => (
+                                  <Checkbox
+                                    id={language.label}
+                                    checked={field.value?.includes(
+                                      language.value,
+                                    )}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([
+                                            ...field.value,
+                                            language.value,
+                                          ])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) =>
+                                                value !== language.value,
+                                            ),
+                                          );
+                                    }}
+                                  />
+                                )}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -556,7 +552,7 @@ export default function CompleteProfileStudent({
                         Which {data?.name} board of education are you looking
                         for?
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-1">
                         {errors?.selected_board && (
                           <span className="text-sm text-red-500">
                             {errors?.selected_board.message}
@@ -564,7 +560,7 @@ export default function CompleteProfileStudent({
                         )}
                         {boardNames.map((option) => (
                           <div key={option} className="text-sm text-gray-700">
-                            <Label className="flex items-center justify-between">
+                            <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                               <span className="font-normal uppercase">
                                 {option}
                               </span>
@@ -574,7 +570,7 @@ export default function CompleteProfileStudent({
                                 {...register("selected_board", {
                                   required: "required*",
                                 })}
-                                className="size-6 accent-primary"
+                                className="size-5 accent-primary"
                               />
                             </Label>
                           </div>
@@ -596,14 +592,14 @@ export default function CompleteProfileStudent({
                           ?.subjects.map((subject, ind) => (
                             <div
                               key={subject}
-                              className="text-sm text-gray-700"
+                              className="rounded border text-sm text-gray-700 hover:bg-gray-200"
                             >
-                              <Label className="flex items-center justify-between">
+                              <Label className="flex cursor-pointer items-center justify-between p-2">
                                 <span className="capitalize">{subject}</span>
                                 <input
                                   type="checkbox"
                                   value={subject}
-                                  className="size-6 accent-primary"
+                                  className="size-5 accent-primary"
                                   {...register(`selected.${ind}.subjects`)}
                                   onChange={() =>
                                     setBoards(selectedBoard, subject)
@@ -633,17 +629,21 @@ export default function CompleteProfileStudent({
                                       key={option}
                                       className="text-sm text-gray-700"
                                     >
-                                      <Label className="flex items-center justify-between">
+                                      <Label
+                                        htmlFor={option}
+                                        className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200"
+                                      >
                                         <span className="font-normal capitalize">
                                           {option}
                                         </span>
                                         <Input
                                           type="checkbox"
+                                          id={option}
                                           {...register(
                                             `selected.${field.fieldName}.options`,
                                           )}
                                           value={option}
-                                          className="size-6 accent-primary"
+                                          className="size-5 accent-primary"
                                           onClick={() =>
                                             setFields(
                                               field.fieldName,
@@ -665,7 +665,7 @@ export default function CompleteProfileStudent({
                                       key={option}
                                       className="text-sm text-gray-700"
                                     >
-                                      <Label className="flex items-center justify-between">
+                                      <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                                         <span className="font-normal capitalize">
                                           {option}
                                         </span>

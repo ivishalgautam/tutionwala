@@ -11,8 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import moment from "moment";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import { Chat } from "phosphor-react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export const columns = (handleDelete) => [
   {
@@ -41,11 +44,37 @@ export const columns = (handleDelete) => [
     },
   },
   {
+    id: "chat",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const count = row.original.unread_chat_count;
+      const name = row.original.tutor_name || row.original.student_name;
+      return (
+        <Link
+          href={`/dashboard/tutor-student-chats/${id}?name=${name.split(" ").join("+")}`}
+          className={cn(buttonVariants({}), "h-9")}
+        >
+          <Chat className="mr-1 size-4" /> Chat{" "}
+          {count > 1 && (
+            <Badge
+              className={"ml-1 bg-white text-black hover:bg-white/80"}
+              variant={"secondary"}
+            >
+              {count}
+            </Badge>
+          )}
+        </Link>
+      );
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const id = row.original.id;
       const role = row.original.role;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -56,10 +85,6 @@ export const columns = (handleDelete) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href={`/dashboard/tutor-student-chats/${id}`}>Chat</Link>
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete({ id })}>
               Delete

@@ -206,7 +206,7 @@ export default function SignUpStudentForm() {
               <div className="grid grid-cols-2 gap-2">
                 {/* fullname */}
                 <div>
-                  <Label className="text-sm">Fullname as per aadhaar</Label>
+                  <Label className="text-sm">Full name as per Aadhaar</Label>
                   <Input
                     type="text"
                     {...register("fullname", {
@@ -306,7 +306,9 @@ export default function SignUpStudentForm() {
                   render={({ field }) => (
                     <ReactSelect
                       loadOptions={handleInputChange}
-                      placeholder={"Search..."}
+                      placeholder={
+                        "What do you want to learn e.g: Maths, Class 12th etc."
+                      }
                       isLoading={isFetching && isLoading}
                       onChange={field.onChange}
                       isMulti={false}

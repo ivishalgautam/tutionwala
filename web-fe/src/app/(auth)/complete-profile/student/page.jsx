@@ -39,7 +39,7 @@ export default function Page() {
     onSuccess: (data) => {
       toast.success("submitted");
       if (profileStep === 2) {
-        router.replace("/");
+        router.replace("/dashboard/profile");
       }
     },
     onError: (error) => {

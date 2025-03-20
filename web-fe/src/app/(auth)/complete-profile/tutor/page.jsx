@@ -23,7 +23,7 @@ export default function Page() {
   const createMutation = useMutation(createTutorProfile, {
     onSuccess: ({ data }) => {
       if (data.curr_step == "2" && data.is_profile_completed) {
-        router.replace("/dashboard/enquiries");
+        router.replace("/dashboard/profile");
       }
       toast.success("submitted");
       queryClient.invalidateQueries([`subCategory`, id]);

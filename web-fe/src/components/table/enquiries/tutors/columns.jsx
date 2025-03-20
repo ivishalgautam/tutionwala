@@ -9,9 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import moment from "moment";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { Chat } from "phosphor-react";
 
 export const columns = (
   handleDelete,
@@ -30,6 +33,15 @@ export const columns = (
           Fullname
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const fullname = row.getValue("fullname");
+      const tutorId = row.original.tutorId;
+      return (
+        <Link href={`/tutors/${tutorId}`} className="space-x-1">
+          <Badge>{fullname}</Badge>
+        </Link>
       );
     },
   },
@@ -70,6 +82,33 @@ export const columns = (
     },
   },
   {
+    id: "chat",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const count = row.original.unread_chat_count;
+      const name = row.original.fullname;
+      console.log(row.original);
+      console.log({ name });
+      return (
+        <Link
+          href={`/dashboard/enquiries/${id}/chat?name=${name.split(" ").join("+")}`}
+          className={cn(buttonVariants({}), "h-9")}
+        >
+          <Chat className="mr-1 size-4" /> Chat{" "}
+          {count > 0 && (
+            <Badge
+              className={"ml-1 bg-white text-black hover:bg-white/80"}
+              variant={"secondary"}
+            >
+              {count}
+            </Badge>
+          )}
+        </Link>
+      );
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -102,9 +141,6 @@ export const columns = (
                 <DropdownMenuSeparator />
               </>
             )}
-            <DropdownMenuItem>
-              <Link href={`/dashboard/enquiries/${id}/chat`}>Chat</Link>
-            </DropdownMenuItem>
             {/* <DropdownMenuItem onClick={() => handleDelete(id)}>
               Delete
             </DropdownMenuItem> */}
