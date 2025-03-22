@@ -10,6 +10,7 @@ import { BiCategory } from "react-icons/bi";
 import { MdOutlineCategory } from "react-icons/md";
 import Title from "@/components/Title";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 const getReports = async () => {
   return (await http().get(`${endpoints.reports.getAll}/all`)) ?? {};
@@ -84,21 +85,25 @@ function Reports({ data, isError, isLoading, error }) {
         count={data?.total_tutor}
         title="Tutors"
         icon={<FaChalkboardTeacher size={size} className="text-primary" />}
+        href="/users?role=tutor&limit=10"
       />
       <Card
         count={data?.total_student}
         title="Student"
         icon={<PiStudentBold size={size} className="text-primary" />}
+        href="/users?role=student&limit=10"
       />
       <Card
         count={data?.total_category}
         title="Categories"
         icon={<BiCategory size={size} className="text-primary" />}
+        href="/categories?limit=10"
       />
       <Card
         count={data?.total_sub_category}
         title="Sub Categories"
         icon={<MdOutlineCategory size={size} className="text-primary" />}
+        href="/sub-categories?limit=10"
       />
     </GridContainer>
   );
@@ -112,15 +117,17 @@ function GridContainer({ children }) {
   );
 }
 
-function Card({ count = 0, title = "", icon = "" }) {
+function Card({ count = 0, title = "", icon = "", href = "#" }) {
   return (
-    <div className="bg-primary-light flex items-center justify-start gap-2 rounded-lg border p-4 py-3">
-      <div className="rounded-full border bg-white p-3">{icon}</div>
-      <div className="flex flex-col items-start justify-start">
-        <span className="text-xs font-medium tracking-wide">{title}</span>
-        <span className="text-3xl font-semibold text-primary">{count}</span>
+    <Link href={href}>
+      <div className="flex items-center justify-start gap-2 rounded-lg border bg-primary-light p-4 py-3">
+        <div className="rounded-full border bg-white p-3">{icon}</div>
+        <div className="flex flex-col items-start justify-start">
+          <span className="text-xs font-medium tracking-wide">{title}</span>
+          <span className="text-3xl font-semibold text-primary">{count}</span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
