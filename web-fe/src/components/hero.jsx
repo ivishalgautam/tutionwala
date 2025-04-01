@@ -37,15 +37,17 @@ export default function Hero() {
         </div>
 
         <div className="mt-4 flex-1 text-center lg:ml-3 lg:mt-0">
-          <Image
-            src="/images/hero.webp"
-            width={500}
-            height={500}
-            alt="tutionwala"
-            className="mx-auto w-full rounded-lg shadow-2xl sm:w-10/12 lg:w-full"
-            priority={false}
-            loading="lazy"
-          />
+          <figure className="h-[500px] w-full">
+            <Image
+              src="/images/hero-1.png"
+              width={500}
+              height={500}
+              alt="tutionwala"
+              className="mx-auto h-full w-full rounded-lg object-cover object-center shadow-2xl sm:w-10/12 lg:w-full"
+              priority={false}
+              loading="lazy"
+            />
+          </figure>
         </div>
       </section>
     </div>
