@@ -100,7 +100,7 @@ export default function PricingSection() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold">
-                <span className="line-through decoration-primary">₹10,000</span>{" "}
+                <span className="line-through decoration-primary">₹999</span>{" "}
                 <span>Free</span>
               </div>
 
@@ -131,7 +131,7 @@ export default function PricingSection() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold">
-                <span className="line-through decoration-primary">₹19,999</span>{" "}
+                <span className="line-through decoration-primary">₹9,999</span>{" "}
                 <span>Free</span>
               </div>
               <div className="text-sm text-muted-foreground">per year</div>

@@ -66,7 +66,9 @@ export default function CompleteProfileTutor({
   id,
   currStep,
   setCurrStep,
+  tutorType,
 }) {
+  console.log({ tutorType });
   const {
     register,
     watch,
@@ -533,96 +535,98 @@ export default function CompleteProfileTutor({
                 </div>
 
                 {/* most recent degree */}
-                <div className="space-y-2">
-                  <H6>Most recent degree</H6>
+                {tutorType === "individual" && (
                   <div className="space-y-2">
-                    {/* degree name */}
-                    <div>
-                      <Label>Name</Label>
+                    <H6>Most recent degree</H6>
+                    <div className="space-y-2">
+                      {/* degree name */}
                       <div>
-                        <Controller
-                          control={control}
-                          name={`degree.name`}
-                          render={({ field }) => (
-                            <ShadcnSelect
-                              field={field}
-                              name={`degree.name`}
-                              options={courses}
-                              setValue={setValue}
-                              placeholder="Course"
-                              width="w-full"
-                            />
-                          )}
-                        />
-                      </div>
-                      {errors.degree?.name && (
-                        <span className="text-sm text-red-500">
-                          {errors.degree?.name.message}
-                        </span>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label>Is degree completed?</Label>
-                      <Controller
-                        control={control}
-                        name={`degree.status`}
-                        rules={{ required: "required*" }}
-                        render={({ field }) => (
-                          <Select
-                            defaultValue={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger className="">
-                              <SelectValue placeholder="Select Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Status</SelectLabel>
-                                <SelectItem value="yes">Yes</SelectItem>
-                                <SelectItem value="pursuing">
-                                  Pursuing
-                                </SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                      {errors.degree?.status && (
-                        <span className="text-sm text-red-500">
-                          {errors.degree?.status.message}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* degree completion year */}
-                    {watch("degree.status") === "yes" && (
-                      <div>
-                        <Label>Year of completion</Label>
-                        <Input
-                          type="number"
-                          {...register("degree.year", {
-                            required: "required*",
-                            max: {
-                              value: 2099,
-                              message: "Must be less than 2099",
-                            },
-                            min: {
-                              value: 1900,
-                              message: "Must be greater than 1900",
-                            },
-                          })}
-                          placeholder="Enter completion year"
-                        />
-                        {errors.degree?.year && (
+                        <Label>Name</Label>
+                        <div>
+                          <Controller
+                            control={control}
+                            name={`degree.name`}
+                            render={({ field }) => (
+                              <ShadcnSelect
+                                field={field}
+                                name={`degree.name`}
+                                options={courses}
+                                setValue={setValue}
+                                placeholder="Course"
+                                width="w-full"
+                              />
+                            )}
+                          />
+                        </div>
+                        {errors.degree?.name && (
                           <span className="text-sm text-red-500">
-                            {errors.degree?.year.message}
+                            {errors.degree?.name.message}
                           </span>
                         )}
                       </div>
-                    )}
+
+                      <div>
+                        <Label>Is degree completed?</Label>
+                        <Controller
+                          control={control}
+                          name={`degree.status`}
+                          rules={{ required: "required*" }}
+                          render={({ field }) => (
+                            <Select
+                              defaultValue={field.value}
+                              onValueChange={field.onChange}
+                            >
+                              <SelectTrigger className="">
+                                <SelectValue placeholder="Select Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>Status</SelectLabel>
+                                  <SelectItem value="yes">Yes</SelectItem>
+                                  <SelectItem value="pursuing">
+                                    Pursuing
+                                  </SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                        {errors.degree?.status && (
+                          <span className="text-sm text-red-500">
+                            {errors.degree?.status.message}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* degree completion year */}
+                      {watch("degree.status") === "yes" && (
+                        <div>
+                          <Label>Year of completion</Label>
+                          <Input
+                            type="number"
+                            {...register("degree.year", {
+                              required: "required*",
+                              max: {
+                                value: 2099,
+                                message: "Must be less than 2099",
+                              },
+                              min: {
+                                value: 1900,
+                                message: "Must be greater than 1900",
+                              },
+                            })}
+                            placeholder="Enter completion year"
+                          />
+                          {errors.degree?.year && (
+                            <span className="text-sm text-red-500">
+                              {errors.degree?.year.message}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* counduct classes */}
                 <div className="space-y-1">

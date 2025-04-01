@@ -79,7 +79,7 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
         value,
       }));
       setDefaultOptions(formattedOptions);
-      setSelectedOption(formattedOptions);
+      // setSelectedOption(formattedOptions);
     }
   }, [searchParams]);
 

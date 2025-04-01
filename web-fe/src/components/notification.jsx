@@ -1,7 +1,7 @@
 "use client";
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { Bell } from "lucide-react";
 import {
@@ -34,7 +34,24 @@ export default function Notification() {
     },
     queryKey: ["notifications"],
   });
-
+  const groupedNotifications = useMemo(() => {
+    if (!notifications) return [];
+    return Object.entries(
+      Object.groupBy(
+        notifications,
+        ({ enquiry_id, chat_id, type }) => `${enquiry_id || chat_id}:${type}`,
+      ),
+    ).map(([key, notifications]) => {
+      const [id, type] = key.split(":");
+      const length = notifications.length;
+      return {
+        id,
+        type,
+        length,
+      };
+    });
+  }, [notifications]);
+  console.log({ groupedNotifications });
   if (isLoading) return <Skeleton className={"size-10"} />;
 
   return (
@@ -63,7 +80,7 @@ export default function Notification() {
               (error?.message ?? "Error loading notifications.")
             ) : notifications?.length > 0 ? (
               <div>
-                {notifications?.map((notification) => (
+                {groupedNotifications?.map((notification) => (
                   <DropdownMenuItem
                     key={notification.id}
                     className={`flex cursor-pointer flex-col items-start px-4 py-3 ${
@@ -75,9 +92,9 @@ export default function Notification() {
                         notification.type === "enquiry"
                           ? `/dashboard/enquiries`
                           : notification.type === "chat"
-                            ? `/dashboard/tutor-student-chats/${notification.chat_id}`
+                            ? `/dashboard/tutor-student-chats/${notification.id}`
                             : notification.type === "enquiry_chat"
-                              ? `/dashboard/enquiries/${notification.enquiry_id}/chat`
+                              ? `/dashboard/enquiries/${notification.id}/chat`
                               : "#"
                       }
                       className="w-full"
@@ -85,10 +102,18 @@ export default function Notification() {
                       <div className="flex w-full items-start gap-2">
                         <div className="relative flex-1">
                           <p className="text-sm font-medium leading-none">
-                            {notification.type === "enquiry" ? "Enquiry" : ""}
+                            {notification.type === "enquiry_chat"
+                              ? `Enquiry`
+                              : notification.type === "chat"
+                                ? `Chat`
+                                : `Enquiries`}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {notification.message}
+                            {notification.type === "enquiry_chat"
+                              ? `You have ${notification.length} unread enquiry chat messages`
+                              : notification.type === "chat"
+                                ? `You have ${notification.length} unread chat messages`
+                                : `You have ${notification.length} new enquiries.`}
                           </p>
                           <Muted className="absolute right-0 top-0 text-[10px] text-gray-400">
                             {moment(notification.createdAt).format(

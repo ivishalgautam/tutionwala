@@ -3,7 +3,7 @@ import CompleteProfileTutor from "@/forms/complete-profile-tutor";
 import { MainContext } from "@/store/context";
 import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,17 @@ export default function Page() {
   const { user } = useContext(MainContext);
   const id = user?.sub_categories?.[0]?.id;
 
+  const { data: tutor } = useQuery({
+    queryFn: async () => {
+      const { data } = await http().get(
+        `${endpoints.tutor.getAll}/getByUser/${user.id}`,
+      );
+      return data;
+    },
+    queryKey: [`tutor-${id}`],
+    enabled: !!user,
+  });
+  console.log({ tutor });
   const queryClient = useQueryClient();
 
   const createMutation = useMutation(createTutorProfile, {
@@ -43,6 +54,7 @@ export default function Page() {
       id={id}
       currStep={currStep}
       setCurrStep={setCurrStep}
+      tutorType={tutor?.type}
     />
   );
 }

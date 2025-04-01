@@ -154,6 +154,7 @@ export default function SignUpTutorForm() {
       setIsResendDisabled(true);
       setRemainingTime(60 * minute);
       setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
+      setValue("otp", "");
     } catch (error) {
       toast.error(error.response.data.message ?? "error");
     }

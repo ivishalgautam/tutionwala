@@ -88,17 +88,17 @@ export default function TutorsWithFilter() {
   return (
     <div className="bg-gray-100">
       <div className="container space-y-4 py-8">
-        <div className="relative h-80 overflow-hidden rounded-lg before:absolute before:inset-0 before:bg-black/50">
+        <div className="relative h-96 overflow-hidden rounded-lg before:absolute before:inset-0 before:bg-black/50">
           <Image
             src={"/images/search-banner.jpg"}
-            width={2000}
-            height={2000}
+            width={1000}
+            height={1000}
             alt="learn"
             className="h-full w-full object-cover object-center"
             priority={false}
             loading="lazy"
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
+          <div className="absolute left-1/2 top-20 flex -translate-x-1/2 flex-col items-center justify-center gap-2 text-white">
             <H1 className={"text-center"}>Find the Perfect Tutor for You</H1>
             <Small className={"text-center font-normal"}>
               Search and filter through expert tutors based on your learning

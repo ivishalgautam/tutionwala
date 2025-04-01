@@ -6,8 +6,10 @@ import React, { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Loading from "./loading";
 import Link from "next/link";
-import { Small } from "./ui/typography";
+import { Large, Muted, Small } from "./ui/typography";
 import { Heading } from "./ui/heading";
+import Image from "next/image";
+import NextImage from "./next-image";
 
 async function fetchCategoriesTabs() {
   const { data } = await http().get(
@@ -27,7 +29,6 @@ export default function CategoriesTabs() {
     queryKey: ["categories-tabs"],
     keepPreviousData: true,
   });
-
   const tabs = useMemo(() => data, [data]);
 
   if (isLoading) return <Loading />;
@@ -46,12 +47,12 @@ export default function CategoriesTabs() {
           <div className="flex items-center justify-center">
             <TabsList className="border bg-white">
               {tabs?.map(
-                ({ name: tab, sub_categories: tabContent }) =>
+                ({ name: tab, sub_categories: tabContent, image }) =>
                   tabContent.length > 0 && (
                     <TabsTrigger
                       value={tab}
                       key={tab}
-                      className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                      className="capitalize data-[state=active]:bg-primary data-[state=active]:text-white"
                     >
                       {tab}
                     </TabsTrigger>
@@ -60,23 +61,38 @@ export default function CategoriesTabs() {
             </TabsList>
           </div>
           {tabs?.map(
-            ({ name: tab, sub_categories: tabContent }) =>
+            ({ name: tab, sub_categories: tabContent, image }) =>
               tabContent.length > 0 && (
                 <TabsContent
                   value={tab}
                   key={tab}
                   className="rounded-lg border bg-white p-4"
                 >
-                  <ul className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))]">
+                  <ul className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
                     {tabContent.map((item) => (
-                      <li
+                      <div
                         key={item.name}
-                        className="border-l p-2 text-sm hover:bg-gray-200"
+                        className="w-full cursor-pointer rounded-md border bg-gray-100 p-2 shadow-sm transition-all hover:scale-95 hover:border-primary"
                       >
                         <Link href={`/tutors?category=${item.slug}`}>
-                          {item.name}
+                          <figure className="size-24 w-full">
+                            <NextImage
+                              src={item.image}
+                              width={500}
+                              height={500}
+                              alt={item.name}
+                              className={
+                                "h-full w-full rounded-lg object-cover object-center"
+                              }
+                            />
+                          </figure>
+                          <div className="py-4">
+                            <Muted className={"text-center uppercase"}>
+                              {item.name}
+                            </Muted>
+                          </div>
                         </Link>
-                      </li>
+                      </div>
                     ))}
                   </ul>
                 </TabsContent>

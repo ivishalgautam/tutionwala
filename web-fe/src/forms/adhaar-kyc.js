@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import {
   Card,
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/input-otp";
 import { formatTime } from "@/utils/time";
 import Link from "next/link";
+import { MainContext } from "@/store/context";
 
 // For the Muted component from your example
 
@@ -40,6 +41,7 @@ const AadhaarForm = () => {
   const [verificationComplete, setVerificationComplete] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
+  const { user } = useContext(MainContext);
 
   const aadhaarForm = useForm({
     defaultValues: {
@@ -201,7 +203,7 @@ const AadhaarForm = () => {
                     )}
                   </div>
 
-                  <div>
+                  {/* <div>
                     <Label>Name to Match (Optional)</Label>
                     <Input
                       placeholder="Enter name as on AADHAAR card"
@@ -210,7 +212,7 @@ const AadhaarForm = () => {
                     <Muted>
                       Leave blank if you don&apos;t want to match the name
                     </Muted>
-                  </div>
+                  </div> */}
 
                   <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <Controller
@@ -238,12 +240,14 @@ const AadhaarForm = () => {
                     </p>
                   )}
                   <div className="flex items-center justify-center gap-2">
-                    <Link
-                      href={"/"}
-                      className={`w-full ${buttonVariants({ variant: "outline" })}`}
-                    >
-                      I will do it later
-                    </Link>
+                    {user?.role === "student" && (
+                      <Link
+                        href={"/"}
+                        className={`w-full ${buttonVariants({ variant: "outline" })}`}
+                      >
+                        I will do it later
+                      </Link>
+                    )}
 
                     <Button
                       className="w-full"

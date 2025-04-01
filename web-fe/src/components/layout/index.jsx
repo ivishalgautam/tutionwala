@@ -59,6 +59,8 @@ export default function Layout({ children }) {
         );
         if (!data.is_profile_completed) {
           return router.replace("/complete-profile/tutor");
+        } else if (!user.is_aadhaar_verified) {
+          return router.replace("/aadhaar-kyc");
         } else {
           if (currentRoute?.roles.includes("tutor")) return;
           if (pathname.includes("dashboard")) return;

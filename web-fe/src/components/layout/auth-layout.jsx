@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function AuthLayout({ children }) {
   return (
     <section className="relative bg-white">
-      <div className="absolute left-4 top-4 z-10">
+      {/* <div className="absolute left-4 top-4 z-10">
         <Link href={"/"} className={`text-3xl`}>
           <figure className="aspect-video w-24">
             <Image
@@ -17,23 +17,45 @@ export default function AuthLayout({ children }) {
             />
           </figure>
         </Link>
-      </div>
+      </div> */}
 
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-        <section className="relative flex h-32 items-end bg-gradient-to-tr from-gradient-from to-gradient-to lg:col-span-7 lg:h-full lg:p-4 xl:col-span-8">
-          <figure className="absolute inset-0 h-full w-full object-contain object-center mix-blend-normal lg:p-20">
-            <Image
-              src={"/images/educator.svg"}
-              width={200}
-              height={200}
-              quality={100}
-              alt="Educator"
-              className="h-full w-full"
-            />
-          </figure>
-        </section>
+        <div className="hidden flex-col items-center justify-center bg-blue-600 p-12 text-white lg:col-span-6 lg:flex lg:h-full lg:w-full lg:p-4 xl:col-span-6">
+          <div className="max-w-md">
+            <Link href={"/"} className={`text-3xl`}>
+              <Image
+                width={100}
+                height={100}
+                src="/images/logo.png"
+                alt="Online tutoring illustration"
+                className="mb-8 rounded-lg"
+              />
+            </Link>
+            <h2 className="mb-4 text-3xl font-bold">
+              Connect with Knowledge Leaders
+            </h2>
+            <p className="mb-6 text-lg">
+              Access personalized learning experiences from expert tutors or
+              share your expertise with eager students on our secure platform.
+            </p>
+            <div className="mb-8 flex space-x-4">
+              <div className="flex-1 rounded-lg bg-blue-500 p-4">
+                <h3 className="mb-2 font-bold">1,000+</h3>
+                <p className="text-sm">Expert Tutors</p>
+              </div>
+              <div className="flex-1 rounded-lg bg-blue-500 p-4">
+                <h3 className="mb-2 font-bold">10,000+</h3>
+                <p className="text-sm">Students</p>
+              </div>
+              <div className="flex-1 rounded-lg bg-blue-500 p-4">
+                <h3 className="mb-2 font-bold">95%</h3>
+                <p className="text-sm">Satisfaction Rate</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-5 lg:p-6 xl:col-span-4">
+        <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-6 lg:p-6 xl:col-span-6">
           <div className="max-w-xl lg:max-w-3xl">
             <div className="relative -mt-16 block lg:hidden">
               <Link
