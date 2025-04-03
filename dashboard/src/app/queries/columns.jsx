@@ -110,6 +110,7 @@ export const columns = (openModal, setQueryId, handleUpdate) => [
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="in progress">In Progress</SelectItem>
             <SelectItem value="resolved">Resolved</SelectItem>
           </SelectContent>
         </Select>
