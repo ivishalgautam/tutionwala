@@ -47,12 +47,10 @@ import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
 
-export const MAX_CHARACTERS = 1000;
-export const validateTextLimit = (value) => {
-  return (
-    value.length <= MAX_CHARACTERS ||
-    `Maximum ${MAX_CHARACTERS} characters allowed.`
-  );
+export const MAX_WORD = 1000;
+export const validateWordLimit = (value) => {
+  const wordCount = value.trim().split(/\s+/).length;
+  return wordCount <= MAX_WORD || `Maximum ${MAX_WORD} words allowed.`;
 };
 
 const fetchSubCategory = async (id) => {
@@ -1262,12 +1260,13 @@ export default function CompleteProfileTutor({
 
               <div>
                 <p className="mt-1 text-end text-sm text-gray-500">
-                  Letter Count: {experience.length} / {MAX_CHARACTERS}
+                  Word Count: {experience?.trim().split(/\s+/).length} /{" "}
+                  {MAX_WORD}
                 </p>
                 <Textarea
                   {...register("experience", {
                     required: "Required*",
-                    validate: validateTextLimit,
+                    validate: validateWordLimit,
                   })}
                   placeholder="Enter background and experience"
                   className="h-[220px]"

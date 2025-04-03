@@ -78,8 +78,9 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
         label: value.replace(/-/g, " "),
         value,
       }));
+
       setDefaultOptions(formattedOptions);
-      // setSelectedOption(formattedOptions);
+      setSelectedOption(formattedOptions);
     }
   }, [searchParams]);
 

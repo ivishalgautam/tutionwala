@@ -29,7 +29,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
-import { MAX_CHARACTERS, validateTextLimit } from "./complete-profile-tutor";
+import { MAX_WORD, validateWordLimit } from "./complete-profile-tutor";
 
 const fetchProfile = async (id) => {
   const { data } = await http().get(
@@ -355,12 +355,13 @@ export default function TutorProfileForm({ user, setUser }) {
             <Label>Experience</Label>
             <div>
               <p className="mt-1 text-end text-sm text-gray-500">
-                Letter Count: {experience.length} / {MAX_CHARACTERS}
+                Word Count: {experience?.trim().split(/\s+/).length} /{" "}
+                {MAX_WORD}
               </p>
               <Textarea
                 {...register("experience", {
                   required: "Required*",
-                  validate: validateTextLimit,
+                  validate: validateWordLimit,
                 })}
                 placeholder="Enter background and experience"
                 className="h-[220px]"
