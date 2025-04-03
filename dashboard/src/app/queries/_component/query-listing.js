@@ -7,7 +7,7 @@ import QueryDialog from "@/components/dialogs/query-dialog";
 import { DataTable } from "@/components/ui/table/data-table";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import { deleteQuery, fetchQueries } from "@/server/query";
+import { deleteQuery, fetchQueries, updateQuery } from "@/server/query";
 
 export default function QueryListing() {
   const [isModal, setIsModal] = useState(false);
@@ -30,6 +30,20 @@ export default function QueryListing() {
     enabled: !!searchParamStr,
   });
 
+  const updateMutation = useMutation({
+    mutationFn: (data) => updateQuery(queryId, data),
+    onSuccess: () => {
+      toast.success("Query updated.");
+      queryClient.invalidateQueries(["queries", searchParamStr]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message ?? error?.message ?? "error");
+    },
+  });
+
+  const handleUpdate = async (data) => {
+    updateMutation.mutate(data);
+  };
   const deleteMutation = useMutation(deleteQuery, {
     onSuccess: () => {
       toast.success("Query deleted.");
@@ -63,7 +77,7 @@ export default function QueryListing() {
     <div className="border-input rounded-lg">
       <div>
         <DataTable
-          columns={columns(openModal, setQueryId)}
+          columns={columns(openModal, setQueryId, handleUpdate)}
           data={data.data}
           totalItems={data.total}
         />

@@ -12,8 +12,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import moment from "moment";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export const columns = (openModal, setQueryId) => [
+export const columns = (openModal, setQueryId, handleUpdate) => [
   {
     accessorKey: "query_number",
     header: ({ column }) => {
@@ -72,6 +79,40 @@ export const columns = (openModal, setQueryId) => [
           EMAIL
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return (
+        <Select
+          defaultValue={row.getValue("status")}
+          onValueChange={(value) => {
+            setQueryId(id);
+            return handleUpdate({ status: value });
+          }}
+        >
+          <SelectTrigger className="w-[120px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="resolved">Resolved</SelectItem>
+          </SelectContent>
+        </Select>
       );
     },
   },
