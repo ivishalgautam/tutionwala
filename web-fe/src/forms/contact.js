@@ -40,7 +40,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <H2 className={"border-none text-black"}>Contact Us</H2>
+      <H2 className={"border-none text-black"}>Complain Us</H2>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* name */}
