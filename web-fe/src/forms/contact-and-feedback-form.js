@@ -32,13 +32,13 @@ export default function ContactAndFeedbackForm() {
         )}
       >
         <H2 className={"border-none text-4xl font-extrabold lg:text-5xl "}>
-          Contact Us
+          Complain Us
         </H2>
         <Muted className={"text-balance text-center"}>
           Have questions or need assistance? Get in touch with us! Fill out the
           form, and our team will get back to you as soon as possible.
         </Muted>
-        <Button onClick={() => setRightPanelActive(false)}>Contact Us</Button>
+        <Button onClick={() => setRightPanelActive(false)}>Complain Us</Button>
       </div>
       <div
         className={cn(
