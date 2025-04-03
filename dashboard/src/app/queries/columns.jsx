@@ -11,8 +11,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import moment from "moment";
+import { Badge } from "@/components/ui/badge";
 
 export const columns = (openModal, setQueryId) => [
+  {
+    accessorKey: "query_number",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          QUERY
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <Badge variant={"destructive"}>{row.getValue("query_number")}</Badge>
+      );
+    },
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {

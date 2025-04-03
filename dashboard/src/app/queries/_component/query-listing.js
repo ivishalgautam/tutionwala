@@ -33,7 +33,7 @@ export default function QueryListing() {
   const deleteMutation = useMutation(deleteQuery, {
     onSuccess: () => {
       toast.success("Query deleted.");
-      queryClient.invalidateQueries(["queries"]);
+      queryClient.invalidateQueries(["queries", searchParamStr]);
       closeModal();
     },
     onError: (error) => {
