@@ -52,7 +52,7 @@ export default function CategoriesTabs() {
                     <TabsTrigger
                       value={tab}
                       key={tab}
-                      className="capitalize data-[state=active]:bg-primary data-[state=active]:text-white"
+                      className="capitalize data-[state=active]:bg-secondary data-[state=active]:text-white"
                     >
                       {tab}
                     </TabsTrigger>

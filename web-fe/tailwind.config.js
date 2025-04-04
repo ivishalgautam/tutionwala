@@ -31,7 +31,7 @@ const config = {
         "gradient-from": "#C9FCDB",
         "gradient-to": "#97BDFB",
         primary: {
-          DEFAULT: "#007DF4",
+          DEFAULT: "#052F5D",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {

@@ -19,7 +19,7 @@ export const Footer = () => {
   } = useFetchFeaturedCourses({ limit: 25 });
 
   return (
-    <footer className="mx-auto bg-gradient-to-br from-gradient-to to-gradient-from p-2 text-black">
+    <footer className="mx-auto bg-gradient-to-br from-primary/80 to-secondary p-2 text-black">
       <div className="rounded-[2rem] bg-white/80 p-4">
         <div className="container py-8">
           <FooterOne />
@@ -38,9 +38,9 @@ export const FooterOne = () => {
         <div className="space-y-4">
           <figure className="flex items-center gap-2">
             <Image
-              src={"/images/logo.png"}
-              width={100}
-              height={100}
+              src={"/logo.png"}
+              width={200}
+              height={200}
               alt="TutionWala logo"
               className="rounded-lg"
             />

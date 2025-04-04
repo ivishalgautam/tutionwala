@@ -46,7 +46,7 @@ export default function FeaturedCategories() {
       <div className="space-y-2">
         <Small
           className={
-            "block text-center font-medium uppercase tracking-wide text-primary"
+            "block text-center font-medium uppercase tracking-wide text-secondary"
           }
         >
           Top Category

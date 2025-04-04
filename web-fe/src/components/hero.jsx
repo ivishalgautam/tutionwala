@@ -11,10 +11,10 @@ export default function Hero() {
     <div className="bg-gradient-to-b from-primary-25 to-primary-50">
       <section className="mx-auto max-w-screen-xl items-center px-4 py-12 md:px-8 md:py-24 lg:flex">
         <div className="flex-1 space-y-5 sm:text-center lg:text-left">
-          <h1 className="text-2xl font-bold text-gray-800 xl:text-4xl">
+          <h1 className="text-2xl font-bold text-primary xl:text-4xl">
             Your Success, Guided by
             <br />
-            <span className="text-primary"> Expert Tutors</span>
+            <span className="text-secondary"> Expert Tutors</span>
           </h1>
           <p className="max-w-xl text-pretty leading-relaxed text-gray-500 sm:mx-auto lg:ml-0">
             Currently Providing Coaching in Prime Locations of Lajpat Nagar, New
@@ -39,7 +39,7 @@ export default function Hero() {
         <div className="mt-4 flex-1 text-center lg:ml-3 lg:mt-0">
           <figure className="h-[500px] w-full">
             <Image
-              src="/images/hero-1.png"
+              src="/images/hero.jpeg"
               width={500}
               height={500}
               alt="tutionwala"

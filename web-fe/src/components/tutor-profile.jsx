@@ -47,7 +47,6 @@ export default function TutorProfile({
   total_reviews,
   ...teacher
 }) {
-  console.log(courses);
   const [fullAddr, setFullAddr] = useState("");
   return (
     <>

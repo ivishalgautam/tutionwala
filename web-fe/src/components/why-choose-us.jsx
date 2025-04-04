@@ -13,35 +13,35 @@ import FadeUp from "./fade-up";
 const benefits = [
   {
     title: "No Joining Fees",
-    icon: <IndianRupee size={30} className="text-primary" />,
+    icon: <IndianRupee size={30} className="text-secondary" />,
   },
   {
     title: "Expert Instructors",
-    icon: <Lightbulb size={30} className="text-primary" />,
+    icon: <Lightbulb size={30} className="text-secondary" />,
   },
   {
     title: "Interactive Learning",
-    icon: <Laptop size={30} className="text-primary" />,
+    icon: <Laptop size={30} className="text-secondary" />,
   },
   {
     title: "Affordable Learning",
-    icon: <BookOpen size={30} className="text-primary" />,
+    icon: <BookOpen size={30} className="text-secondary" />,
   },
   {
     title: "Career Advance",
-    icon: <Briefcase size={30} className="text-primary" />,
+    icon: <Briefcase size={30} className="text-secondary" />,
   },
   {
     title: "Support Community",
-    icon: <Users size={30} className="text-primary" />,
+    icon: <Users size={30} className="text-secondary" />,
   },
 ];
 
 export default function WhyChooseUs() {
   return (
     <div className="relative">
-      <div className="absolute bottom-10 left-0 size-[15rem] rounded-full bg-primary"></div>
-      <div className="absolute right-0 top-20 size-[20rem] rounded-full bg-primary"></div>
+      <div className="absolute bottom-10 left-0 size-[15rem] rounded-full bg-secondary"></div>
+      <div className="absolute right-0 top-20 size-[20rem] rounded-full bg-secondary"></div>
       <div className="grid h-full bg-white/50 py-10 backdrop-blur-[200px] md:grid-cols-1 lg:grid-cols-2">
         <div className="flex items-center justify-center gap-10 p-8 lg:relative">
           <figure className="aspect-[9/16]">
@@ -74,9 +74,11 @@ export default function WhyChooseUs() {
           <div className="space-y-4">
             <Small className={"flex items-center gap-1 text-primary"}>
               <Lightbulb size={20} />{" "}
-              <span className="text-xs uppercase">Why Choose Us</span>
+              <span className="text-xs uppercase text-secondary">
+                Why Choose Us
+              </span>
             </Small>
-            <H2 className={"text-3xl md:text-4xl"}>
+            <H2 className={"text-3xl text-primary md:text-4xl"}>
               TutionWala Your Path to Excellence & Success
             </H2>
             <Muted>

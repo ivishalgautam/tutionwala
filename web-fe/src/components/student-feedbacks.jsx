@@ -193,7 +193,7 @@ export default function StudentReviewCards() {
           className={"flex items-center justify-center gap-1 text-primary"}
         >
           <Lightbulb size={20} />{" "}
-          <span className="tracking-wide">Student Review</span>
+          <span className="tracking-wide text-secondary">Student Review</span>
         </Small>
         <Heading title={"Our Students Feedback"} description={""} />
       </div>

@@ -25,7 +25,9 @@ function Card1({ category }) {
         </div>
 
         <div className="mt-4">
-          <Large className={"text-center uppercase"}>{category.name}</Large>
+          <Large className={"text-center uppercase !text-primary"}>
+            {category.name}
+          </Large>
           <div className="mt-2 rounded-full bg-primary/10 px-3 py-1 ">
             <Muted
               className={"block text-nowrap text-center text-xs uppercase "}
@@ -55,7 +57,9 @@ function Card2({ category }) {
           />
         </figure>
         <div className="py-4">
-          <Large className={"text-center uppercase"}>{category.name}</Large>
+          <Large className={"text-center uppercase text-primary"}>
+            {category.name}
+          </Large>
           <Muted className={"block text-nowrap text-center text-xs uppercase"}>
             {category.courses}+ Course
           </Muted>

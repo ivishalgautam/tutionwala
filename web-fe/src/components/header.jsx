@@ -27,6 +27,7 @@ import {
 } from "./ui/alert-dialog";
 import SignUpAs from "./sign-up-as";
 import Notification from "./notification";
+import { cn } from "@/lib/utils";
 
 export default function NavbarComponent() {
   const { user, setUser, isUserLoading } = useContext(MainContext);
@@ -41,18 +42,17 @@ export default function NavbarComponent() {
           <NavbarBrand>
             <div className="flex items-center justify-start gap-8">
               <Link href={"/"} className={`text-3xl`}>
-                <figure className="aspect-video w-24">
-                  <Image
-                    src={"/images/logo.jpeg"}
-                    width={200}
-                    height={200}
-                    alt="logo"
-                    className="h-full w-full rounded-lg object-cover object-center"
-                    priority={false}
-                  />
-                </figure>
+                {/* <figure className="aspect-video"> */}
+                <Image
+                  src={"/logo.png"}
+                  width={200}
+                  height={200}
+                  alt="logo"
+                  className="rounded-lg object-cover object-center"
+                  priority={false}
+                />
+                {/* </figure> */}
               </Link>
-              {/* {user?.role !== "tutor" && <CategoryMenu />} */}
             </div>
           </NavbarBrand>
 
@@ -90,7 +90,11 @@ export default function NavbarComponent() {
                 <NavbarItem>
                   <Link href={"/login"}>Login</Link>
                 </NavbarItem>
-                <NavbarItem active={true} onClick={() => setIsModal(true)}>
+                <NavbarItem
+                  active={true}
+                  onClick={() => setIsModal(true)}
+                  className="bg-primary"
+                >
                   Signup
                 </NavbarItem>
               </NavbarList>
@@ -176,19 +180,39 @@ export function Loader() {
 function Navigation({ pathname }) {
   return (
     <NavbarList>
-      <NavbarItem active={pathname === "/"}>
+      <NavbarItem
+        active={pathname === "/"}
+        className={cn("hover:bg-primary hover:text-white", {
+          "bg-primary": pathname === "/",
+        })}
+      >
         <Link href={"/"}>Home</Link>
       </NavbarItem>
 
-      <NavbarItem active={pathname === "/tutors"}>
+      <NavbarItem
+        active={pathname === "/tutors"}
+        className={cn("hover:bg-primary hover:text-white", {
+          "bg-primary": pathname === "/tutors",
+        })}
+      >
         <Link href={"/tutors"}>Find Tutors</Link>
       </NavbarItem>
 
-      <NavbarItem active={pathname === "/about"}>
+      <NavbarItem
+        active={pathname === "/about"}
+        className={cn("hover:bg-primary hover:text-white", {
+          "bg-primary": pathname === "/about",
+        })}
+      >
         <Link href={"/about"}>About Us</Link>
       </NavbarItem>
 
-      <NavbarItem active={pathname === "/contact"}>
+      <NavbarItem
+        active={pathname === "/contact"}
+        className={cn("hover:bg-primary hover:text-white", {
+          "bg-primary": pathname === "/contact",
+        })}
+      >
         <Link href={"/contact"}>Contact Us</Link>
       </NavbarItem>
     </NavbarList>

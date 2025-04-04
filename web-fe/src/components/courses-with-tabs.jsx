@@ -12,7 +12,7 @@ export default function CoursesWithTabs({ slugs }) {
             className={"flex items-center justify-center gap-1 text-primary"}
           >
             <Lightbulb size={20} />{" "}
-            <span className="tracking-wide">Categories</span>
+            <span className="tracking-wide text-secondary">Categories</span>
           </Small>
           <Heading title={"Explore Categories"} description={""} />
         </div>

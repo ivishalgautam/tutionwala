@@ -52,13 +52,13 @@ export default function PricingSection() {
         <div className="mb-12 space-y-2">
           <Small
             className={
-              "block text-center font-medium uppercase tracking-wide text-primary"
+              "block text-center font-medium uppercase tracking-wide text-secondary"
             }
           >
             Pricing
           </Small>
           <Heading
-            title={"Simple, Transparent Pricing"}
+            title={"Simple - Transparent Pricing"}
             description={"Choose the plan that's right for your institution"}
           />
         </div>
@@ -89,7 +89,10 @@ export default function PricingSection() {
           </Card>
 
           <Card className={`relative w-[300px] border-primary`}>
-            <Badge type="button" className="absolute right-2 top-2">
+            <Badge
+              type="button"
+              className="absolute right-2 top-2 bg-secondary"
+            >
               Limited time offer
             </Badge>
             <CardHeader>
@@ -104,7 +107,7 @@ export default function PricingSection() {
                 <span>Free</span>
               </div>
 
-              <div className="text-sm text-muted-foreground">per year</div>
+              <div className="text-sm text-muted-foreground">per month</div>
               <ul className="mt-4 space-y-2">
                 {["All Basic features"].map((feature, index) => (
                   <li key={index} className="flex items-center">
@@ -120,7 +123,10 @@ export default function PricingSection() {
           </Card>
 
           <Card className={`relative w-[300px]`}>
-            <Badge type="button" className="absolute right-2 top-2">
+            <Badge
+              type="button"
+              className="absolute right-2 top-2 bg-secondary"
+            >
               Limited time offer
             </Badge>
             <CardHeader>
