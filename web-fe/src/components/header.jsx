@@ -93,7 +93,7 @@ export default function NavbarComponent() {
                 <NavbarItem
                   active={true}
                   onClick={() => setIsModal(true)}
-                  className="bg-primary"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   Signup
                 </NavbarItem>

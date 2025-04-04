@@ -20,18 +20,20 @@ export default function AuthLayout({ children }) {
       </div> */}
 
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-        <div className="hidden flex-col items-center justify-center bg-blue-600 p-12 text-white lg:col-span-6 lg:flex lg:h-full lg:w-full lg:p-4 xl:col-span-6">
-          <div className="max-w-md">
+        <div className=" flex-col items-center justify-center bg-primary p-12 text-white lg:col-span-6 lg:flex lg:h-full lg:w-full lg:p-4 xl:col-span-6">
+          <div className="mx-auto max-w-md">
             <Link href={"/"} className={`text-3xl`}>
-              <Image
-                width={100}
-                height={100}
-                src="/images/logo.png"
-                alt="Online tutoring illustration"
-                className="mb-8 rounded-lg"
-              />
+              <figure className="w-max rounded-lg bg-white p-2">
+                <Image
+                  width={200}
+                  height={200}
+                  src="/logo.png"
+                  alt="Online tutoring illustration"
+                  className="rounded-lg"
+                />
+              </figure>
             </Link>
-            <h2 className="mb-4 text-3xl font-bold">
+            <h2 className="mb-4 mt-4 text-3xl font-bold">
               Connect with Knowledge Leaders
             </h2>
             <p className="mb-6 text-lg">
@@ -39,15 +41,15 @@ export default function AuthLayout({ children }) {
               share your expertise with eager students on our secure platform.
             </p>
             <div className="mb-8 flex space-x-4">
-              <div className="flex-1 rounded-lg bg-blue-500 p-4">
+              <div className="flex-1 rounded-lg bg-secondary p-4">
                 <h3 className="mb-2 font-bold">1,000+</h3>
                 <p className="text-sm">Expert Tutors</p>
               </div>
-              <div className="flex-1 rounded-lg bg-blue-500 p-4">
+              <div className="flex-1 rounded-lg bg-secondary p-4">
                 <h3 className="mb-2 font-bold">10,000+</h3>
                 <p className="text-sm">Students</p>
               </div>
-              <div className="flex-1 rounded-lg bg-blue-500 p-4">
+              <div className="flex-1 rounded-lg bg-secondary p-4">
                 <h3 className="mb-2 font-bold">95%</h3>
                 <p className="text-sm">Satisfaction Rate</p>
               </div>
@@ -57,7 +59,7 @@ export default function AuthLayout({ children }) {
 
         <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-6 lg:p-6 xl:col-span-6">
           <div className="max-w-xl lg:max-w-3xl">
-            <div className="relative -mt-16 block lg:hidden">
+            {/* <div className="relative -mt-16 block lg:hidden">
               <Link
                 className="inline-flex size-16 items-center justify-center rounded-full bg-white text-blue-600 sm:size-20"
                 href="#"
@@ -65,7 +67,7 @@ export default function AuthLayout({ children }) {
                 <span className="sr-only">Home</span>
                 <LibraryBig size={40} className="text-primary" />
               </Link>
-            </div>
+            </div> */}
 
             <div className="mt-10 lg:mt-0">{children}</div>
           </div>
