@@ -75,8 +75,10 @@ export default function Page() {
 function Content() {
   return (
     <>
-      <Muted className={"uppercase text-primary"}>Welcome to tutionwala</Muted>
-      <H2>Your Learning Partner for Success</H2>
+      <Muted className={"uppercase text-secondary"}>
+        Welcome to tutionwala
+      </Muted>
+      <H2 className={"text-primary"}>Your Learning Partner for Success</H2>
       <Muted className={"text-sm lg:text-base"}>
         At Tutionwala, we offer personalized online education to help students
         thrive. Our mission is to make learning accessible, interactive, and
@@ -130,7 +132,7 @@ function Features() {
               className="h-full w-full"
             />
           </figure>
-          <div>
+          <div className="text-primary">
             <Large>{ele.heading}</Large>
             <Muted className={"lg:min-h-[80px]"}>{ele.body}</Muted>
           </div>

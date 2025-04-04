@@ -9,21 +9,27 @@ import { H1, H2, H3, Muted } from "@/components/ui/typography";
 export default function ContactAndFeedbackForm() {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
   return (
-    <div className="relative mx-auto h-[calc(100vh-20vh)] overflow-hidden rounded-lg bg-gradient-to-r from-gradient-from to-gradient-to shadow-lg">
+    <div className="relative mx-auto h-[calc(100vh-20vh)] overflow-hidden rounded-lg bg-primary shadow-lg">
       <div
         className={cn(
           `duration-600 absolute left-0 top-0 z-20 flex h-full w-1/2 flex-col items-center justify-center gap-2 transition-transform ease-in-out`,
           { "translate-x-full opacity-0": isRightPanelActive },
         )}
       >
-        <H2 className={"border-none text-4xl font-extrabold lg:text-5xl "}>
+        <H2
+          className={
+            "border-none text-4xl font-extrabold text-white lg:text-5xl"
+          }
+        >
           Feedback
         </H2>
         <Muted className={"text-balance text-center"}>
           We value your feedback! Share your thoughts to help us improve our
           services. Let us know what you liked or what we can do better.
         </Muted>
-        <Button onClick={() => setRightPanelActive(true)}>Feedback</Button>
+        <Button onClick={() => setRightPanelActive(true)} variant="secondary">
+          Feedback
+        </Button>
       </div>
       <div
         className={cn(
@@ -31,14 +37,20 @@ export default function ContactAndFeedbackForm() {
           { "z-50 translate-x-full opacity-100": isRightPanelActive },
         )}
       >
-        <H2 className={"border-none text-4xl font-extrabold lg:text-5xl "}>
+        <H2
+          className={
+            "border-none text-4xl font-extrabold text-white lg:text-5xl"
+          }
+        >
           Complain Us
         </H2>
         <Muted className={"text-balance text-center"}>
           Have questions or need assistance? Get in touch with us! Fill out the
           form, and our team will get back to you as soon as possible.
         </Muted>
-        <Button onClick={() => setRightPanelActive(false)}>Complain Us</Button>
+        <Button onClick={() => setRightPanelActive(false)} variant="secondary">
+          Complain Us
+        </Button>
       </div>
       <div
         className={cn(
