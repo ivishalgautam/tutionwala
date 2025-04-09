@@ -23,7 +23,7 @@ export default function AuthLayout({ children }) {
         <div className=" flex-col items-center justify-center bg-primary p-12 text-white lg:col-span-6 lg:flex lg:h-full lg:w-full lg:p-4 xl:col-span-6">
           <div className="mx-auto max-w-md">
             <Link href={"/"} className={`text-3xl`}>
-              <figure className="w-max rounded-lg bg-white p-2">
+              <figure className="">
                 <Image
                   width={200}
                   height={200}
