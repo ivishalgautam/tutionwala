@@ -119,16 +119,14 @@ export const Logo = () => {
 };
 export const LogoIcon = () => {
   return (
-    <div className="relative z-20 flex flex-shrink-0 items-center justify-center space-x-2 rounded border bg-white p-1 font-normal">
-      <div className="size-8">
-        <Image
-          width={50}
-          height={50}
-          src={"/images/logo.png"}
-          alt="tutionwala logo"
-          className="h-full w-full object-contain"
-        />
-      </div>
+    <div className="size-8">
+      <Image
+        width={50}
+        height={50}
+        src={"/images/logo-icon.png"}
+        alt="tutionwala logo"
+        className="h-full w-full object-contain"
+      />
     </div>
   );
 };
