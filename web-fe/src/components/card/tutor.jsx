@@ -28,7 +28,9 @@ export default function TutorCard({
           <div className="flex items-center justify-between">
             <Link href={`/tutors/${tutor.tutor_id}`}>
               <H4 className={"transition-colors hover:text-primary"}>
-                {tutor.fullname}
+                {tutor.type === "institute"
+                  ? tutor.institute_name
+                  : tutor.fullname}
               </H4>
             </Link>
             <div className="flex gap-1">

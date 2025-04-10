@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { allRoutes } from "@/data/routes";
+import { allRoutes, publicRoutes } from "@/data/routes";
 import { MainContext } from "@/store/context";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
@@ -38,6 +38,7 @@ export default function Layout({ children }) {
       pathname === "/signup" ||
       pathname === "/signup/tutor" ||
       pathname === "/signup/student" ||
+      pathname === "/signup/institute" ||
       pathname === "/verify" ||
       pathname === "/aadhaar-kyc" ||
       pathname === "/complete-profile/tutor" ||
@@ -94,15 +95,7 @@ export default function Layout({ children }) {
 
   const getContent = () => {
     // Array of all the paths that don't need the layout
-    if (
-      [
-        "/login",
-        "/signup",
-        "/signup/tutor",
-        "/signup/student",
-        "/unauthorized",
-      ].includes(pathname)
-    ) {
+    if (publicRoutes.includes(pathname)) {
       return children;
     }
 

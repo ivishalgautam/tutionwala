@@ -5,7 +5,7 @@ import React from "react";
 export default function SignUpAs() {
   return (
     <div className="flex gap-4">
-      {["tutor", "student"].map((item) => (
+      {["tutor", "student", "institute"].map((item) => (
         <div key={item}>
           <Link
             className={`group flex size-44 flex-col items-center justify-center gap-2 rounded-lg border text-lg font-semibold tracking-wider transition-colors hover:bg-gray-100`}
@@ -16,7 +16,9 @@ export default function SignUpAs() {
                 src={
                   item === "tutor"
                     ? "/images/teacher.png"
-                    : "/images/student.png"
+                    : item === "student"
+                      ? "/images/student.png"
+                      : "/images/institute.png"
                 }
                 width={100}
                 height={100}

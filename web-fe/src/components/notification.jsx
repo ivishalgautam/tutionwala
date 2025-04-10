@@ -51,7 +51,6 @@ export default function Notification() {
       };
     });
   }, [notifications]);
-  console.log({ groupedNotifications });
   if (isLoading) return <Skeleton className={"size-10"} />;
 
   return (

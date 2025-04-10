@@ -34,7 +34,7 @@ import "react-phone-number-input/style.css";
 import { getCurrentCoords } from "@/lib/get-current-coords";
 
 const defaultValues = {
-  type: "tutor",
+  type: "institute",
   institute_name: "",
   institute_contact_name: "",
   fullname: "",
@@ -58,7 +58,7 @@ const searchCategory = async (q) => {
   return filteredData;
 };
 
-export default function SignUpTutorForm() {
+export default function SignUpInstituteForm() {
   const [loading, setLoading] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
@@ -165,7 +165,7 @@ export default function SignUpTutorForm() {
       data.mobile_number,
     );
     const payload = {
-      type: "individual",
+      type: "institute",
       institute_name: data.institute_name,
       institute_contact_name: data.institute_contact_name,
       fullname: data.fullname,
@@ -210,8 +210,43 @@ export default function SignUpTutorForm() {
       <div className="flex items-center justify-start">
         {!isOtpSent ? (
           <div className="w-full space-y-6">
-            <H4>Sign Up as tutor</H4>
+            <H4>Sign Up as Institute</H4>
             <div className="space-y-2">
+              {/* institute */}
+              <div className="grid gap-2 md:grid-cols-2">
+                <div>
+                  <Label className="text-sm">Institute name</Label>
+                  <Input
+                    {...register("institute_name", {
+                      required: "required*",
+                    })}
+                    placeholder="Enter institute name"
+                    className="rounded-lg bg-gray-100"
+                  />
+                  {errors.institute_name && (
+                    <span className="text-sm text-rose-500">
+                      {errors.institute_name.message}
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-sm">Contact person&apos;s name</Label>
+                  <Input
+                    {...register("institute_contact_name", {
+                      required: "required*",
+                    })}
+                    placeholder="Enter institute name"
+                    className="rounded-lg bg-gray-100"
+                  />
+                  {errors.institute_contact_name && (
+                    <span className="text-sm text-rose-500">
+                      {errors.institute_contact_name.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 {/* fullname */}
                 <div>
@@ -230,8 +265,9 @@ export default function SignUpTutorForm() {
                     </span>
                   )}
                 </div>
+
                 {/* gender */}
-                <div className="flex flex-col justify-start p-1">
+                {/* <div className="flex flex-col justify-start p-1">
                   <Label className="text-sm">Gender</Label>
                   <Controller
                     control={control}
@@ -256,7 +292,7 @@ export default function SignUpTutorForm() {
                       {errors.gender.message}
                     </span>
                   )}
-                </div>
+                </div> */}
               </div>
 
               {/* email */}

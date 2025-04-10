@@ -58,6 +58,7 @@ export default function TutorsWithFilter() {
     queryKey: ["tutors", searchParamsStr],
     enabled: !!searchParamsStr,
   });
+
   const paginationCount = Math.ceil(data?.total / limit);
 
   const queryString = useMemo(() => searchParams.toString(), [searchParams]);

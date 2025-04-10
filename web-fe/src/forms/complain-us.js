@@ -9,18 +9,32 @@ import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { H2 } from "../components/ui/typography";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const querySchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().min(1, "Email is required").email("Invalid email format"),
+  address: z.string().min(1, "Address is required"),
+  phone: z
+    .string()
+    .min(1, "Phone is required")
+    .regex(/^[6-9]\d{9}$/, "Invalid phone number"),
+  subject: z.string().min(1, "Subject is required"),
+  message: z.string().min(1, "Message is required"),
+});
 
 const createQuery = async (data) => {
   return await http().post(endpoints.queries.getAll, data);
 };
 
-export default function ContactForm() {
+export default function ComplainUsForm() {
   const {
     formState: { errors },
     register,
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm({ resolver: zodResolver(querySchema) });
 
   const createMutation = useMutation(createQuery, {
     onSuccess: (data) => {
@@ -101,7 +115,6 @@ export default function ContactForm() {
             placeholder="Phone"
             {...register("phone", {
               required: "required",
-              valueAsNumber: true,
               min: 10,
             })}
             className={className}

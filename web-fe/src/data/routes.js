@@ -87,3 +87,12 @@ export const allRoutes = [
     roles: [],
   },
 ];
+
+export const publicRoutes = [
+  "/login",
+  "/signup",
+  "/signup/tutor",
+  "/signup/student",
+  "/signup/institute",
+  "/unauthorized",
+];

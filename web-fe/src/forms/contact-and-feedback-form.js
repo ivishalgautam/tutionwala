@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
-import ContactForm from "./contact";
+import ComplainUsForm from "./complain-us";
 import FeedbackForm from "./feedback";
 import { H1, H2, H3, Muted } from "@/components/ui/typography";
 
@@ -78,7 +78,7 @@ export default function ContactAndFeedbackForm() {
               { "translate-x-1/5": isRightPanelActive },
             )}
           >
-            <ContactForm />
+            <ComplainUsForm />
           </div>
         </div>
       </div>

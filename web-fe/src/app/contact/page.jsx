@@ -1,4 +1,4 @@
-import ContactForm from "@/forms/contact";
+import ContactForm from "@/forms/complain-us";
 import {
   Breadcrumb,
   BreadcrumbItem,

@@ -33,8 +33,8 @@ export const Footer = () => {
 
 export const FooterOne = () => {
   return (
-    <div className="justify-between space-y-8 pb-5 md:flex md:gap-6 md:space-y-0">
-      <div className="flex-1 basis-2/3">
+    <div className="justify-between space-y-8 pb-5 md:grid md:grid-cols-12 md:gap-6 md:space-y-0">
+      <div className="md:col-span-6">
         <div className="space-y-4">
           <figure className="flex items-center gap-2">
             <Image
@@ -69,7 +69,12 @@ export const FooterOne = () => {
         </div>
       </div>
 
-      <div className="flex-1 basis-1/3 items-center justify-between space-y-3 text-sm sm:text-base md:mt-0">
+      <div className="space-y-2 py-5 sm:col-span-5 md:col-span-3 ">
+        <Muted className={"font-medium"}>Useful Links</Muted>
+        <Navigation />
+      </div>
+
+      <div className="items-center justify-between space-y-3 text-sm sm:text-base md:col-span-3 md:mt-0">
         <H6>Feel free to share your question</H6>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -93,12 +98,7 @@ export const FooterOne = () => {
 export const FooterTwo = ({ isError, error, isLoading, courses }) => {
   return (
     <div className="grid grid-cols-12">
-      <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-5 md:col-span-4 lg:col-span-2">
-        <Muted className={"font-medium"}>Useful Links</Muted>
-        <Navigation />
-      </div>
-
-      <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-7 md:col-span-8 lg:col-span-10">
+      {/* <div className="col-span-12 space-y-2 border-t border-black/10 py-5 sm:col-span-7 md:col-span-8 lg:col-span-10">
         <Muted className={"font-medium"}>Tutors By Subjects</Muted>
         <div>
           {isLoading ? (
@@ -109,7 +109,7 @@ export const FooterTwo = ({ isError, error, isLoading, courses }) => {
             <Courses {...{ courses, totalSlices: 5, sliceCount: 5 }} />
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

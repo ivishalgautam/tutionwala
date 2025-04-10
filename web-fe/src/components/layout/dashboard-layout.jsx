@@ -97,6 +97,7 @@ export default function DashboardLayout({ children }) {
 }
 
 export const Profile = ({ isUserLoading, user }) => {
+  console.log({ user });
   const [imageError, setImageError] = useState(false);
   useEffect(() => {
     if (imageError) {
@@ -123,8 +124,14 @@ export const Profile = ({ isUserLoading, user }) => {
         />
       </figure>
       <div>
-        <Small>{user?.fullname}</Small>
-        <Muted className={"text-xs capitalize"}>{user?.role}</Muted>
+        <Small>
+          {user?.tutor_type === "institute"
+            ? user.institute_name
+            : user?.fullname}
+        </Small>
+        <Muted className={"text-xs capitalize"}>
+          {user?.tutor_type === "institute" ? "Institute" : user?.role}
+        </Muted>
       </div>
     </div>
   );
