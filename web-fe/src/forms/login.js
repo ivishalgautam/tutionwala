@@ -93,7 +93,7 @@ export default function LoginForm({ setIsOtpSent, setPhone }) {
                 <AlertDialogTrigger className="text-primary">
                   Create one
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="max-w-3xl">
                   <AlertDialogHeader className="relative">
                     <AlertDialogTitle className="text-center uppercase">
                       Sign up as?
