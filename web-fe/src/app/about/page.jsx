@@ -88,8 +88,8 @@ function Content() {
       <Muted className={"text-sm lg:text-base"}>
         We believe in fostering a supportive learning environment where students
         can grow and excel. With a focus on quality education and personalized
-        attention, we strive to empower learners to reach their carrier goals
-        and beyond.
+        attention, we strive to empower learners to reach their career goals and
+        beyond.
       </Muted>
     </>
   );
