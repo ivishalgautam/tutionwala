@@ -2,7 +2,7 @@
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
-import { Small } from "@/components/ui/typography";
+import { Muted, Small } from "@/components/ui/typography";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import moment from "moment";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
 export const columns = (
   handleDelete,
@@ -47,6 +48,34 @@ export const columns = (
         </a>
       ) : (
         fullname
+      );
+    },
+  },
+  {
+    accessorKey: "curr_step",
+    header: ({ column }) => {
+      return <Button variant="ghost">PROGRESS</Button>;
+    },
+    cell: ({ row }) => {
+      const curr_step = row.original.curr_step;
+      const is_profile_completed = row.original.is_profile_completed;
+      const is_aadhaar_verified = row.original.is_aadhaar_verified;
+      const is_email_verified = row.original.is_email_verified;
+      const completed =
+        curr_step +
+        is_profile_completed +
+        is_aadhaar_verified +
+        is_email_verified;
+
+      const progress = (completed / 5) * 100;
+
+      return (
+        <div>
+          <Progress value={progress} className="h-2" />
+          <div
+            className={"mt-0.5 text-end text-[10px] text-xs text-gray-400"}
+          >{`${progress}% Completed`}</div>
+        </div>
       );
     },
   },
