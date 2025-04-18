@@ -66,7 +66,6 @@ export const columns = (
         is_profile_completed +
         is_aadhaar_verified +
         is_email_verified;
-
       const progress = (completed / 5) * 100;
 
       return (
