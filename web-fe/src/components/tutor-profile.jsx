@@ -5,6 +5,8 @@ import { H2, H3, H4, Muted } from "@/components/ui/typography";
 import Image from "next/image";
 import DialogEnquiryForm from "@/forms/enquiry-dialog";
 import {
+  BadgeCheck,
+  BadgeX,
   BookOpen,
   Calendar,
   CheckCircle2,
@@ -38,6 +40,7 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 import { rupee } from "@/lib/Intl";
+import { cn } from "@/lib/utils";
 
 export default function TutorProfile({
   tutorId,
@@ -48,6 +51,7 @@ export default function TutorProfile({
   ...teacher
 }) {
   const [fullAddr, setFullAddr] = useState("");
+  const isInstitute = teacher.type === "institute";
   return (
     <>
       <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -67,11 +71,24 @@ export default function TutorProfile({
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold">{tutor.fullname}</h1>
-                <Badge variant="outline" className="ml-2">
-                  {teacher.type.charAt(0).toUpperCase() + teacher.type.slice(1)}
+                <h1 className="text-2xl font-bold">
+                  {isInstitute ? teacher.institute_name : tutor.fullname}
+                </h1>
+                <Badge variant="outline" className="ml-2 capitalize">
+                  {teacher.type}
                 </Badge>
               </div>
+              {tutor.is_aadhaar_verified ? (
+                <Badge className={"bg-green-500"}>
+                  <BadgeCheck className="size-4" />
+                  <span className="ml-1">Verified</span>
+                </Badge>
+              ) : (
+                <Badge className={"bg-red-500"}>
+                  <BadgeX className="size-4" />
+                  <span className="ml-1">Not Verified</span>
+                </Badge>
+              )}
               <Review rating={avg_ratings} reviews={total_reviews} />
               <div className="flex items-center text-sm text-muted-foreground">
                 <MapPin className="mr-1 h-4 w-4" />
@@ -105,36 +122,38 @@ export default function TutorProfile({
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Education */}
-            <Card className="md:col-span-2">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center">
-                  <GraduationCap className="mr-2 h-5 w-5" />
-                  Education
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <div>
-                      <h3 className="font-medium">{teacher.degree.name}</h3>
-                      {teacher.degree.status === "yes" && (
-                        <p className="text-sm text-muted-foreground">
-                          Graduated: {teacher.degree.year}
-                        </p>
-                      )}
+            {!isInstitute && (
+              <Card className="md:col-span-2">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center">
+                    <GraduationCap className="mr-2 h-5 w-5" />
+                    Education
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <div>
+                        <h3 className="font-medium">{teacher.degree.name}</h3>
+                        {teacher.degree.status === "yes" && (
+                          <p className="text-sm text-muted-foreground">
+                            Graduated: {teacher.degree.year}
+                          </p>
+                        )}
+                      </div>
+                      <Badge variant="outline" className="h-fit">
+                        {teacher.degree.status === "yes"
+                          ? "Completed"
+                          : "Persuing"}
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className="h-fit">
-                      {teacher.degree.status === "yes"
-                        ? "Completed"
-                        : "Persuing"}
-                    </Badge>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Languages */}
-            <Card>
+            <Card className={cn({ "col-span-full": isInstitute })}>
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
                   <Languages className="mr-2 h-5 w-5" />

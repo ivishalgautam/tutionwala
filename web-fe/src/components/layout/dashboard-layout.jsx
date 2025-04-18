@@ -20,6 +20,7 @@ import { AlignLeft, ChevronLeft } from "lucide-react";
 import { Button, buttonVariants } from "../ui/button";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Warning } from "phosphor-react";
+import { Progress } from "../ui/progress";
 
 const tabs = [
   { value: "students", label: "Students", roles: ["tutor"] },
@@ -159,11 +160,23 @@ export const ListItem = ({ item }) => {
 
 export const Sidebar = () => {
   const { user, isUserLoading } = useContext(MainContext);
+  const is_aadhaar_verified = user.is_aadhaar_verified;
+  const is_email_verified = user.is_email_verified;
+  const completed = 3 + is_aadhaar_verified + is_email_verified;
+  const progress = (completed / 5) * 100;
+
+  console.log({ progress });
 
   return (
     <div className="overflow-hidden rounded bg-white shadow-sm">
       <div className="border-b-2 p-3">
         <Profile isUserLoading={isUserLoading} user={user} />
+        <div className="mt-2">
+          <div
+            className={"mt-0.5 text-end text-[10px] text-xs text-gray-400"}
+          >{`${progress}% Completed`}</div>
+          <Progress value={progress} className="h-2 bg-gray-300" />
+        </div>
       </div>
 
       <ul className="space-y-[1px]">

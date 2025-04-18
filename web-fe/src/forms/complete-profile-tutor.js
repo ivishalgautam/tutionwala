@@ -155,7 +155,6 @@ export default function CompleteProfileTutor({
     enabled: !!id,
   });
 
-  console.log({ data });
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];

@@ -240,14 +240,12 @@ const AadhaarForm = () => {
                     </p>
                   )}
                   <div className="flex items-center justify-center gap-2">
-                    {user?.role === "student" && (
-                      <Link
-                        href={"/"}
-                        className={`w-full ${buttonVariants({ variant: "outline" })}`}
-                      >
-                        I will do it later
-                      </Link>
-                    )}
+                    <Link
+                      href={"/dashboard/profile"}
+                      className={`w-full ${buttonVariants({ variant: "outline" })}`}
+                    >
+                      I will do it later
+                    </Link>
 
                     <Button
                       className="w-full"
