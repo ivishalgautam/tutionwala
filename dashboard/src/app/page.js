@@ -108,28 +108,28 @@ function Reports({ data, isError, isLoading, error }) {
         <Card
           count={data?.queries?.total ?? 0}
           title="Total Queries"
-          icon={<CircleHelp size={size} className="text-primary" />}
+          icon={<CircleHelp size={size} className="text-blue-300" />}
           href="/queries?limit=10"
           className="border-blue-300 bg-blue-100"
         />
         <Card
           count={data?.queries?.pending ?? 0}
           title="Pending Queries"
-          icon={<CircleHelp size={size} className="text-primary" />}
+          icon={<CircleHelp size={size} className="text-red-300" />}
           href="/queries?limit=10&status=pending"
           className="border-red-300 bg-red-100"
         />
         <Card
           count={data?.queries?.resolved ?? 0}
           title="Resolved queries"
-          icon={<CircleHelp size={size} className="text-primary" />}
+          icon={<CircleHelp size={size} className="text-green-300" />}
           href="/queries?limit=10&status=resolved"
           className="border-green-300 bg-green-100"
         />
         <Card
           count={data?.queries?.inProgress ?? 0}
           title="In Progress Queries"
-          icon={<CircleHelp size={size} className="text-primary" />}
+          icon={<CircleHelp size={size} className="text-yellow-300" />}
           href="/queries?limit=10&status=in+progress"
           className="border-yellow-300 bg-yellow-100"
         />
