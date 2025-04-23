@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { H5, H6 } from "../components/ui/typography";
+import { H5, H6, Muted } from "../components/ui/typography";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -30,6 +30,7 @@ import ShadcnSelect from "../components/ui/shadcn-select";
 import { languages as languageOptions } from "@/data/languages";
 import { courses } from "@/data/courses";
 import { MAX_WORD, validateWordLimit } from "./complete-profile-tutor";
+import Loading from "@/components/loading";
 
 const fetchProfile = async (id) => {
   const { data } = await http().get(
@@ -68,6 +69,7 @@ export default function TutorProfileForm({ user, setUser }) {
       languages: "",
     },
   });
+  const degree = watch("degree");
   const [, rerender] = useState(false);
   const {
     data: tutor,
@@ -79,7 +81,6 @@ export default function TutorProfileForm({ user, setUser }) {
     queryFn: () => fetchProfile(user.id),
     enabled: !!user.id,
   });
-  tutor && console.log({ tutor });
   const {
     fields: languages,
     append: appendLang,
@@ -207,7 +208,7 @@ export default function TutorProfileForm({ user, setUser }) {
       rerender(true);
     }
   }, [tutor, setValue]);
-
+  console.log({ tutor });
   const onSubmit = (data) => {
     const payload = {
       profile_picture: media.profile_picture,
@@ -227,6 +228,9 @@ export default function TutorProfileForm({ user, setUser }) {
     router.push("/dashboard/profile");
   };
   const experience = watch("experience", "");
+
+  if (isTutorLoading) return <Loading />;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-4">
@@ -238,7 +242,7 @@ export default function TutorProfileForm({ user, setUser }) {
             <div className="space-y-4">
               <H5>Profile Picture</H5>
               {!media.profile_picture && (
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-start justify-center">
                   <Input
                     type="file"
                     placeholder="Select Profile Picture"
@@ -249,6 +253,9 @@ export default function TutorProfileForm({ user, setUser }) {
                     multiple={false}
                     accept="image/png, image/webp, image/jpg, image/jpeg"
                   />
+                  <Muted className={"text-xs"}>
+                    PNG, JPG, WEBP (max. 2MB), Size: 1:1
+                  </Muted>
                   {errors.profile_picture && (
                     <span className="text-sm text-red-500">
                       {errors.profile_picture.message}
@@ -483,37 +490,38 @@ export default function TutorProfileForm({ user, setUser }) {
                 )}
               </div>
 
-              <div>
-                <Label>Is degree completed?</Label>
-                <Controller
-                  control={control}
-                  name={`degree.status`}
-                  rules={{ required: "required*" }}
-                  render={({ field }) => (
-                    <Select
-                      defaultValue={field.value}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="">
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Status</SelectLabel>
-                          <SelectItem value="yes">Yes</SelectItem>
-                          <SelectItem value="pursuing">Pursuing</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+              {degree?.name !== "other" && (
+                <div>
+                  <Label>Is degree completed?</Label>
+                  <Controller
+                    control={control}
+                    name={`degree.status`}
+                    rules={{ required: "required*" }}
+                    render={({ field }) => (
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="">
+                          <SelectValue placeholder="Select Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Status</SelectLabel>
+                            <SelectItem value="yes">Yes</SelectItem>
+                            <SelectItem value="pursuing">Pursuing</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.degree?.status && (
+                    <span className="text-sm text-red-500">
+                      {errors.degree?.status.message}
+                    </span>
                   )}
-                />
-                {errors.degree?.status && (
-                  <span className="text-sm text-red-500">
-                    {errors.degree?.status.message}
-                  </span>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* degree completion year */}
               {watch("degree.status") === "yes" && (
@@ -537,6 +545,25 @@ export default function TutorProfileForm({ user, setUser }) {
                   {errors.degree?.year && (
                     <span className="text-sm text-red-500">
                       {errors.degree?.year.message}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* other */}
+              {degree?.name === "other" && (
+                <div>
+                  <Label>Other</Label>
+                  <Input
+                    type="text"
+                    {...register("degree.other", {
+                      required: "required*",
+                    })}
+                    placeholder="Enter other"
+                  />
+                  {errors.degree?.other && (
+                    <span className="text-sm text-red-500">
+                      {errors.degree?.other.message}
                     </span>
                   )}
                 </div>

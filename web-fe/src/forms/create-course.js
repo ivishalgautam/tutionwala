@@ -311,7 +311,7 @@ export default function CreateCourse({
         tutorCourse.fields.forEach(({ fieldName, options }) => {
           setValue(
             `selected.${fieldName}.options`,
-            data.fields.find((f) => f.fieldName === fieldName)?.fieldType ===
+            data?.fields.find((f) => f.fieldName === fieldName)?.fieldType ===
               "radio"
               ? options[0]
               : options,

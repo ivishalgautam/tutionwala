@@ -10,6 +10,8 @@ export const searchParams = {
   page: parseAsString,
   limit: parseAsString,
   q: parseAsString,
+  rating: parseAsString,
+  category: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

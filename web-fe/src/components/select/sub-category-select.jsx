@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
+import { Button } from "../ui/button";
 
 const searchCategory = async (q) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}?q=${q}`);
@@ -14,12 +15,15 @@ const searchCategory = async (q) => {
   return filteredData;
 };
 
-export default function SubCategorySelect({ isMulti = false, searchParams }) {
+export default function SubCategorySelect({ isMulti = false }) {
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [defaultOptions, setDefaultOptions] = useState([]);
-  const router = useRouter();
   const debounceTimeoutRef = useRef(null);
+
+  // Replace URL manipulation with nuqs
+  const [category, setCategory] = useQueryState("category");
+
   const { data, isLoading, isFetching } = useQuery({
     queryFn: () => searchCategory(subCatInputVal),
     queryKey: [`search-${subCatInputVal}`, subCatInputVal],
@@ -47,9 +51,10 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
     });
   }, []);
 
+  // Update URL query param when selection changes
   useEffect(() => {
     if (!selectedOption) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
+
     const valuesToSet = Array.isArray(selectedOption)
       ? selectedOption
           .map(({ value }) => value)
@@ -57,44 +62,53 @@ export default function SubCategorySelect({ isMulti = false, searchParams }) {
           .toString()
       : selectedOption.value;
 
-    if (searchParams.get("category")) {
-      newSearchParams.set("category", valuesToSet);
-    } else {
-      newSearchParams.append("category", valuesToSet);
-    }
+    setCategory(valuesToSet || null);
+  }, [selectedOption, setCategory]);
 
-    if (!valuesToSet) {
-      newSearchParams.delete("category");
-    }
-
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedOption, router, searchParams]);
-
+  // Initialize selectedOption from URL on component mount
   useEffect(() => {
-    const categoryValues = searchParams.get("category");
-    if (categoryValues) {
-      const categoryArray = categoryValues.split(" ");
+    if (category) {
+      const categoryArray = category.split(" ");
       const formattedOptions = categoryArray.map((value) => ({
         label: value.replace(/-/g, " "),
         value,
       }));
 
       setDefaultOptions(formattedOptions);
-      setSelectedOption(formattedOptions);
+      setSelectedOption(isMulti ? formattedOptions : formattedOptions[0]);
     }
-  }, [searchParams]);
+  }, [category, isMulti]);
+
+  // Handle reset button click
+  const handleReset = () => {
+    setSelectedOption(null);
+    setCategory(null);
+  };
 
   return (
-    <ReactSelect
-      loadOptions={handleInputChange}
-      placeholder={"Search Category..."}
-      isLoading={isFetching && isLoading}
-      onChange={setSelectedOption}
-      isMulti={isMulti}
-      defaultOptions={defaultOptions}
-      value={selectedOption}
-      menuPortalTarget={document.body}
-      className="rounded border"
-    />
+    <div className="flex items-center gap-2">
+      <div className="flex-grow">
+        <ReactSelect
+          loadOptions={handleInputChange}
+          placeholder={"Search Category..."}
+          isLoading={isFetching && isLoading}
+          onChange={setSelectedOption}
+          isMulti={isMulti}
+          defaultOptions={defaultOptions}
+          value={selectedOption}
+          menuPortalTarget={document.body}
+          className="rounded border"
+        />
+      </div>
+      {selectedOption && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
+    </div>
   );
 }

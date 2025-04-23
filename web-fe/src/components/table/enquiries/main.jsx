@@ -36,8 +36,6 @@ async function deleteEnquiry({ id }) {
 }
 
 export default function AllEnquiries() {
-  const [isReviewModal, setIsReviewModal] = useState(false);
-  const [tutorId, setTutorId] = useState("");
   const [enquiryId, setEnquiryId] = useState("");
   const queryClient = useQueryClient();
   const { user, isUserLoading } = useContext(MainContext);
@@ -83,14 +81,6 @@ export default function AllEnquiries() {
     deleteEnqMutation.mutate({ id: id });
   };
 
-  const openReviewModal = () => {
-    setIsReviewModal(true);
-  };
-
-  const closeReviewModal = () => {
-    setIsReviewModal(false);
-  };
-
   return (
     <>
       <Enquiries
@@ -100,18 +90,12 @@ export default function AllEnquiries() {
           enquiries,
           user,
           handleDelete,
-          openReviewModal,
-          setTutorId,
           handleUpdate,
           isEnquiriesError,
           enquiriesError,
           setEnquiryId,
         }}
       />
-
-      <Modal isOpen={isReviewModal} onClose={closeReviewModal}>
-        <ReviewForm tutorId={tutorId} enquiryId={enquiryId} />
-      </Modal>
     </>
   );
 }
@@ -122,8 +106,6 @@ export const Enquiries = ({
   user,
   isUserLoading,
   handleDelete,
-  openReviewModal,
-  setTutorId,
   handleUpdate,
   isEnquiriesError,
   enquiriesError,
@@ -139,8 +121,6 @@ export const Enquiries = ({
           {...{
             enquiries,
             handleDelete,
-            openReviewModal,
-            setTutorId,
             setEnquiryId,
           }}
         />
@@ -151,21 +131,10 @@ export const Enquiries = ({
   );
 };
 
-export const TutorEnquiries = ({
-  enquiries,
-  handleDelete,
-  openReviewModal,
-  setTutorId,
-  setEnquiryId,
-}) => {
+export const TutorEnquiries = ({ enquiries, handleDelete, setEnquiryId }) => {
   return (
     <TutorsEnquiryDataTable
-      columns={tutorColumns(
-        handleDelete,
-        openReviewModal,
-        setTutorId,
-        setEnquiryId,
-      )}
+      columns={tutorColumns(handleDelete, setEnquiryId)}
       data={enquiries?.map(
         ({
           id,
@@ -209,6 +178,7 @@ export const StudentEnquiries = ({ enquiries, handleDelete, handleUpdate }) => {
             created_at,
             sub_category_name,
             unread_chat_count,
+            subjects,
           }) => ({
             id,
             sub_category_name,
@@ -220,6 +190,7 @@ export const StudentEnquiries = ({ enquiries, handleDelete, handleUpdate }) => {
             email: student[0].email,
             mobile_number: student[0].mobile_number,
             unread_chat_count,
+            subjects,
           }),
         )}
       />

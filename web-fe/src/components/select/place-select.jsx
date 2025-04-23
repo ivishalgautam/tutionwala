@@ -1,6 +1,8 @@
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+"use client";
+
+import { useQueryState } from "nuqs";
 import ReactSelect from "react-select";
+import { Button } from "../ui/button";
 
 const options = [
   { label: "Tutor place", value: "tutorPlace" },
@@ -8,47 +10,53 @@ const options = [
   { label: "Other", value: "other" },
 ];
 
-export default function ClassPlaceSelect({ searchParams }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const router = useRouter();
+export default function ClassPlaceSelect() {
+  const [place, setPlace] = useQueryState("place");
 
-  const place = searchParams.get("place");
-  const defaultValues = useCallback(() => {
-    return (
-      options.filter(({ value }) => place?.split(" ").includes(value)) ?? []
-    );
-  }, [place]);
+  const selectedOptions =
+    place
+      ?.split(" ")
+      .map((value) => options.find((opt) => opt.value === value))
+      .filter(Boolean) ?? [];
 
-  useEffect(() => {
-    if (!selectedOption) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-
-    const valuesToSet = selectedOption
-      .map(({ value }) => value)
-      .join(" ")
-      .toString();
-
-    if (place) {
-      newSearchParams.set("place", valuesToSet);
+  const handleChange = (selected) => {
+    if (!selected || selected.length === 0) {
+      setPlace(null); // Remove from URL
     } else {
-      newSearchParams.append("place", valuesToSet);
+      const joined = selected.map((opt) => opt.value).join(" ");
+      setPlace(joined); // Update URL
     }
+  };
 
-    if (!valuesToSet) {
-      newSearchParams.delete("place");
-    }
-
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedOption, router, searchParams, place]);
+  // Handle reset button click
+  const handleReset = () => {
+    setPlace(null);
+  };
 
   return (
-    <ReactSelect
-      options={options}
-      defaultValue={defaultValues}
-      placeholder={"Select Class place"}
-      onChange={setSelectedOption}
-      menuPortalTarget={document.body}
-      isMulti
-    />
+    <div className="flex items-center gap-2">
+      <div className="flex-grow">
+        <ReactSelect
+          options={options}
+          value={selectedOptions}
+          placeholder="Select Class place"
+          onChange={handleChange}
+          isMulti
+          menuPortalTarget={
+            typeof window !== "undefined" ? document.body : null
+          }
+          className="rounded border"
+        />
+      </div>
+      {selectedOptions.length > 0 && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
+    </div>
   );
 }

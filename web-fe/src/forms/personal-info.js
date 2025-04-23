@@ -1,4 +1,4 @@
-import { H5 } from "../components/ui/typography";
+import { H5, Muted } from "../components/ui/typography";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -41,7 +41,6 @@ const fetchProfile = async (id) => {
 };
 
 export default function PersonalInfoForm({ user, setUser }) {
-  console.log({ user });
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [media, setMedia] = useState({
@@ -131,7 +130,6 @@ export default function PersonalInfoForm({ user, setUser }) {
       const fileurl = url.split("?")[0];
 
       if (type === "profile_picture") {
-        console.log({ user });
         setUser({ ...user, profile_picture: fileurl });
         setMedia({ profile_picture: fileurl });
         localStorage.setItem("profile_picture", fileurl);
@@ -174,7 +172,14 @@ export default function PersonalInfoForm({ user, setUser }) {
   }, [user, student]);
 
   const onSubmit = (data) => {
-    updateMutation.mutate(data);
+    const payload = {
+      id: data.id,
+      dob: data.dob,
+      email: data.email,
+      father_name: data.father_name,
+      fullname: data.fullname,
+    };
+    updateMutation.mutate(payload);
   };
 
   return (
@@ -186,7 +191,7 @@ export default function PersonalInfoForm({ user, setUser }) {
             <div className="col-span-2 space-y-4">
               <H5>Profile Picture</H5>
               {!media.profile_picture && (
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-start justify-center">
                   <Input
                     type="file"
                     placeholder="Select Profile Picture"
@@ -197,6 +202,9 @@ export default function PersonalInfoForm({ user, setUser }) {
                     multiple={false}
                     accept="image/png, image/webp, image/jpg, image/jpeg"
                   />
+                  <Muted className={"text-xs"}>
+                    PNG, JPG, WEBP (max. 2MB), Size: 1:1
+                  </Muted>
                   {errors.profile_picture && (
                     <span className="text-sm text-red-500">
                       {errors.profile_picture.message}

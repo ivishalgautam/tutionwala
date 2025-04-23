@@ -147,4 +147,8 @@ export const courses = [
     value: "Master of Fashion Design (M.FD)",
     label: "Master of Fashion Design (M.FD)",
   },
+  {
+    value: "other",
+    label: "Other",
+  },
 ];

@@ -17,7 +17,12 @@ import { Chat } from "phosphor-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export const columns = (handleDelete) => [
+export const columns = (
+  handleDelete,
+  openReviewModal,
+  setTutorId,
+  setEnquiryId,
+) => [
   {
     accessorKey: "tutor_name",
     header: ({ column }) => {
@@ -65,7 +70,7 @@ export const columns = (handleDelete) => [
           className={cn(buttonVariants({}), "h-9")}
         >
           <Chat className="mr-1 size-4" /> Chat{" "}
-          {count > 1 && (
+          {count > 4 && (
             <Badge
               className={"ml-1 bg-white text-black hover:bg-white/80"}
               variant={"secondary"}
@@ -83,6 +88,10 @@ export const columns = (handleDelete) => [
     cell: ({ row }) => {
       const id = row.original.id;
       const role = row.original.role;
+      const createdAt = row.original.created_at;
+      const tutorId = row.original.tutor_id;
+      const is7DaysOld = moment(createdAt).add(7, "days").isBefore(moment());
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -94,13 +103,29 @@ export const columns = (handleDelete) => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+
+            {is7DaysOld && (
+              <>
+                <DropdownMenuItem
+                  onClick={() => {
+                    openReviewModal();
+                    setTutorId(tutorId);
+                    setEnquiryId(id);
+                  }}
+                >
+                  Review
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
+
             <DropdownMenuItem>
               <Link href={`/dashboard/tutor-student-chats/${id}`}>Chat</Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleDelete({ id })}>
               Delete
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

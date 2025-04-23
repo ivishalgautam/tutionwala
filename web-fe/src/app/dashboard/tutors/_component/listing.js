@@ -10,6 +10,8 @@ import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { columns } from "../columns";
+import Modal from "@/components/Modal";
+import ReviewForm from "@/forms/review";
 
 async function fetchMyStudents(searchParamsStr = "") {
   const { data } = await http().get(
@@ -23,6 +25,9 @@ async function deleteStudent(id) {
 }
 
 export default function Listing() {
+  const [isReviewModal, setIsReviewModal] = useState(false);
+  const [tutorId, setTutorId] = useState("");
+  const [enquiryId, setEnquiryId] = useState("");
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const searchParamsStr = searchParams.toString();
@@ -50,6 +55,14 @@ export default function Listing() {
     }
   };
 
+  const openReviewModal = () => {
+    setIsReviewModal(true);
+  };
+
+  const closeReviewModal = () => {
+    setIsReviewModal(false);
+  };
+
   useEffect(() => {
     if (!searchParamsStr) {
       const params = new URLSearchParams();
@@ -67,10 +80,22 @@ export default function Listing() {
   return (
     <div className="w-full rounded-lg border-input">
       <DataTable
-        columns={columns(handleDelete)}
+        columns={columns(
+          handleDelete,
+          openReviewModal,
+          setTutorId,
+          setEnquiryId,
+        )}
         data={data.data}
         totalItems={data.total}
       />
+      <Modal isOpen={isReviewModal} onClose={closeReviewModal}>
+        <ReviewForm
+          tutorId={tutorId}
+          enquiryId={enquiryId}
+          cb={closeReviewModal}
+        />
+      </Modal>
     </div>
   );
 }

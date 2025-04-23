@@ -1,6 +1,8 @@
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+"use client";
+
+import { useQueryState } from "nuqs";
 import ReactSelect from "react-select";
+import { Button } from "../ui/button";
 
 const options = [
   { label: "Male", value: "male" },
@@ -8,34 +10,45 @@ const options = [
   { label: "Any", value: "any" },
 ];
 
-export default function GenderSelect({ searchParams }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const router = useRouter();
-  const gender = searchParams.get("gender");
+export default function GenderSelect() {
+  const [gender, setGender] = useQueryState("gender");
+  const selectedOption = options.find((opt) => opt.value === gender) ?? null;
 
-  useEffect(() => {
-    if (!selectedOption) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    if (searchParams.get("gender")) {
-      newSearchParams.set("gender", selectedOption.value);
+  const handleChange = (option) => {
+    if (!option || option.value === "any") {
+      setGender(null);
     } else {
-      newSearchParams.append("gender", selectedOption.value);
+      setGender(option.value);
     }
+  };
 
-    if (!selectedOption || selectedOption?.value === "any") {
-      newSearchParams.delete("gender");
-    }
-
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedOption, router, searchParams]);
+  const handleReset = () => {
+    setGender(null);
+  };
 
   return (
-    <ReactSelect
-      options={options}
-      defaultValue={options.find((so) => so.value === gender)}
-      placeholder={"Select gender"}
-      onChange={setSelectedOption}
-      menuPortalTarget={document.body}
-    />
+    <div className="flex items-center gap-2">
+      <div className="flex-grow">
+        <ReactSelect
+          options={options}
+          value={selectedOption}
+          placeholder="Select gender"
+          onChange={handleChange}
+          menuPortalTarget={
+            typeof window !== "undefined" ? document.body : null
+          }
+          className="rounded border"
+        />
+      </div>
+      {selectedOption && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
+    </div>
   );
 }

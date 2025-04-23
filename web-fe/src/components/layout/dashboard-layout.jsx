@@ -60,7 +60,9 @@ export default function DashboardLayout({ children }) {
               <Warning className="h-4 w-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span>
-                  Your KYC is not completed. Please complete your KYC.
+                  {user.role === "student"
+                    ? "Your KYC is not completed. Please complete your KYC."
+                    : "Please complete your KYC to make your profile visible on the website."}
                 </span>
                 <Link
                   href={"/aadhaar-kyc"}
@@ -77,7 +79,9 @@ export default function DashboardLayout({ children }) {
                 <div className="flex items-center justify-start gap-3">
                   <Warning className="h-4 w-4" />
                   <span>
-                    Your Email is not verified. Please verify your email.
+                    {user.role === "student"
+                      ? "Your Email is not verified. Please verify your email."
+                      : "Please verify your email to make your profile visible on the website."}
                   </span>
                 </div>
                 <Link
@@ -98,7 +102,6 @@ export default function DashboardLayout({ children }) {
 }
 
 export const Profile = ({ isUserLoading, user }) => {
-  console.log({ user });
   const [imageError, setImageError] = useState(false);
   useEffect(() => {
     if (imageError) {
@@ -164,8 +167,6 @@ export const Sidebar = () => {
   const is_email_verified = user.is_email_verified;
   const completed = 3 + is_aadhaar_verified + is_email_verified;
   const progress = (completed / 5) * 100;
-
-  console.log({ progress });
 
   return (
     <div className="overflow-hidden rounded bg-white shadow-sm">

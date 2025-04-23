@@ -1,22 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Slider } from "@/components/ui/slider";
 import { useQueryState } from "nuqs";
 import { searchParams } from "@/lib/searchparams";
 import { rupee } from "@/lib/Intl";
-import { useState } from "react";
-import { useDebounce } from "@uidotdev/usehooks";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 
 export function PriceRangeSliderSelect() {
-  const [budgetRange, setBudgetRange] = useQueryState(
-    "budgetRange",
-    searchParams.budgetRange
-      .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault(""),
-  );
+  const [budgetRange, setBudgetRange] = useQueryState("budgetRange");
 
   const options = [
     { value: "0.500" },
@@ -33,20 +26,31 @@ export function PriceRangeSliderSelect() {
 
   return (
     <div className="w-full max-w-sm space-y-4">
-      <RadioGroup defaultValue={budgetRange} onValueChange={setBudgetRange}>
+      <RadioGroup value={budgetRange} onValueChange={setBudgetRange}>
         {options.map((item, ind) => {
-          const labelArr = item.value.split(".");
-          const label = `${rupee.format(labelArr[0])} - ${rupee.format(labelArr[1])}`;
+          const [min, max] = item.value.split(".");
+          const label = `${rupee.format(min)} - ${rupee.format(max)}`;
+          const id = `budget-${item.value.replace(/\./g, "-")}`;
           return (
             <div className="flex items-center space-x-2" key={ind}>
-              <RadioGroupItem value={item.value} id={item.value} />
-              <Label htmlFor={item.value} className=" cursor-pointer">
+              <RadioGroupItem value={item.value} id={id} />
+              <Label htmlFor={id} className="cursor-pointer">
                 {label}
               </Label>
             </div>
           );
         })}
       </RadioGroup>
+
+      {budgetRange && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
     </div>
   );
 }

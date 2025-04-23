@@ -1,41 +1,58 @@
 "use client";
 
 import { useQueryState } from "nuqs";
-import { languages } from "@/data/languages";
 import ReactSelect from "react-select";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { Button } from "../ui/button";
 
-export default function LanguageSelect() {
-  const [language, setLanguage] = useQueryState("language");
-
-  const selectedOptions =
-    language
-      ?.split(" ")
-      .map((value) => languages.find((lang) => lang.value === value))
-      .filter(Boolean) ?? [];
+const fetchSubjects = async () => {
+  const { data } = await http().get(`${endpoints.subjects.getAll}`);
+  return data?.map((value) => ({ value: value.name, label: value.name })) ?? [];
+};
+export default function SubjectSelect() {
+  const [subject, setSubject] = useQueryState("subject");
+  const {
+    data: subjects,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryFn: fetchSubjects,
+    queryKey: [`subject`],
+  });
+  const selectedOptions = useMemo(
+    () =>
+      subject
+        ?.split(" ")
+        .map((value) => subjects?.find((sub) => sub.value === value))
+        .filter(Boolean) ?? [],
+    [subjects, subject],
+  );
 
   const handleChange = (selected) => {
     if (!selected || selected.length === 0) {
-      setLanguage(null);
+      setSubject(null);
     } else {
       const valueString = selected.map((opt) => opt.value).join(" ");
-      setLanguage(valueString);
+      setSubject(valueString);
     }
   };
 
   // Handle reset button click
   const handleReset = () => {
-    setLanguage(null);
+    setSubject(null);
   };
 
   return (
     <div className="flex items-center gap-2">
       <div className="flex-grow">
         <ReactSelect
-          options={languages}
+          options={subjects}
           isMulti
           value={selectedOptions}
-          placeholder="Select Preferred Languages"
+          placeholder="Select Preferred Subjects"
           onChange={handleChange}
           menuPortalTarget={
             typeof window !== "undefined" ? document.body : null

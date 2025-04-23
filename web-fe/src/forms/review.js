@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 
-export default function ReviewForm({ tutorId, enquiryId }) {
+export default function ReviewForm({ tutorId, enquiryId, cb }) {
   const {
     control,
     formState: { errors },
@@ -19,9 +19,10 @@ export default function ReviewForm({ tutorId, enquiryId }) {
   } = useForm({ defaultValues: { rating: 0, review: "" } });
 
   const createMutation = useMutation({
-    mutationFn: (data) => http().post(endpoints.reviews.getAll, data), //! complete this endpoint
+    mutationFn: (data) => http().post(endpoints.reviews.getAll, data),
     onSuccess: () => {
       toast.success("Review submitted.");
+      typeof cb === "function" ? cb() : null;
     },
     onError: (error) => {
       toast.error(
@@ -46,7 +47,7 @@ export default function ReviewForm({ tutorId, enquiryId }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="space-y-4">
         <H4>Review</H4>
         <div className="flex flex-col items-center justify-center ">

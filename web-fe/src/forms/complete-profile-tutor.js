@@ -66,7 +66,6 @@ export default function CompleteProfileTutor({
   setCurrStep,
   tutorType,
 }) {
-  console.log({ tutorType });
   const {
     register,
     watch,
@@ -85,6 +84,7 @@ export default function CompleteProfileTutor({
         name: "",
         year: "",
         status: "",
+        other: "",
       },
       enquiry_radius: "",
       is_demo_class: false,
@@ -106,7 +106,7 @@ export default function CompleteProfileTutor({
       adhaar: "",
     },
   });
-
+  const degree = watch("degree");
   const experience = watch("experience", "");
   const {
     fields: budgets,
@@ -427,6 +427,13 @@ export default function CompleteProfileTutor({
     remove,
   ]);
 
+  useEffect(() => {
+    if (degree.name === "other") {
+      setValue("degree.status", "");
+      setValue("degree.year", "");
+    }
+  }, [degree.name]);
+
   if (isFetching && isSubCatLoading) return <Loading />;
   if (isError) return error?.message ?? "error";
 
@@ -562,38 +569,40 @@ export default function CompleteProfileTutor({
                         )}
                       </div>
 
-                      <div>
-                        <Label>Is degree completed?</Label>
-                        <Controller
-                          control={control}
-                          name={`degree.status`}
-                          rules={{ required: "required*" }}
-                          render={({ field }) => (
-                            <Select
-                              defaultValue={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="">
-                                <SelectValue placeholder="Select Status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Status</SelectLabel>
-                                  <SelectItem value="yes">Yes</SelectItem>
-                                  <SelectItem value="pursuing">
-                                    Pursuing
-                                  </SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                      {degree.name !== "other" && (
+                        <div>
+                          <Label>Is degree completed?</Label>
+                          <Controller
+                            control={control}
+                            name={`degree.status`}
+                            rules={{ required: "required*" }}
+                            render={({ field }) => (
+                              <Select
+                                defaultValue={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="">
+                                  <SelectValue placeholder="Select Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Status</SelectLabel>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="pursuing">
+                                      Pursuing
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                          {errors.degree?.status && (
+                            <span className="text-sm text-red-500">
+                              {errors.degree?.status.message}
+                            </span>
                           )}
-                        />
-                        {errors.degree?.status && (
-                          <span className="text-sm text-red-500">
-                            {errors.degree?.status.message}
-                          </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       {/* degree completion year */}
                       {watch("degree.status") === "yes" && (
@@ -617,6 +626,25 @@ export default function CompleteProfileTutor({
                           {errors.degree?.year && (
                             <span className="text-sm text-red-500">
                               {errors.degree?.year.message}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* other */}
+                      {degree.name === "other" && (
+                        <div>
+                          <Label>Other</Label>
+                          <Input
+                            type="text"
+                            {...register("degree.other", {
+                              required: "required*",
+                            })}
+                            placeholder="Enter other"
+                          />
+                          {errors.degree?.other && (
+                            <span className="text-sm text-red-500">
+                              {errors.degree?.other.message}
                             </span>
                           )}
                         </div>
@@ -1283,7 +1311,7 @@ export default function CompleteProfileTutor({
                 <div className="flex-1 space-y-4">
                   <H5 className={"text-center"}>Profile Picture</H5>
                   {!media.profile && (
-                    <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-col items-start justify-center">
                       <Input
                         type="file"
                         placeholder="Select Profile Picture"
@@ -1294,6 +1322,9 @@ export default function CompleteProfileTutor({
                         multiple={false}
                         accept="image/png, image/webp, image/jpg, image/jpeg"
                       />
+                      <Muted className={"text-xs"}>
+                        PNG, JPG, WEBP (max. 2MB), Size: 1:1
+                      </Muted>
                       {errors.profile_picture && (
                         <span className="text-sm text-red-500">
                           {errors.profile_picture.message}

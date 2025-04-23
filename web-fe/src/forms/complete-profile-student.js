@@ -5,7 +5,7 @@ import { endpoints } from "@/utils/endpoints";
 import http from "@/utils/http";
 
 // components
-import { H5, H6 } from "@/components/ui/typography";
+import { H5, H6, Muted } from "@/components/ui/typography";
 import Loading from "@/components/loading";
 import Stepper from "@/components/stepper";
 import { Button } from "@/components/ui/button";
@@ -797,7 +797,7 @@ export default function CompleteProfileStudent({
               <div className="flex-1 space-y-4">
                 <H5 className={"text-center"}>Profile Picture</H5>
                 {!media.profile_picture && (
-                  <div className="flex flex-col items-center justify-center">
+                  <div className="flex flex-col items-start justify-center">
                     <Input
                       type="file"
                       placeholder="Select Profile Picture"
@@ -808,6 +808,9 @@ export default function CompleteProfileStudent({
                       multiple={false}
                       accept="image/png, image/webp, image/jpg, image/jpeg"
                     />
+                    <Muted className={"text-xs"}>
+                      PNG, JPG, WEBP (max. 2MB), Size: 1:1
+                    </Muted>
                     {errors.profile_picture && (
                       <span className="text-sm text-red-500">
                         {errors.profile_picture.message}

@@ -7,21 +7,34 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import LanguageSelect from "@/components/select/language-select";
-import GenderSelect from "@/components/select/gender-select";
 import RatingSelect from "@/components/select/rating-select";
 import DemoClassSelect from "@/components/select/demo-class-select";
 import ClassConductSelect from "@/components/select/class-conduct-select";
 import ClassFlexibilitySelect from "@/components/select/flexibility-select";
 import ClassPlaceSelect from "@/components/select/place-select";
-import { PriceRangeSlider } from "@/components/price-range-slider";
-import { PriceRangeSliderSelect } from "@/components/select/price-range-slider-select";
 import { FilterAddress } from "@/components/tutors-with-filter";
 import SubCategorySelect from "@/components/select/sub-category-select";
+import { useQueryState } from "nuqs";
+import { useQuery } from "@tanstack/react-query";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import SubjectSelect from "@/components/select/subject-select";
 
 export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
   const router = useRouter();
   const isOffline = searchParams.get("mode") === "offline";
+  const [category, setCategory] = useQueryState("category");
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: async () => {
+      const { data } = await http().get(
+        `${endpoints.subCategories.getAll}/${category}`,
+      );
+      return data;
+    },
+    queryKey: ["category", category],
+    enabled: !!category,
+  });
   const tabs = [
     {
       name: "Mode?",
@@ -42,7 +55,17 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
       comp: <SubCategorySelect isMulti={false} searchParams={searchParams} />,
       className: "",
     },
-
+    ...(isLoading
+      ? []
+      : data.is_boards
+        ? [
+            {
+              name: "Subject?",
+              comp: <SubjectSelect searchParams={searchParams} />,
+              className: "",
+            },
+          ]
+        : []),
     {
       name: "Languages?",
       comp: <LanguageSelect searchParams={searchParams} />,

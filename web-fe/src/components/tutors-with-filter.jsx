@@ -27,10 +27,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import dynamic from "next/dynamic";
 import { PaginationWithLinks } from "./pagination-with-links";
 import { FilterForm } from "@/forms/filter";
+import ResetAllFilters from "./reset-all-filters";
+import { useQueryState } from "nuqs";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -112,7 +114,10 @@ export default function TutorsWithFilter() {
           <MobileFilter {...{ searchParams, handleSubmit, onSubmit }} />
         </div>
 
-        <div className="text-2xl">{data?.total ?? 0} Tutors found.</div>
+        <div className="flex items-center justify-between">
+          <div className="text-2xl">{data?.total ?? 0} Tutors found.</div>
+          <ResetAllFilters />
+        </div>
 
         <div className="grid grid-cols-12 gap-4">
           <div className="hidden w-full lg:col-span-4 lg:block">
@@ -125,7 +130,7 @@ export default function TutorsWithFilter() {
               isLoading={isLoading}
               searchParams={searchParams.toString()}
             />
-            {paginationCount > 1 && (
+            {paginationCount > 0 && (
               <div className="mt-10">
                 <PaginationWithLinks
                   page={page}
@@ -141,43 +146,72 @@ export default function TutorsWithFilter() {
   );
 }
 
-export const FilterAddress = ({ searchParams }) => {
+export const FilterAddress = () => {
   const { isLoaded } = useMapLoader();
   const { inputRef, selectedPlace } = useAutocomplete(isLoaded);
-  const router = useRouter();
-  const isOffline = searchParams.get("mode");
-  useEffect(() => {
-    const addr = searchParams.get("addr");
-    addr ? (inputRef.current.value = addr) : (inputRef.current.value = null);
-  }, [searchParams, inputRef]);
 
+  // nuqs query state for addr, lat, lng
+  const [addr, setAddr] = useQueryState("addr", {
+    history: "push",
+    scroll: false,
+  });
+  const [lat, setLat] = useQueryState("lat", {
+    history: "push",
+    scroll: false,
+  });
+  const [lng, setLng] = useQueryState("lng", {
+    history: "push",
+    scroll: false,
+  });
+
+  // Populate input field from addr query param
+  useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.value = addr ?? "";
+  }, [addr, inputRef]);
+
+  // Update query params on place select
   useEffect(() => {
     if (!selectedPlace) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
+
     const addressToSet = selectedPlace.address;
-    const lat = selectedPlace?.location?.lat();
-    const lng = selectedPlace?.location?.lng();
+    const latValue = selectedPlace?.location?.lat();
+    const lngValue = selectedPlace?.location?.lng();
 
-    if (searchParams.get("addr")) {
-      newSearchParams.set("addr", addressToSet);
-      newSearchParams.set("lat", lat);
-      newSearchParams.set("lng", lng);
+    if (addressToSet) {
+      setAddr(addressToSet);
+      setLat(String(latValue));
+      setLng(String(lngValue));
     } else {
-      newSearchParams.append("addr", addressToSet);
-      newSearchParams.append("lat", lat);
-      newSearchParams.append("lng", lng);
+      setAddr(null);
+      setLat(null);
+      setLng(null);
     }
+  }, [selectedPlace, setAddr, setLat, setLng]);
 
-    if (!addressToSet) {
-      newSearchParams.delete("addr");
-      newSearchParams.delete("lat");
-      newSearchParams.delete("lng");
+  const handleReset = () => {
+    setAddr(null);
+    setLat(null);
+    setLng(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
     }
+  };
 
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedPlace, searchParams, router]);
-
-  return <Input ref={inputRef} placeholder="Filter by location" />;
+  return (
+    <div className="flex items-center gap-2">
+      <Input
+        ref={inputRef}
+        placeholder="Filter by location"
+        className="flex-1"
+      />
+      {(addr || lat || lng) && (
+        <Button type="button" onClick={handleReset}>
+          Reset
+        </Button>
+      )}
+    </div>
+  );
 };
 
 const MobileFilter = ({ searchParams, handleSubmit, onSubmit }) => {

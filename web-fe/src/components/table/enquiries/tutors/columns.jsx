@@ -16,12 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Chat } from "phosphor-react";
 
-export const columns = (
-  handleDelete,
-  openReviewModal,
-  setTutorId,
-  setEnquiryId,
-) => [
+export const columns = (handleDelete, setEnquiryId) => [
   {
     accessorKey: "fullname",
     header: ({ column }) => {
@@ -88,8 +83,6 @@ export const columns = (
       const id = row.original.id;
       const count = row.original.unread_chat_count;
       const name = row.original.fullname;
-      console.log(row.original);
-      console.log({ name });
       return (
         <Link
           href={`/dashboard/enquiries/${id}/chat?name=${name.split(" ").join("+")}`}
@@ -108,45 +101,30 @@ export const columns = (
       );
     },
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const status = row.original.status;
-      const tutorId = row.original.tutorId;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            {status === "converted" && (
-              <>
-                <DropdownMenuItem
-                  onClick={() => {
-                    openReviewModal();
-                    setTutorId(tutorId);
-                    setEnquiryId(id);
-                  }}
-                >
-                  Review
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </>
-            )}
-            {/* <DropdownMenuItem onClick={() => handleDelete(id)}>
-              Delete
-            </DropdownMenuItem> */}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  // {
+  //   id: "actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     const id = row.original.id;
+  //     const status = row.original.status;
+  //     const tutorId = row.original.tutorId;
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <DotsHorizontalIcon className="h-4 w-4" />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           {/* <DropdownMenuItem onClick={() => handleDelete(id)}>
+  //             Delete
+  //           </DropdownMenuItem> */}
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];

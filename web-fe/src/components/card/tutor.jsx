@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 
 import Review from "../review";
 import Image from "next/image";
+import { BadgeCheck } from "lucide-react";
 
 export default function TutorCard({
   tutor,
@@ -27,10 +28,17 @@ export default function TutorCard({
         <div className="flex-grow space-y-2">
           <div className="flex items-center justify-between">
             <Link href={`/tutors/${tutor.tutor_id}`}>
-              <H4 className={"transition-colors hover:text-primary"}>
-                {tutor.type === "institute"
-                  ? tutor.institute_name
-                  : tutor.fullname}
+              <H4
+                className={
+                  "flex items-center justify-start gap-1 transition-colors hover:text-primary"
+                }
+              >
+                <span>
+                  {tutor.type === "institute"
+                    ? tutor.institute_name
+                    : tutor.fullname}{" "}
+                </span>
+                <BadgeCheck className="size-5 text-blue-500" />
               </H4>
             </Link>
             <div className="flex gap-1">

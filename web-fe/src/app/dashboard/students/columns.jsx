@@ -56,7 +56,7 @@ export const columns = (handleDelete) => [
           className={cn(buttonVariants({}), "h-9")}
         >
           <Chat className="mr-1 size-4" /> Chat{" "}
-          {count > 1 && (
+          {count > 0 && (
             <Badge
               className={"ml-1 bg-white text-black hover:bg-white/80"}
               variant={"secondary"}

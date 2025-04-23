@@ -42,7 +42,6 @@ export default function FeedbackForm() {
 
   const createMutation = useMutation(createQuery, {
     onSuccess: (data) => {
-      console.log({ data });
       toast.success(data.message);
       reset();
     },

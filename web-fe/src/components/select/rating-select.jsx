@@ -1,110 +1,71 @@
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+"use client";
+
+import { useQueryState } from "nuqs";
+import { useEffect, useMemo } from "react";
 import ReactSelect from "react-select";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
+import { Button } from "../ui/button";
 
-const RatingCard = ({ value }) => {
-  return <Rating style={{ maxWidth: 100 }} value={value} readOnly />;
-};
+const RatingCard = ({ value }) => (
+  <Rating style={{ maxWidth: 100 }} value={value} readOnly />
+);
 
-const ratings = [
-  {
-    value: "0",
-    label: (
-      <div className="flex items-center justify-start gap-2">
-        <RatingCard value={0} />
-        <span className="font-medium">0.0/5.0</span>
-      </div>
-    ),
-  },
-  {
-    value: "1",
-    label: (
-      <div className="flex items-center justify-start gap-2">
-        <RatingCard value={1} />
-        <span className="font-medium">1.0/5.0</span>
-      </div>
-    ),
-  },
-  {
-    value: "2",
-    label: (
-      <div className="flex items-center justify-start gap-2">
-        <RatingCard value={2} />
-        <span className="font-medium">2.0/5.0</span>
-      </div>
-    ),
-  },
-  {
-    value: "3",
-    label: (
-      <div className="flex items-center justify-start gap-2">
-        <RatingCard value={3} />
-        <span className="font-medium">3.0/5.0</span>
-      </div>
-    ),
-  },
-  {
-    value: "4",
-    label: (
-      <div className="flex items-center justify-start gap-2">
-        <RatingCard value={4} />
-        <span className="font-medium">4.0/5.0</span>
-      </div>
-    ),
-  },
-  {
-    value: "5",
-    label: (
-      <div className="flex items-center justify-start gap-2">
-        <RatingCard value={5} />
-        <span className="font-medium">5.0/5.0</span>
-      </div>
-    ),
-  },
-];
+const ratings = [0, 1, 2, 3, 4, 5].map((num) => ({
+  value: String(num),
+  label: (
+    <div className="flex items-center justify-start gap-2">
+      <RatingCard value={num} />
+      <span className="font-medium">{num}.0/5.0</span>
+    </div>
+  ),
+}));
 
-export default function RatingSelect({ searchParams }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const router = useRouter();
-  const rating = searchParams.get("rating");
-  const defaultValues = useCallback(() => {
-    return (
-      ratings.filter(({ value }) => rating?.split(" ").includes(value)) ?? []
-    );
-  }, [rating]);
+export default function RatingSelect() {
+  const [ratingParam, setRatingParam] = useQueryState("rating");
 
-  useEffect(() => {
-    if (!selectedOption) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    const valuesToSet = Array.isArray(selectedOption)
-      ? selectedOption
-          .map(({ value }) => value)
-          .join(" ")
-          .toString()
-      : selectedOption.value;
-    if (rating) {
-      newSearchParams.set("rating", valuesToSet);
+  const selectedOptions = useMemo(() => {
+    if (!ratingParam) return [];
+    const values = ratingParam.split(" ");
+    return ratings.filter(({ value }) => values.includes(value));
+  }, [ratingParam]);
+
+  const handleChange = (selected) => {
+    if (!selected || selected.length === 0) {
+      setRatingParam(null); // Using null instead of empty string to remove param
     } else {
-      newSearchParams.append("rating", valuesToSet);
+      const valueStr = selected.map(({ value }) => value).join(" ");
+      setRatingParam(valueStr);
     }
+  };
 
-    if (!valuesToSet) {
-      newSearchParams.delete("rating");
-    }
-
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedOption, router, searchParams, rating]);
+  // Handle reset button click
+  const handleReset = () => {
+    setRatingParam(null);
+  };
 
   return (
-    <ReactSelect
-      options={ratings}
-      defaultValue={defaultValues}
-      placeholder={"Filter by ratings"}
-      onChange={setSelectedOption}
-      isMulti
-      menuPortalTarget={document.body}
-    />
+    <div className="flex items-center gap-2">
+      <div className="flex-grow">
+        <ReactSelect
+          options={ratings}
+          value={selectedOptions}
+          placeholder={"Filter by ratings"}
+          onChange={handleChange}
+          isMulti
+          menuPortalTarget={document.body}
+          className="rounded border"
+        />
+      </div>
+      {selectedOptions.length > 0 && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
+    </div>
   );
 }

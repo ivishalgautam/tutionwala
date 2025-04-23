@@ -1,53 +1,63 @@
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+"use client";
+
+import { useQueryState } from "nuqs";
 import ReactSelect from "react-select";
+import { Button } from "../ui/button";
 
 const options = [
   { label: "One To One", value: "oneToOne" },
   { label: "Group", value: "group" },
+  // Add others back if needed
   // { label: "Nearby", value: "nearby" },
   // { label: "Any", value: "any" },
 ];
 
-export default function ClassFlexibilitySelect({ searchParams }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const router = useRouter();
-  const flexibility = searchParams.get("flexibility");
-  const defaultValues = useCallback(() => {
-    return (
-      options.filter(({ value }) => flexibility?.split(" ").includes(value)) ??
-      []
-    );
-  }, [flexibility]);
-  useEffect(() => {
-    if (!selectedOption) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    const valuesToSet = selectedOption
-      .map(({ value }) => value)
-      .join(" ")
-      .toString();
+export default function ClassFlexibilitySelect() {
+  const [flexibility, setFlexibility] = useQueryState("flexibility");
 
-    if (flexibility) {
-      newSearchParams.set("flexibility", valuesToSet);
+  const selectedOptions =
+    flexibility
+      ?.split(" ")
+      .map((value) => options.find((opt) => opt.value === value))
+      .filter(Boolean) ?? [];
+
+  const handleChange = (selected) => {
+    if (!selected || selected.length === 0) {
+      setFlexibility(null);
     } else {
-      newSearchParams.append("flexibility", valuesToSet);
+      const values = selected.map((opt) => opt.value).join(" ");
+      setFlexibility(values);
     }
+  };
 
-    if (!valuesToSet) {
-      newSearchParams.delete("flexibility");
-    }
-
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedOption, router, searchParams, flexibility]);
+  const handleReset = () => {
+    setFlexibility(null);
+  };
 
   return (
-    <ReactSelect
-      options={options}
-      defaultValue={defaultValues}
-      placeholder={"Select Class Flexibility"}
-      onChange={setSelectedOption}
-      menuPortalTarget={document.body}
-      isMulti
-    />
+    <div className="flex items-center gap-2">
+      <div className="flex-grow">
+        <ReactSelect
+          options={options}
+          value={selectedOptions}
+          placeholder="Select Class Flexibility"
+          onChange={handleChange}
+          menuPortalTarget={
+            typeof window !== "undefined" ? document.body : null
+          }
+          isMulti
+          className="rounded border"
+        />
+      </div>
+      {selectedOptions.length > 0 && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
+    </div>
   );
 }

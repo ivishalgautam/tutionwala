@@ -29,7 +29,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import MapStatic from "@/components/map-static";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
@@ -52,6 +52,25 @@ export default function TutorProfile({
 }) {
   const [fullAddr, setFullAddr] = useState("");
   const isInstitute = teacher.type === "institute";
+
+  const modes = {};
+  courses.forEach((item) => {
+    const slug = item.slug;
+    const budgets = item.details.budgets;
+    const isOnline = budgets.some((b) => b.mode === "online");
+    const isOffline = budgets.some((b) => b.mode === "offline");
+
+    if (!modes[slug]) modes[slug] = [];
+    if (isOnline && !modes[slug].includes("online")) modes[slug].push("online");
+    if (isOffline && !modes[slug].includes("offline"))
+      modes[slug].push("offline");
+  });
+
+  const boards = {};
+  courses.forEach((item) => {
+    boards[item.slug] = item.details.boards.flatMap((board) => board.subjects);
+  });
+
   return (
     <>
       <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -115,6 +134,8 @@ export default function TutorProfile({
                     label,
                     value,
                   }))}
+                  boards={boards}
+                  modes={modes}
                 />
               </div>
             </div>
@@ -132,21 +153,27 @@ export default function TutorProfile({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <div>
-                        <h3 className="font-medium">{teacher.degree.name}</h3>
-                        {teacher.degree.status === "yes" && (
-                          <p className="text-sm text-muted-foreground">
-                            Graduated: {teacher.degree.year}
-                          </p>
-                        )}
+                    {teacher.degree.name === "other" ? (
+                      <p className="text-sm text-muted-foreground">
+                        {teacher.degree.other}
+                      </p>
+                    ) : (
+                      <div className="flex justify-between">
+                        <div>
+                          <h3 className="font-medium">{teacher.degree.name}</h3>
+                          {teacher.degree.status === "yes" && (
+                            <p className="text-sm text-muted-foreground">
+                              Graduated: {teacher.degree.year}
+                            </p>
+                          )}
+                        </div>
+                        <Badge variant="outline" className="h-fit">
+                          {teacher.degree.status === "yes"
+                            ? "Completed"
+                            : "Persuing"}
+                        </Badge>
                       </div>
-                      <Badge variant="outline" className="h-fit">
-                        {teacher.degree.status === "yes"
-                          ? "Completed"
-                          : "Persuing"}
-                      </Badge>
-                    </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -378,6 +405,7 @@ function CourseDetails({ courseData }) {
                   value="online"
                   className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6 pt-4"
                 >
+                  {filteredBudgets.length < 1 && "Not Available"}
                   {filteredBudgets.map((budget, index) => (
                     <PricingCard key={index} budget={budget} />
                   ))}
@@ -413,9 +441,15 @@ function CourseDetails({ courseData }) {
 
                   <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6 pt-4">
                     {selectedLocation ? (
-                      filteredBudgets.map((budget, index) => (
-                        <PricingCard key={index} budget={budget} />
-                      ))
+                      filteredBudgets.length < 1 ? (
+                        <p className="col-span-full text-center">
+                          Not Available
+                        </p>
+                      ) : (
+                        filteredBudgets.map((budget, index) => (
+                          <PricingCard key={index} budget={budget} />
+                        ))
+                      )
                     ) : (
                       <div className="py-4 text-center text-muted-foreground">
                         Please select a location

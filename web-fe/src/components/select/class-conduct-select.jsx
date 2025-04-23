@@ -1,42 +1,57 @@
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+"use client";
+
+import { useQueryState } from "nuqs";
+import { useEffect, useMemo } from "react";
 import ReactSelect from "react-select";
+import { Button } from "../ui/button";
 
 const options = [
   { label: "Online", value: "online" },
   { label: "Offline", value: "offline" },
 ];
 
-export default function ClassConductSelect({ searchParams }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const router = useRouter();
-  const mode = searchParams.get("mode");
-  const defaultValues = useCallback(() => {
-    return options.filter(({ value }) => mode === value) ?? [];
+export default function ClassConductSelect() {
+  const [mode, setMode] = useQueryState("mode");
+
+  const selectedOption = useMemo(() => {
+    return options.find((option) => option.value === mode) || null;
   }, [mode]);
-  useEffect(() => {
-    if (!selectedOption) return;
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    if (searchParams.get("mode")) {
-      newSearchParams.set("mode", selectedOption.value);
+
+  const handleChange = (option) => {
+    if (!option || option.value === "any") {
+      setMode(null); // Removes `mode` from the URL
     } else {
-      newSearchParams.append("mode", selectedOption.value);
+      setMode(option.value); // Sets `mode` in the URL
     }
+  };
 
-    if (!selectedOption || selectedOption?.value === "any") {
-      newSearchParams.delete("mode");
-    }
-
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [selectedOption, router, searchParams, mode]);
+  const handleReset = () => {
+    setMode(null);
+  };
 
   return (
-    <ReactSelect
-      options={options}
-      defaultValue={defaultValues}
-      placeholder={"Select Mode"}
-      onChange={setSelectedOption}
-      menuPortalTarget={document.body}
-    />
+    <div className="flex items-center gap-2">
+      <div className="flex-grow">
+        <ReactSelect
+          options={options}
+          value={selectedOption}
+          placeholder="Select Mode"
+          onChange={handleChange}
+          menuPortalTarget={
+            typeof window !== "undefined" ? document.body : null
+          }
+          className="rounded border"
+        />
+      </div>
+      {selectedOption && (
+        <Button
+          onClick={handleReset}
+          type="button"
+          aria-label="Reset mode selection"
+        >
+          Reset
+        </Button>
+      )}
+    </div>
   );
 }

@@ -6,9 +6,8 @@ import React, { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Loading from "./loading";
 import Link from "next/link";
-import { Large, Muted, Small } from "./ui/typography";
+import { Muted } from "./ui/typography";
 import { Heading } from "./ui/heading";
-import Image from "next/image";
 import NextImage from "./next-image";
 
 async function fetchCategoriesTabs() {
