@@ -8,7 +8,12 @@ import { Button } from "../ui/button";
 
 const searchCategory = async (q) => {
   const { data } = await http().get(`${endpoints.subCategories.getAll}?q=${q}`);
-  const filteredData = data?.map(({ slug, name }) => ({
+
+  const uniqueValues = data.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  });
+
+  const filteredData = uniqueValues?.map(({ slug, name }) => ({
     label: name,
     value: slug,
   }));
@@ -76,6 +81,10 @@ export default function SubCategorySelect({ isMulti = false }) {
 
       setDefaultOptions(formattedOptions);
       setSelectedOption(isMulti ? formattedOptions : formattedOptions[0]);
+    }
+
+    if (!category) {
+      setSelectedOption(null);
     }
   }, [category, isMulti]);
 

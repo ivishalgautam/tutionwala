@@ -82,21 +82,19 @@ export default function AllEnquiries() {
   };
 
   return (
-    <>
-      <Enquiries
-        {...{
-          isEnquiriesLoading,
-          isUserLoading,
-          enquiries,
-          user,
-          handleDelete,
-          handleUpdate,
-          isEnquiriesError,
-          enquiriesError,
-          setEnquiryId,
-        }}
-      />
-    </>
+    <Enquiries
+      {...{
+        isEnquiriesLoading,
+        isUserLoading,
+        enquiries,
+        user,
+        handleDelete,
+        handleUpdate,
+        isEnquiriesError,
+        enquiriesError,
+        setEnquiryId,
+      }}
+    />
   );
 }
 

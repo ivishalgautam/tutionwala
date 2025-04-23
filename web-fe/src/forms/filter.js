@@ -61,7 +61,12 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
         ? [
             {
               name: "Subject?",
-              comp: <SubjectSelect searchParams={searchParams} />,
+              comp: (
+                <SubjectSelect
+                  searchParams={searchParams}
+                  boards={data?.boards ?? []}
+                />
+              ),
               className: "",
             },
           ]

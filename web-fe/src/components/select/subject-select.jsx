@@ -10,18 +10,36 @@ import { Button } from "../ui/button";
 
 const fetchSubjects = async () => {
   const { data } = await http().get(`${endpoints.subjects.getAll}`);
-  return data?.map((value) => ({ value: value.name, label: value.name })) ?? [];
+  return (
+    data?.map((value) => ({
+      value: value.name.split(" ").join("-"),
+      label: value.name,
+    })) ?? []
+  );
 };
-export default function SubjectSelect() {
+export default function SubjectSelect({ boards = [] }) {
   const [subject, setSubject] = useQueryState("subject");
-  const {
-    data: subjects,
-    isLoading,
-    isFetching,
-  } = useQuery({
-    queryFn: fetchSubjects,
-    queryKey: [`subject`],
-  });
+  const subjects = useMemo(() => {
+    const data = boards
+      .flatMap((brd) => brd.subjects.map((sub) => String(sub).toLowerCase()))
+      .filter((value, index, self) => {
+        return self.indexOf(value) === index;
+      });
+
+    return data.map((sub) => ({
+      value: sub.split(" ").join("-"),
+      label: sub,
+    }));
+  }, [boards]);
+
+  // const {
+  //   data: subjects,
+  //   isLoading,
+  //   isFetching,
+  // } = useQuery({
+  //   queryFn: fetchSubjects,
+  //   queryKey: [`subject`],
+  // });
   const selectedOptions = useMemo(
     () =>
       subject
