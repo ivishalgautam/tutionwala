@@ -11,6 +11,8 @@ import { MdOutlineCategory } from "react-icons/md";
 import Title from "@/components/Title";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import { CircleHelp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const getReports = async () => {
   return (await http().get(`${endpoints.reports.getAll}/all`)) ?? {};
@@ -29,7 +31,7 @@ export default function Home() {
     queryKey: ["reports"],
     queryFn: getReports,
   });
-
+  console.log({ report });
   const {
     data: last30DaysReport = {},
     isLoading: isLast30DaysReportLoading,
@@ -64,12 +66,6 @@ export default function Home() {
           }}
         />
       </div>
-      {/* <pre>
-        <code>{JSON.stringify(report, undefined, 2)}</code>
-      </pre>
-      <pre>
-        <code>{JSON.stringify(last30DaysReport, undefined, 2)}</code>
-      </pre> */}
     </PageContainer>
   );
 }
@@ -80,32 +76,65 @@ function Reports({ data, isError, isLoading, error }) {
   const size = 25;
 
   return (
-    <GridContainer>
-      <Card
-        count={data?.total_tutor}
-        title="Tutors"
-        icon={<FaChalkboardTeacher size={size} className="text-primary" />}
-        href="/users?role=tutor&limit=10"
-      />
-      <Card
-        count={data?.total_student}
-        title="Student"
-        icon={<PiStudentBold size={size} className="text-primary" />}
-        href="/users?role=student&limit=10"
-      />
-      <Card
-        count={data?.total_category}
-        title="Categories"
-        icon={<BiCategory size={size} className="text-primary" />}
-        href="/categories?limit=10"
-      />
-      <Card
-        count={data?.total_sub_category}
-        title="Sub Categories"
-        icon={<MdOutlineCategory size={size} className="text-primary" />}
-        href="/sub-categories?limit=10"
-      />
-    </GridContainer>
+    <div className="space-y-4">
+      <GridContainer>
+        <Card
+          count={data?.total_tutor}
+          title="Tutors"
+          icon={<FaChalkboardTeacher size={size} className="text-primary" />}
+          href="/users?role=tutor&limit=10"
+        />
+        <Card
+          count={data?.total_student}
+          title="Student"
+          icon={<PiStudentBold size={size} className="text-primary" />}
+          href="/users?role=student&limit=10"
+        />
+        <Card
+          count={data?.total_category}
+          title="Categories"
+          icon={<BiCategory size={size} className="text-primary" />}
+          href="/categories?limit=10"
+        />
+        <Card
+          count={data?.total_sub_category}
+          title="Sub Categories"
+          icon={<MdOutlineCategory size={size} className="text-primary" />}
+          href="/sub-categories?limit=10"
+        />
+      </GridContainer>
+
+      <GridContainer>
+        <Card
+          count={data?.queries?.total ?? 0}
+          title="Total Queries"
+          icon={<CircleHelp size={size} className="text-primary" />}
+          href="/queries?limit=10"
+          className="border-blue-300 bg-blue-100"
+        />
+        <Card
+          count={data?.queries?.pending ?? 0}
+          title="Pending Queries"
+          icon={<CircleHelp size={size} className="text-primary" />}
+          href="/queries?limit=10&status=pending"
+          className="border-red-300 bg-red-100"
+        />
+        <Card
+          count={data?.queries?.resolved ?? 0}
+          title="Resolved queries"
+          icon={<CircleHelp size={size} className="text-primary" />}
+          href="/queries?limit=10&status=resolved"
+          className="border-green-300 bg-green-100"
+        />
+        <Card
+          count={data?.queries?.inProgress ?? 0}
+          title="In Progress Queries"
+          icon={<CircleHelp size={size} className="text-primary" />}
+          href="/queries?limit=10&status=in+progress"
+          className="border-yellow-300 bg-yellow-100"
+        />
+      </GridContainer>
+    </div>
   );
 }
 
@@ -117,10 +146,21 @@ function GridContainer({ children }) {
   );
 }
 
-function Card({ count = 0, title = "", icon = "", href = "#" }) {
+function Card({
+  count = 0,
+  title = "",
+  icon = "",
+  href = "#",
+  className = "",
+}) {
   return (
     <Link href={href}>
-      <div className="flex items-center justify-start gap-2 rounded-lg border bg-primary-light p-4 py-3">
+      <div
+        className={cn(
+          "flex items-center justify-start gap-2 rounded-lg border bg-primary-light p-4 py-3",
+          className,
+        )}
+      >
         <div className="rounded-full border bg-white p-3">{icon}</div>
         <div className="flex flex-col items-start justify-start">
           <span className="text-xs font-medium tracking-wide">{title}</span>

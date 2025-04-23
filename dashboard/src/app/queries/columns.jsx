@@ -105,13 +105,22 @@ export const columns = (openModal, setQueryId, handleUpdate) => [
             return handleUpdate({ status: value });
           }}
         >
-          <SelectTrigger className="w-[120px]">
+          <SelectTrigger className="w-max">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="in progress">In Progress</SelectItem>
-            <SelectItem value="resolved">Resolved</SelectItem>
+            <SelectItem value="pending">
+              <div className="mr-2 inline-block size-2 rounded-full bg-red-500"></div>
+              Pending
+            </SelectItem>
+            <SelectItem value="in progress">
+              <div className="mr-2 inline-block size-2 rounded-full bg-yellow-500"></div>
+              In Progress
+            </SelectItem>
+            <SelectItem value="resolved">
+              <div className="mr-2 inline-block size-2 rounded-full bg-green-500"></div>
+              Resolved
+            </SelectItem>
           </SelectContent>
         </Select>
       );

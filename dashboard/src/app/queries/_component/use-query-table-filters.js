@@ -15,15 +15,19 @@ export function useQueryTableFilters() {
     searchParams.page.withDefault(1),
   );
 
+  const [statusFilter, setStatusFilter] = useQueryState(
+    "status",
+    searchParams.status.withDefault(""),
+  );
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-
+    setStatusFilter(null);
     setPage(1);
-  }, [setSearchQuery, setPage]);
+  }, [setSearchQuery, setPage, setStatusFilter]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery;
-  }, [searchQuery]);
+    return !!searchQuery || !!statusFilter;
+  }, [searchQuery, statusFilter]);
 
   return {
     searchQuery,
@@ -32,5 +36,7 @@ export function useQueryTableFilters() {
     setPage,
     resetFilters,
     isAnyFilterActive,
+    statusFilter,
+    setStatusFilter,
   };
 }
