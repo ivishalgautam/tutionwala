@@ -153,27 +153,25 @@ export default function TutorProfile({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {teacher.degree.name === "other" ? (
-                      <p className="text-sm text-muted-foreground">
-                        {teacher.degree.other}
-                      </p>
-                    ) : (
-                      <div className="flex justify-between">
-                        <div>
-                          <h3 className="font-medium">{teacher.degree.name}</h3>
-                          {teacher.degree.status === "yes" && (
-                            <p className="text-sm text-muted-foreground">
-                              Graduated: {teacher.degree.year}
-                            </p>
-                          )}
-                        </div>
-                        <Badge variant="outline" className="h-fit">
-                          {teacher.degree.status === "yes"
-                            ? "Completed"
-                            : "Persuing"}
-                        </Badge>
+                    <div className="flex justify-between">
+                      <div>
+                        <h3 className="font-medium">
+                          {teacher.degree.name === "other"
+                            ? teacher.degree.other
+                            : teacher.degree.name}
+                        </h3>
+                        {teacher.degree.status === "yes" && (
+                          <p className="text-sm text-muted-foreground">
+                            Graduated: {teacher.degree.year}
+                          </p>
+                        )}
                       </div>
-                    )}
+                      <Badge variant="outline" className="h-fit">
+                        {teacher.degree.status === "yes"
+                          ? "Completed"
+                          : "Persuing"}
+                      </Badge>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

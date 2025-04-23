@@ -568,8 +568,7 @@ export default function CompleteProfileTutor({
                           </span>
                         )}
                       </div>
-
-                      {degree.name !== "other" && (
+                      <div>
                         <div>
                           <Label>Is degree completed?</Label>
                           <Controller
@@ -602,8 +601,26 @@ export default function CompleteProfileTutor({
                             </span>
                           )}
                         </div>
-                      )}
 
+                        {/* other */}
+                        {degree.name === "other" && (
+                          <div>
+                            <Label>Other</Label>
+                            <Input
+                              type="text"
+                              {...register("degree.other", {
+                                required: "required*",
+                              })}
+                              placeholder="Enter other"
+                            />
+                            {errors.degree?.other && (
+                              <span className="text-sm text-red-500">
+                                {errors.degree?.other.message}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                       {/* degree completion year */}
                       {watch("degree.status") === "yes" && (
                         <div>
@@ -626,25 +643,6 @@ export default function CompleteProfileTutor({
                           {errors.degree?.year && (
                             <span className="text-sm text-red-500">
                               {errors.degree?.year.message}
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {/* other */}
-                      {degree.name === "other" && (
-                        <div>
-                          <Label>Other</Label>
-                          <Input
-                            type="text"
-                            {...register("degree.other", {
-                              required: "required*",
-                            })}
-                            placeholder="Enter other"
-                          />
-                          {errors.degree?.other && (
-                            <span className="text-sm text-red-500">
-                              {errors.degree?.other.message}
                             </span>
                           )}
                         </div>
