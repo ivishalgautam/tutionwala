@@ -55,7 +55,23 @@ export const columns = (handleDelete, setEnquiryId) => [
     },
     cell: ({ row }) => {
       const category = row.getValue("sub_category_name");
-      return <span>{category ?? "N/a"}</span>;
+      const subjects = row.original.subjects
+        ? (row.original.subjects.split(" ") ?? [])
+        : [];
+      return (
+        <div>
+          <span>{category ?? "N/a"}</span>
+          {subjects.length > 0 && (
+            <div className="space-x-1">
+              {subjects.map((sub) => (
+                <Badge key={sub} className={"text-xs font-normal capitalize"}>
+                  {sub}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      );
     },
   },
   {

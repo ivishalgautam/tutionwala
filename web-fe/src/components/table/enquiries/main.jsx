@@ -143,6 +143,7 @@ export const TutorEnquiries = ({ enquiries, handleDelete, setEnquiryId }) => {
           status,
           sub_category_name,
           unread_chat_count,
+          subjects,
         }) => ({
           id,
           sub_category_name,
@@ -151,6 +152,7 @@ export const TutorEnquiries = ({ enquiries, handleDelete, setEnquiryId }) => {
           fullname: tutor[0].fullname,
           tutorId: tutor[0].tutor_id,
           unread_chat_count,
+          subjects,
         }),
       )}
     />
