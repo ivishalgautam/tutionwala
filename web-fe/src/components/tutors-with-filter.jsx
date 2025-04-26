@@ -102,12 +102,18 @@ export default function TutorsWithFilter() {
             priority={false}
             loading="lazy"
           />
-          <div className="absolute left-1/2 top-20 flex -translate-x-1/2 flex-col items-center justify-center gap-2 text-white">
-            <H1 className={"text-center"}>Find the Perfect Tutor for You</H1>
-            <Small className={"text-center font-normal"}>
+          <div className="absolute left-1/2 top-20 -translate-x-1/2 gap-2 text-white">
+            <h1
+              className={
+                "w-full shrink-0  text-wrap text-center text-2xl font-extrabold capitalize md:text-4xl"
+              }
+            >
+              Find the Perfect Tutor for You
+            </h1>
+            <p className={"text-center text-sm font-normal"}>
               Search and filter through expert tutors based on your learning
               needs, subject, experience, and availability.
-            </Small>
+            </p>
           </div>
         </div>
 
