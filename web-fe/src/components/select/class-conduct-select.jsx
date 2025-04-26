@@ -10,7 +10,7 @@ const options = [
   { label: "Offline", value: "offline" },
 ];
 
-export default function ClassConductSelect({ styles }) {
+export default function ClassConductSelect({ styles, classNames }) {
   const [mode, setMode] = useQueryState("mode");
 
   const selectedOption = useMemo(() => {
@@ -39,6 +39,7 @@ export default function ClassConductSelect({ styles }) {
           onChange={handleChange}
           menuPortalTarget={document.body}
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOption && (

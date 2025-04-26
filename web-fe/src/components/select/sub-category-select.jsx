@@ -20,7 +20,11 @@ const searchCategory = async (q) => {
   return filteredData;
 };
 
-export default function SubCategorySelect({ isMulti = false, styles }) {
+export default function SubCategorySelect({
+  isMulti = false,
+  styles,
+  classNames,
+}) {
   const [subCatInputVal, setSubCatInputVal] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [defaultOptions, setDefaultOptions] = useState([]);
@@ -107,6 +111,7 @@ export default function SubCategorySelect({ isMulti = false, styles }) {
           value={selectedOption}
           menuPortalTarget={document.body}
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOption && (

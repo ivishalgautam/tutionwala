@@ -46,6 +46,7 @@ export default function ClassPlaceSelect({ styles }) {
             typeof window !== "undefined" ? document.body : null
           }
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOptions.length > 0 && (

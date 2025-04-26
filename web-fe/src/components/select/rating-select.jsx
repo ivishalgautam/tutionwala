@@ -21,7 +21,7 @@ const ratings = [0, 1, 2, 3, 4, 5].map((num) => ({
   ),
 }));
 
-export default function RatingSelect({ styles }) {
+export default function RatingSelect({ styles, classNames }) {
   const [ratingParam, setRatingParam] = useQueryState("rating");
 
   const selectedOptions = useMemo(() => {
@@ -55,6 +55,7 @@ export default function RatingSelect({ styles }) {
           isMulti
           menuPortalTarget={document.body}
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOptions.length > 0 && (

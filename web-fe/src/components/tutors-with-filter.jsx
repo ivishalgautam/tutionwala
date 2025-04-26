@@ -12,7 +12,7 @@ import Image from "next/image";
 import { H1, Small } from "./ui/typography";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Input } from "./ui/input";
 import useMapLoader from "@/hooks/useMapLoader";
@@ -22,6 +22,7 @@ import { Filter } from "lucide-react";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -32,6 +33,7 @@ import { PaginationWithLinks } from "./pagination-with-links";
 import { FilterForm } from "@/forms/filter";
 import ResetAllFilters from "./reset-all-filters";
 import { useQueryState } from "nuqs";
+import { cn } from "@/lib/utils";
 
 const fetchTutors = async (params) => {
   let baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -214,17 +216,43 @@ export const FilterAddress = () => {
 };
 
 const MobileFilter = ({ searchParams, handleSubmit, onSubmit }) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Sheet>
-      <SheetTrigger className={buttonVariants({ variant: "outline" })}>
-        <Filter size={15} /> &nbsp; Filter
-      </SheetTrigger>
-      <SheetContent side="left">
-        <SheetHeader>
-          <SheetTitle>Select filteration</SheetTitle>
-          <FilterForm {...{ searchParams, handleSubmit, onSubmit }} />
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
+    <div>
+      <Button type="button" variant="outline" onClick={() => setOpen(true)}>
+        <Filter size={15} className="mr-1" /> Filter
+      </Button>
+
+      {/* Overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* Sliding Panel */}
+      <div
+        className={cn(
+          "fixed left-0 top-0 z-50 h-full w-3/4 max-w-sm bg-background p-6 shadow-lg transition-transform duration-300 ease-in-out",
+          open ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Select Filtration</h2>
+          <Button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="text-white"
+          >
+            ✕
+          </Button>
+        </div>
+
+        {/* Your Filter Form */}
+        <FilterForm {...{ searchParams, handleSubmit, onSubmit }} />
+      </div>
+    </div>
   );
 };

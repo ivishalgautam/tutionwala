@@ -17,7 +17,7 @@ const fetchSubjects = async () => {
     })) ?? []
   );
 };
-export default function SubjectSelect({ boards = [], styles }) {
+export default function SubjectSelect({ boards = [], styles, classNames }) {
   const [subject, setSubject] = useQueryState("subject");
   const subjects = useMemo(() => {
     const data = boards
@@ -76,6 +76,7 @@ export default function SubjectSelect({ boards = [], styles }) {
             typeof window !== "undefined" ? document.body : null
           }
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOptions.length > 0 && (

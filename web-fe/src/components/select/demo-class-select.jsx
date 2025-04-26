@@ -10,7 +10,7 @@ const options = [
   { label: "Any", value: "any" },
 ];
 
-export default function DemoClassSelect({ styles }) {
+export default function DemoClassSelect({ styles, classNames }) {
   const [demo, setDemo] = useQueryState("demo");
 
   const selectedOption =
@@ -40,6 +40,7 @@ export default function DemoClassSelect({ styles }) {
             typeof window !== "undefined" ? document.body : null
           }
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOption && (

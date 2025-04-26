@@ -5,7 +5,7 @@ import { languages } from "@/data/languages";
 import ReactSelect from "react-select";
 import { Button } from "../ui/button";
 
-export default function LanguageSelect({ styles }) {
+export default function LanguageSelect({ styles, classNames }) {
   const [language, setLanguage] = useQueryState("language");
 
   const selectedOptions =
@@ -30,17 +30,17 @@ export default function LanguageSelect({ styles }) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-grow">
+      <div className="relative flex-grow">
         <ReactSelect
           options={languages}
           isMulti
           value={selectedOptions}
           placeholder="Select Preferred Languages"
           onChange={handleChange}
-          menuPortalTarget={
-            typeof window !== "undefined" ? document.body : null
-          }
+          menuPortalTarget={document.body}
           styles={styles}
+          classNames={classNames}
+          menuPosition="fixed"
         />
       </div>
       {selectedOptions.length > 0 && (

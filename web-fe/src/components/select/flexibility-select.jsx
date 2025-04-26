@@ -12,7 +12,7 @@ const options = [
   // { label: "Any", value: "any" },
 ];
 
-export default function ClassFlexibilitySelect({ styles }) {
+export default function ClassFlexibilitySelect({ styles, classNames }) {
   const [flexibility, setFlexibility] = useQueryState("flexibility");
 
   const selectedOptions =
@@ -47,6 +47,7 @@ export default function ClassFlexibilitySelect({ styles }) {
           }
           isMulti
           styles={styles}
+          classNames={classNames}
         />
       </div>
       {selectedOptions.length > 0 && (

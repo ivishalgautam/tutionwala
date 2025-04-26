@@ -35,6 +35,10 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
     queryKey: ["category", category],
     enabled: !!category,
   });
+  const classNames = {
+    option: () =>
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+  };
 
   const styles = {
     control: (provided) => ({
@@ -43,20 +47,32 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
       display: "flex",
       border: "1px solid #BEBFC1",
     }),
-    menu: (provided) => ({
-      ...provided,
-      textTransform: "capitalize",
-    }),
     menuPortal: (provided) => ({
       ...provided,
       zIndex: 99999999999,
+    }),
+    menu: (base) => ({
+      ...base,
+      zIndex: 999999999,
+      textTransform: "capitalize",
+    }),
+    menuList: (base) => ({
+      ...base,
+      maxHeight: "300px",
+      overflowY: "auto",
     }),
   };
 
   const tabs = [
     {
       name: "Mode?",
-      comp: <ClassConductSelect searchParams={searchParams} styles={styles} />,
+      comp: (
+        <ClassConductSelect
+          searchParams={searchParams}
+          styles={styles}
+          classNames={classNames}
+        />
+      ),
       className: "",
     },
     ...(isOffline
@@ -75,6 +91,7 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
           isMulti={false}
           searchParams={searchParams}
           styles={styles}
+          classNames={classNames}
         />
       ),
       className: "",
@@ -90,6 +107,7 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
                   searchParams={searchParams}
                   boards={data?.boards ?? []}
                   styles={styles}
+                  classNames={classNames}
                 />
               ),
               className: "",
@@ -98,24 +116,46 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
         : []),
     {
       name: "Languages?",
-      comp: <LanguageSelect searchParams={searchParams} styles={styles} />,
+      comp: (
+        <LanguageSelect
+          searchParams={searchParams}
+          styles={styles}
+          classNames={classNames}
+        />
+      ),
       className: "",
     },
     {
       name: "Rating?",
-      comp: <RatingSelect searchParams={searchParams} styles={styles} />,
+      comp: (
+        <RatingSelect
+          searchParams={searchParams}
+          styles={styles}
+          classNames={classNames}
+        />
+      ),
       className: "",
     },
     {
       name: "Demo Classes?",
-      comp: <DemoClassSelect searchParams={searchParams} styles={styles} />,
+      comp: (
+        <DemoClassSelect
+          searchParams={searchParams}
+          styles={styles}
+          classNames={classNames}
+        />
+      ),
       className: "",
     },
 
     {
       name: "Flexibility?",
       comp: (
-        <ClassFlexibilitySelect searchParams={searchParams} styles={styles} />
+        <ClassFlexibilitySelect
+          searchParams={searchParams}
+          styles={styles}
+          classNames={classNames}
+        />
       ),
       className: "",
     },
@@ -124,7 +164,11 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
           {
             name: "Place?",
             comp: (
-              <ClassPlaceSelect searchParams={searchParams} styles={styles} />
+              <ClassPlaceSelect
+                searchParams={searchParams}
+                styles={styles}
+                classNames={classNames}
+              />
             ),
             className: "",
           },
