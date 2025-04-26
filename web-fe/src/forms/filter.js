@@ -35,24 +35,48 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
     queryKey: ["category", category],
     enabled: !!category,
   });
+
+  const styles = {
+    control: (provided) => ({
+      background: "#fff",
+      borderRadius: "8px",
+      display: "flex",
+      border: "1px solid #BEBFC1",
+    }),
+    menu: (provided) => ({
+      ...provided,
+      textTransform: "capitalize",
+    }),
+    menuPortal: (provided) => ({
+      ...provided,
+      zIndex: 99999999999,
+    }),
+  };
+
   const tabs = [
     {
       name: "Mode?",
-      comp: <ClassConductSelect searchParams={searchParams} />,
+      comp: <ClassConductSelect searchParams={searchParams} styles={styles} />,
       className: "",
     },
     ...(isOffline
       ? [
           {
             name: "Location?",
-            comp: <FilterAddress searchParams={searchParams} />,
+            comp: <FilterAddress searchParams={searchParams} styles={styles} />,
             className: "",
           },
         ]
       : []),
     {
       name: "Category?",
-      comp: <SubCategorySelect isMulti={false} searchParams={searchParams} />,
+      comp: (
+        <SubCategorySelect
+          isMulti={false}
+          searchParams={searchParams}
+          styles={styles}
+        />
+      ),
       className: "",
     },
     ...(isLoading
@@ -65,6 +89,7 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
                 <SubjectSelect
                   searchParams={searchParams}
                   boards={data?.boards ?? []}
+                  styles={styles}
                 />
               ),
               className: "",
@@ -73,30 +98,34 @@ export const FilterForm = ({ searchParams, handleSubmit, onSubmit }) => {
         : []),
     {
       name: "Languages?",
-      comp: <LanguageSelect searchParams={searchParams} />,
+      comp: <LanguageSelect searchParams={searchParams} styles={styles} />,
       className: "",
     },
     {
       name: "Rating?",
-      comp: <RatingSelect searchParams={searchParams} />,
+      comp: <RatingSelect searchParams={searchParams} styles={styles} />,
       className: "",
     },
     {
       name: "Demo Classes?",
-      comp: <DemoClassSelect searchParams={searchParams} />,
+      comp: <DemoClassSelect searchParams={searchParams} styles={styles} />,
       className: "",
     },
 
     {
       name: "Flexibility?",
-      comp: <ClassFlexibilitySelect searchParams={searchParams} />,
+      comp: (
+        <ClassFlexibilitySelect searchParams={searchParams} styles={styles} />
+      ),
       className: "",
     },
     ...(isOffline
       ? [
           {
             name: "Place?",
-            comp: <ClassPlaceSelect searchParams={searchParams} />,
+            comp: (
+              <ClassPlaceSelect searchParams={searchParams} styles={styles} />
+            ),
             className: "",
           },
         ]

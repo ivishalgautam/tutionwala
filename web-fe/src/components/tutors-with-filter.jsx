@@ -5,21 +5,20 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 const Tutors = dynamic(() => import("./tutors"), {
   loading: () => (
-    <div class="col-span-12 h-full rounded-md bg-gray-200 md:col-span-12 lg:col-span-8"></div>
+    <div className="col-span-12 h-full rounded-md bg-gray-200 md:col-span-12 lg:col-span-8"></div>
   ),
 });
 import Image from "next/image";
-import { H1, Muted, P, Small } from "./ui/typography";
+import { H1, Small } from "./ui/typography";
 import { useForm } from "react-hook-form";
-import SubCategorySelect from "./select/sub-category-select";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import { Input } from "./ui/input";
 import useMapLoader from "@/hooks/useMapLoader";
 import { useAutocomplete } from "@/hooks/useAutoComplete";
 
-import { Filter, Layers, Search, X } from "lucide-react";
+import { Filter } from "lucide-react";
 import {
   Sheet,
   SheetContent,

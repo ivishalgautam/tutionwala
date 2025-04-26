@@ -17,7 +17,7 @@ const fetchSubjects = async () => {
     })) ?? []
   );
 };
-export default function SubjectSelect({ boards = [] }) {
+export default function SubjectSelect({ boards = [], styles }) {
   const [subject, setSubject] = useQueryState("subject");
   const subjects = useMemo(() => {
     const data = boards
@@ -75,7 +75,7 @@ export default function SubjectSelect({ boards = [] }) {
           menuPortalTarget={
             typeof window !== "undefined" ? document.body : null
           }
-          className="rounded border"
+          styles={styles}
         />
       </div>
       {selectedOptions.length > 0 && (

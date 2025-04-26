@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const showInfoContent = (fullAddr) => {
   return `
-      <div class="text-black font-bold">
+      <div className="text-black font-bold">
         ${fullAddr}
       </div>
   `;

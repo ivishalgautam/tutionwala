@@ -10,7 +10,7 @@ const options = [
   { label: "Other", value: "other" },
 ];
 
-export default function ClassPlaceSelect() {
+export default function ClassPlaceSelect({ styles }) {
   const [place, setPlace] = useQueryState("place");
 
   const selectedOptions =
@@ -45,7 +45,7 @@ export default function ClassPlaceSelect() {
           menuPortalTarget={
             typeof window !== "undefined" ? document.body : null
           }
-          className="rounded border"
+          styles={styles}
         />
       </div>
       {selectedOptions.length > 0 && (

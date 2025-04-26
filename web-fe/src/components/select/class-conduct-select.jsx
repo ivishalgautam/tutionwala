@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryState } from "nuqs";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import ReactSelect from "react-select";
 import { Button } from "../ui/button";
 
@@ -10,7 +10,7 @@ const options = [
   { label: "Offline", value: "offline" },
 ];
 
-export default function ClassConductSelect() {
+export default function ClassConductSelect({ styles }) {
   const [mode, setMode] = useQueryState("mode");
 
   const selectedOption = useMemo(() => {
@@ -37,10 +37,8 @@ export default function ClassConductSelect() {
           value={selectedOption}
           placeholder="Select Mode"
           onChange={handleChange}
-          menuPortalTarget={
-            typeof window !== "undefined" ? document.body : null
-          }
-          className="rounded border"
+          menuPortalTarget={document.body}
+          styles={styles}
         />
       </div>
       {selectedOption && (

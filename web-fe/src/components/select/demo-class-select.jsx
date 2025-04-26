@@ -10,7 +10,7 @@ const options = [
   { label: "Any", value: "any" },
 ];
 
-export default function DemoClassSelect() {
+export default function DemoClassSelect({ styles }) {
   const [demo, setDemo] = useQueryState("demo");
 
   const selectedOption =
@@ -39,7 +39,7 @@ export default function DemoClassSelect() {
           menuPortalTarget={
             typeof window !== "undefined" ? document.body : null
           }
-          className="rounded border"
+          styles={styles}
         />
       </div>
       {selectedOption && (

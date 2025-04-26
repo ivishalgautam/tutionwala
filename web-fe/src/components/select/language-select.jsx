@@ -5,7 +5,7 @@ import { languages } from "@/data/languages";
 import ReactSelect from "react-select";
 import { Button } from "../ui/button";
 
-export default function LanguageSelect() {
+export default function LanguageSelect({ styles }) {
   const [language, setLanguage] = useQueryState("language");
 
   const selectedOptions =
@@ -40,7 +40,7 @@ export default function LanguageSelect() {
           menuPortalTarget={
             typeof window !== "undefined" ? document.body : null
           }
-          className="rounded border"
+          styles={styles}
         />
       </div>
       {selectedOptions.length > 0 && (

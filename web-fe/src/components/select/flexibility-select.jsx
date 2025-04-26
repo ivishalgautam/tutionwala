@@ -12,7 +12,7 @@ const options = [
   // { label: "Any", value: "any" },
 ];
 
-export default function ClassFlexibilitySelect() {
+export default function ClassFlexibilitySelect({ styles }) {
   const [flexibility, setFlexibility] = useQueryState("flexibility");
 
   const selectedOptions =
@@ -46,7 +46,7 @@ export default function ClassFlexibilitySelect() {
             typeof window !== "undefined" ? document.body : null
           }
           isMulti
-          className="rounded border"
+          styles={styles}
         />
       </div>
       {selectedOptions.length > 0 && (
