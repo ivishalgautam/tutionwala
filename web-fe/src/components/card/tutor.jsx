@@ -15,7 +15,7 @@ export default function TutorCard({
 }) {
   return (
     <div className="w-full max-w-full space-y-2 rounded-lg border border-gray-200 bg-white p-4">
-      <div className="flex items-start justify-start gap-4">
+      <div className="sm:flex sm:items-start sm:justify-start sm:gap-4">
         <figure className="size-24 flex-shrink-0">
           <Image
             src={tutor.profile_picture}
@@ -26,7 +26,7 @@ export default function TutorCard({
           />
         </figure>
         <div className="flex-grow space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="sm:flex sm:items-center sm:justify-between">
             <Link href={`/tutors/${tutor.tutor_id}`}>
               <H4
                 className={
