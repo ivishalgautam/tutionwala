@@ -90,10 +90,10 @@ export default function PersonalInfoForm({ user, setUser }) {
   const deleteMutation = useMutation({
     mutationFn: deleteProfile,
     onSuccess: (data) => {
+      setUser();
       toast.success(data?.message ?? "Account deleted successfully.");
       router.replace("/");
       localStorage.clear();
-      setUser();
     },
     onError: (error) =>
       toast.error(error?.response?.data?.message ?? error?.message ?? "error"),

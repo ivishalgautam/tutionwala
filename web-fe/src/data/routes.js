@@ -51,6 +51,10 @@ export const allRoutes = [
     roles: [ROLES.TUTOR, ROLES.STUDENT],
   },
   {
+    link: "/dashboard/profile",
+    roles: [ROLES.TUTOR, ROLES.STUDENT],
+  },
+  {
     link: "/dashboard/enquiries",
     roles: [ROLES.TUTOR, ROLES.STUDENT],
   },

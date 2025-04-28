@@ -55,12 +55,12 @@ export default function DashboardLayout({ children }) {
             Back
           </Button>
 
-          {!user.is_aadhaar_verified && (
+          {!user?.is_aadhaar_verified && (
             <Alert variant="destructive" className="!mb-2 bg-white">
               <Warning className="h-4 w-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span>
-                  {user.role === "student"
+                  {user?.role === "student"
                     ? "Your KYC is not completed. Please complete your KYC."
                     : "Please complete your KYC to make your profile visible on the website."}
                 </span>
@@ -73,13 +73,13 @@ export default function DashboardLayout({ children }) {
               </AlertDescription>
             </Alert>
           )}
-          {!user.is_email_verified && (
+          {!user?.is_email_verified && (
             <Alert variant="destructive" className="!mb-2 bg-white">
               <AlertDescription className="flex items-center justify-between">
                 <div className="flex items-center justify-start gap-3">
                   <Warning className="h-4 w-4" />
                   <span>
-                    {user.role === "student"
+                    {user?.role === "student"
                       ? "Your Email is not verified. Please verify your email."
                       : "Please verify your email to make your profile visible on the website."}
                   </span>
@@ -130,7 +130,7 @@ export const Profile = ({ isUserLoading, user }) => {
       <div>
         <Small>
           {user?.tutor_type === "institute"
-            ? user.institute_name
+            ? user?.institute_name
             : user?.fullname}
         </Small>
         <Muted className={"text-xs capitalize"}>
@@ -163,8 +163,8 @@ export const ListItem = ({ item }) => {
 
 export const Sidebar = () => {
   const { user, isUserLoading } = useContext(MainContext);
-  const is_aadhaar_verified = user.is_aadhaar_verified;
-  const is_email_verified = user.is_email_verified;
+  const is_aadhaar_verified = user?.is_aadhaar_verified;
+  const is_email_verified = user?.is_email_verified;
   const completed = 3 + is_aadhaar_verified + is_email_verified;
   const progress = (completed / 5) * 100;
 
