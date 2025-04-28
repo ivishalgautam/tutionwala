@@ -208,7 +208,6 @@ export default function TutorProfileForm({ user, setUser }) {
       rerender(true);
     }
   }, [tutor, setValue]);
-  console.log({ tutor });
   const onSubmit = (data) => {
     const payload = {
       profile_picture: media.profile_picture,
@@ -228,6 +227,7 @@ export default function TutorProfileForm({ user, setUser }) {
     router.push("/dashboard/profile");
   };
   const experience = watch("experience", "");
+  const isIndividual = tutor?.type === "individual";
 
   if (isTutorLoading) return <Loading />;
 
@@ -461,113 +461,115 @@ export default function TutorProfileForm({ user, setUser }) {
           </div>
 
           {/* most recent degree */}
-          <div className="space-y-2">
-            <H6>Most recent degree</H6>
+          {isIndividual && (
             <div className="space-y-2">
-              {/* degree name */}
-              <div>
-                <Label>Name</Label>
+              <H6>Most recent degree</H6>
+              <div className="space-y-2">
+                {/* degree name */}
                 <div>
+                  <Label>Name</Label>
+                  <div>
+                    <Controller
+                      control={control}
+                      name={`degree.name`}
+                      render={({ field }) => (
+                        <ShadcnSelect
+                          field={field}
+                          name={`degree.name`}
+                          options={courses}
+                          setValue={setValue}
+                          placeholder="Course"
+                          width="w-full"
+                        />
+                      )}
+                    />
+                  </div>
+                  {errors.degree?.name && (
+                    <span className="text-sm text-red-500">
+                      {errors.degree?.name.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* other */}
+                {degree?.name === "other" && (
+                  <div>
+                    <Label>Other</Label>
+                    <Input
+                      type="text"
+                      {...register("degree.other", {
+                        required: "required*",
+                      })}
+                      placeholder="Enter other"
+                    />
+                    {errors.degree?.other && (
+                      <span className="text-sm text-red-500">
+                        {errors.degree?.other.message}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <div>
+                  <Label>Is degree completed?</Label>
                   <Controller
                     control={control}
-                    name={`degree.name`}
+                    name={`degree.status`}
+                    rules={{ required: "required*" }}
                     render={({ field }) => (
-                      <ShadcnSelect
-                        field={field}
-                        name={`degree.name`}
-                        options={courses}
-                        setValue={setValue}
-                        placeholder="Course"
-                        width="w-full"
-                      />
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="">
+                          <SelectValue placeholder="Select Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Status</SelectLabel>
+                            <SelectItem value="yes">Yes</SelectItem>
+                            <SelectItem value="pursuing">Pursuing</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     )}
                   />
-                </div>
-                {errors.degree?.name && (
-                  <span className="text-sm text-red-500">
-                    {errors.degree?.name.message}
-                  </span>
-                )}
-              </div>
-
-              {/* other */}
-              {degree?.name === "other" && (
-                <div>
-                  <Label>Other</Label>
-                  <Input
-                    type="text"
-                    {...register("degree.other", {
-                      required: "required*",
-                    })}
-                    placeholder="Enter other"
-                  />
-                  {errors.degree?.other && (
+                  {errors.degree?.status && (
                     <span className="text-sm text-red-500">
-                      {errors.degree?.other.message}
+                      {errors.degree?.status.message}
                     </span>
                   )}
                 </div>
-              )}
 
-              <div>
-                <Label>Is degree completed?</Label>
-                <Controller
-                  control={control}
-                  name={`degree.status`}
-                  rules={{ required: "required*" }}
-                  render={({ field }) => (
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="">
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Status</SelectLabel>
-                          <SelectItem value="yes">Yes</SelectItem>
-                          <SelectItem value="pursuing">Pursuing</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.degree?.status && (
-                  <span className="text-sm text-red-500">
-                    {errors.degree?.status.message}
-                  </span>
+                {/* degree completion year */}
+                {watch("degree.status") === "yes" && (
+                  <div>
+                    <Label>Year of completion</Label>
+                    <Input
+                      type="number"
+                      {...register("degree.year", {
+                        required: "required*",
+                        max: {
+                          value: 2099,
+                          message: "Must be less than 2099",
+                        },
+                        min: {
+                          value: 1900,
+                          message: "Must be greater than 1900",
+                        },
+                      })}
+                      placeholder="Enter completion year"
+                    />
+                    {errors.degree?.year && (
+                      <span className="text-sm text-red-500">
+                        {errors.degree?.year.message}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
-
-              {/* degree completion year */}
-              {watch("degree.status") === "yes" && (
-                <div>
-                  <Label>Year of completion</Label>
-                  <Input
-                    type="number"
-                    {...register("degree.year", {
-                      required: "required*",
-                      max: {
-                        value: 2099,
-                        message: "Must be less than 2099",
-                      },
-                      min: {
-                        value: 1900,
-                        message: "Must be greater than 1900",
-                      },
-                    })}
-                    placeholder="Enter completion year"
-                  />
-                  {errors.degree?.year && (
-                    <span className="text-sm text-red-500">
-                      {errors.degree?.year.message}
-                    </span>
-                  )}
-                </div>
-              )}
             </div>
-          </div>
+          )}
 
           {/* radius */}
           <div className="relative">
