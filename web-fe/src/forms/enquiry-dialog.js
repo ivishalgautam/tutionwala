@@ -98,7 +98,6 @@ export default function DialogEnquiryForm({
         : prev.filter((item) => item !== subject),
     );
   };
-
   return (
     <>
       <Button disabled={isLoading} onClick={handleSubmit}>
@@ -150,59 +149,83 @@ export default function DialogEnquiryForm({
                 </Select>
               </div>
 
-              <div className="flex gap-1.5">
-                {boards[category]?.map((item) => (
-                  <div className="flex items-center space-x-2" key={item}>
-                    <label
-                      htmlFor={item}
-                      className="flex items-center justify-center gap-1 rounded-md border p-2 text-sm font-medium capitalize leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      <Checkbox
-                        id={item}
-                        onCheckedChange={(checked) =>
-                          handleSelectSubject(item, checked)
-                        }
-                      />
-                      {item}
-                    </label>
+              {boards?.[category]?.length > 0 ? (
+                <div>
+                  <Label>Subjects</Label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {boards[category]
+                      ?.filter((value, index, self) => {
+                        return (
+                          self.indexOf(value.trim().toLowerCase()) === index
+                        );
+                      })
+                      .map((item) => (
+                        <div className="flex items-center space-x-2" key={item}>
+                          <label
+                            htmlFor={item}
+                            className="flex items-center justify-center gap-1 rounded-md border p-2 text-sm font-medium capitalize leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            <Checkbox
+                              id={item}
+                              onCheckedChange={(checked) =>
+                                handleSelectSubject(item, checked)
+                              }
+                            />
+                            {item}
+                          </label>
+                        </div>
+                      ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : (
+                ""
+              )}
 
-              <RadioGroup
-                className="grid-cols-3"
-                defaultValue={mode}
-                onValueChange={(mode) => setMode(mode)}
-              >
-                {modes[category]?.map((item) => (
-                  <div
-                    key={item}
-                    className={cn(
-                      "relative flex cursor-pointer flex-col items-center gap-3 rounded-md border border-input px-2 py-3 text-center outline-none transition-[color,box-shadow]",
-                      {
-                        "border-primary": mode === item,
-                      },
-                    )}
+              {modes?.[category]?.length > 0 ? (
+                <div>
+                  <Label>Mode</Label>
+                  <RadioGroup
+                    className="grid-cols-3"
+                    defaultValue={mode}
+                    onValueChange={(mode) => setMode(mode)}
                   >
-                    <RadioGroupItem
-                      id={item}
-                      value={item}
-                      className="sr-only"
-                    />
-                    <RiBankCardLine
-                      className="opacity-60"
-                      size={20}
-                      aria-hidden="true"
-                    />
-                    <label
-                      htmlFor={item}
-                      className="cursor-pointer text-xs font-medium capitalize leading-none text-foreground after:absolute after:inset-0"
-                    >
-                      {item}
-                    </label>
-                  </div>
-                ))}
-              </RadioGroup>
+                    {modes[category]
+                      ?.filter((value, index, self) => {
+                        return self.indexOf(value) === index;
+                      })
+                      .map((item) => (
+                        <div
+                          key={item}
+                          className={cn(
+                            "relative flex cursor-pointer flex-col items-center gap-3 rounded-md border border-input px-2 py-3 text-center outline-none transition-[color,box-shadow]",
+                            {
+                              "border-primary": mode === item,
+                            },
+                          )}
+                        >
+                          <RadioGroupItem
+                            id={item}
+                            value={item}
+                            className="sr-only"
+                          />
+                          <RiBankCardLine
+                            className="opacity-60"
+                            size={20}
+                            aria-hidden="true"
+                          />
+                          <label
+                            htmlFor={item}
+                            className="cursor-pointer text-xs font-medium capitalize leading-none text-foreground after:absolute after:inset-0"
+                          >
+                            {item}
+                          </label>
+                        </div>
+                      ))}
+                  </RadioGroup>
+                </div>
+              ) : (
+                ""
+              )}
 
               <Button disabled={isLoading} onClick={handleSubmit}>
                 {isLoading ? "Sending..." : "Enquire now"}

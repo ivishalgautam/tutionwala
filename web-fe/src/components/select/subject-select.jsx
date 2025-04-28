@@ -23,7 +23,7 @@ export default function SubjectSelect({ boards = [], styles, classNames }) {
     const data = boards
       .flatMap((brd) => brd.subjects.map((sub) => String(sub).toLowerCase()))
       .filter((value, index, self) => {
-        return self.indexOf(value) === index;
+        return self.indexOf(value.trim().toLowerCase()) === index;
       });
 
     return data.map((sub) => ({
