@@ -796,15 +796,21 @@ export default function CompleteProfileTutor({
                       {budgets.map((field, index) => (
                         <div key={field.id}>
                           <p className="text-sm">
-                            Mode: <strong>{field.mode}</strong>, Type:{" "}
-                            <strong>{field.type}</strong>, Costing:{" "}
-                            <strong>
+                            Mode:{" "}
+                            <strong className="capitalize">{field.mode}</strong>
+                            , Type:{" "}
+                            <strong className="capitalize">{field.type}</strong>
+                            , Costing:{" "}
+                            <strong className="capitalize">
                               {field.costing.split("_").join(" ")}
                             </strong>
                             {field.location && (
                               <>
                                 {" "}
-                                Location: <strong>{field.location}</strong>
+                                Location:{" "}
+                                <strong className="capitalize">
+                                  {field.location}
+                                </strong>
                               </>
                             )}
                           </p>
