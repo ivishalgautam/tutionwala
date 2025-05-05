@@ -83,10 +83,10 @@ export default function ChatPage({ params: { slug: enquiryId } }) {
   const onSubmit = (data) => {
     const message = data.content;
 
-    if (message.trim() === "" || /\d/.test(message)) {
-      alert("Numbers are not allowed in the message.");
-      return;
-    }
+    // if (message.trim() === "" || /\d/.test(message)) {
+    //   alert("Numbers are not allowed in the message.");
+    //   return;
+    // }
 
     socketRef.current.send(
       JSON.stringify({

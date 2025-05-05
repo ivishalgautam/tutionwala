@@ -82,10 +82,10 @@ export default function Chat({ tutorStudentMapId }) {
   const onSubmit = (data) => {
     const message = data.content;
 
-    if (message.trim() === "" || /\d/.test(message)) {
-      alert("Numbers are not allowed in the message.");
-      return;
-    }
+    // if (message.trim() === "" || /\d/.test(message)) {
+    //   alert("Numbers are not allowed in the message.");
+    //   return;
+    // }
 
     socketRef.current.send(
       JSON.stringify({
