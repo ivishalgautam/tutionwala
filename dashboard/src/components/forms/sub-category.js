@@ -152,7 +152,7 @@ export function SubCategoryForm({
     if (!watch(optionInput)) return;
 
     let newOptions = Array.from(
-      new Set([...watch(fieldOptions), watch(optionInput)]),
+      new Set([...(watch(fieldOptions) ?? []), watch(optionInput)]),
     );
 
     setValue(fieldOptions, newOptions);
