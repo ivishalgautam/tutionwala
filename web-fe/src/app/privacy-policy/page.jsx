@@ -220,6 +220,34 @@ export default function Page() {
           by the revised Privacy Policy.
         </p>
       </div>
+      <div>
+        <H5>Location Data</H5>
+        <p className="text-xs">
+          We collect and use precise location data from both students and
+          teachers to enable key features of the app, such as showing nearby
+          users and facilitating location-based matching.
+        </p>
+
+        <p className="text-xs">
+          Location data is collected only with your explicit consent, and is
+          used solely for the following purposes:
+        </p>
+        <p className="text-xs">Helping students find nearby teachers</p>
+        <p className="text-xs">Helping teachers find nearby students</p>
+        <p className="text-xs">
+          Improving location-based recommendations and search results
+        </p>
+        <p className="text-xs">
+          We do not use your location data for advertising, tracking, or
+          analytics purposes unrelated to app functionality. We do not share
+          your location data with third parties, unless required by law or with
+          your explicit permission.
+        </p>
+        <p className="text-xs">
+          You can control location access at any time through your device
+          settings.
+        </p>
+      </div>
       For any questions regarding this Privacy Policy, contact us at{" "}
       {config.phone}
     </div>
