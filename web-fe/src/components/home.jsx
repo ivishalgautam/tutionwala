@@ -29,6 +29,10 @@ const CatgoriesTabs = dynamic(() => import("./categories-tabs"), {
   ssr: false,
   loading: () => <Loading />,
 });
+const AppDownloadSection = dynamic(() => import("./app-download-section"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 export default function HomePage() {
   return (
@@ -38,9 +42,10 @@ export default function HomePage() {
       <WhyChooseUs />
       <StudentReviewCards />
       <CoursesWithTabs slugs={["school"]} />
-      <PricingSection />
+      {/* <PricingSection /> */}
       <WhatsAppWidget />
       <CatgoriesTabs />
+      <AppDownloadSection />
     </>
   );
 }
