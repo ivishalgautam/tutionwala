@@ -7,7 +7,7 @@ export const endpoints = {
     verifyOtp: "/auth/otp/verify",
     sendOtp: "/auth/otp/send",
 
-    kycOtpRequest: "/zoop/kyc/otp/request",
+    zoopKycInit: "/zoop/init",
     kycOtpVerify: "/zoop/kyc/otp/verify",
   },
 
