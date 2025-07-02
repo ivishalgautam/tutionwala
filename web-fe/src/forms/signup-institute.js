@@ -236,7 +236,7 @@ export default function SignUpInstituteForm() {
                     {...register("institute_contact_name", {
                       required: "required*",
                     })}
-                    placeholder="Enter institute name"
+                    placeholder="Enter contact person's name"
                     className="rounded-lg bg-gray-100"
                   />
                   {errors.institute_contact_name && (

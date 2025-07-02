@@ -93,14 +93,14 @@ export default function CompleteProfileStudent({
     },
   });
 
-  const {
-    fields: academicDetails,
-    append,
-    remove,
-  } = useFieldArray({
-    control,
-    name: "academic_details",
-  });
+  // const {
+  //   fields: academicDetails,
+  //   append,
+  //   remove,
+  // } = useFieldArray({
+  //   control,
+  //   name: "academic_details",
+  // });
   const router = useRouter();
   const [isLoading, setIsLoading] = useState({ adhaar: false, profile: false });
   const [progress, setProgress] = useState({ adhaar: 0, profile: 0 });
@@ -203,8 +203,8 @@ export default function CompleteProfileStudent({
     setProfileStep(data.curr_step);
 
     let totalSteps = data.is_boards
-      ? data.fields?.length + 2 + 4
-      : data.fields?.length + 4;
+      ? data.fields?.length + 2 + 3
+      : data.fields?.length + 3;
 
     setTotalSteps(totalSteps);
   }, [data, setProfileStep]);
@@ -329,8 +329,8 @@ export default function CompleteProfileStudent({
   const sortedLanguages = languages.sort((a, b) =>
     a.label.localeCompare(b.label),
   );
-
   if (categoryLoading) return <Loading />;
+
   return (
     <div className={"space-y-4 p-8"}>
       <div className="mx-auto max-w-2xl space-y-2 rounded-lg">
@@ -402,57 +402,8 @@ export default function CompleteProfileStudent({
                     </div>
                   )}
 
-                  {/* preference */}
-                  {currStep === 2 && (
-                    <div className="space-y-1">
-                      <Label>
-                        Are you looking for Private or Group Classes?
-                      </Label>
-                      <Controller
-                        control={control}
-                        rules={{ required: "required*" }}
-                        name="preference"
-                        render={({ field }) => (
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex items-center justify-start gap-2"
-                            value={field.value}
-                          >
-                            {[
-                              "one on one/private tutions",
-                              "no preference",
-                              "group classes",
-                            ].map((ele, key) => (
-                              <div
-                                className={cn(
-                                  "flex cursor-pointer items-center space-x-2 rounded border p-2",
-                                  {
-                                    "border-primary-200 bg-primary-50":
-                                      field.value === ele,
-                                  },
-                                )}
-                                key={ele}
-                              >
-                                <RadioGroupItem value={ele} id={ele} />
-                                <Label htmlFor={ele} className="capitalize">
-                                  {ele}
-                                </Label>
-                              </div>
-                            ))}
-                          </RadioGroup>
-                        )}
-                      />
-                      {errors.preference && (
-                        <span className="text-sm text-red-500">
-                          {errors.preference.message}
-                        </span>
-                      )}
-                    </div>
-                  )}
-
                   {/* availability */}
-                  {currStep === 3 && (
+                  {currStep === 2 && (
                     <div className="space-y-1">
                       <Label>
                         What days are you generally available to Classes?
@@ -499,7 +450,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* start_date */}
-                  {currStep === 4 && (
+                  {currStep === 3 && (
                     <div className="space-y-1">
                       <Label>When do you plan to start?</Label>
                       <Controller
@@ -546,7 +497,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* boards */}
-                  {data?.is_boards && currStep === 5 && (
+                  {data?.is_boards && currStep === 4 && (
                     <div>
                       <div className="text-sm font-medium">
                         Which {data?.name} board of education are you looking
@@ -580,7 +531,7 @@ export default function CompleteProfileStudent({
                   )}
 
                   {/* board subjects */}
-                  {data?.is_boards && currStep === 6 && (
+                  {data?.is_boards && currStep === 5 && (
                     <div className="space-y-2">
                       <div className="text-sm font-medium">
                         Which of the following {selectedBoard} subjects do you
@@ -615,7 +566,7 @@ export default function CompleteProfileStudent({
                   {/* custom fields */}
                   {data?.fields.map(
                     (field, key) =>
-                      currStep === (data.is_boards ? 2 + key + 5 : key + 5) && (
+                      currStep === (data.is_boards ? 2 + key + 4 : key + 4) && (
                         <div className="space-y-4" key={key}>
                           <div className="mt-3 space-y-4">
                             <div className="text-sm font-medium capitalize">
