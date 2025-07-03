@@ -28,7 +28,7 @@ export default function Page() {
     queryKey: [`tutor-${id}`],
     enabled: !!user,
   });
-  console.log({ tutor });
+  // console.log({ tutor });
   const queryClient = useQueryClient();
 
   const createMutation = useMutation(createTutorProfile, {

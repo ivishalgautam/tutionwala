@@ -996,6 +996,37 @@ export default function CompleteProfileTutor({
                                 required: "required*",
                               })}
                               className="size-5 accent-primary"
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                const prevBoards = watch("boards") || [];
+                                const selectedBoards =
+                                  watch("selected_boards") || [];
+                                const selectedFields = watch("selected") || {};
+                                const updatedSelectedBoards = checked
+                                  ? [...selectedBoards, option]
+                                  : selectedBoards.filter(
+                                      (ele) => ele !== option,
+                                    );
+                                const updatedSubjects = checked
+                                  ? [
+                                      ...prevBoards,
+                                      { board_name: option, subjects: [] },
+                                    ]
+                                  : prevBoards.filter(
+                                      (ele) => ele.board_name !== option,
+                                    );
+
+                                checked
+                                  ? (selectedFields[option] = { subjects: [] })
+                                  : delete selectedFields[option];
+
+                                setValue("selected", selectedFields);
+                                setValue(
+                                  "selected_boards",
+                                  updatedSelectedBoards,
+                                );
+                                setValue("boards", updatedSubjects);
+                              }}
                             />
                           </Label>
                         </div>

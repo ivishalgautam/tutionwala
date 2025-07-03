@@ -102,8 +102,6 @@ export default function CreateCourse({
     enabled: !!categorySlug,
   });
 
-  // console.log(data?.fields, tutorCourse?.fields);
-
   const boards = data ? data.boards : [];
   const boardNames = boards.map(({ board_name }) => board_name);
   const selectedBoards = watch("selected_boards") ?? [];
@@ -343,7 +341,9 @@ export default function CreateCourse({
             <div className="grid grid-cols-1 pb-4 md:grid-cols-2 lg:grid-cols-3">
               <div>
                 <Label>Select course</Label>
-                <SubCategorySelect searchParams={searchParams} />
+                <div className="rounded border">
+                  <SubCategorySelect searchParams={searchParams} />
+                </div>
               </div>
             </div>
           )}
@@ -546,20 +546,47 @@ export default function CreateCourse({
             )}
 
             {data?.is_boards && (
-              <div>
+              <div className="py-6">
                 <div className="text-sm font-medium">
                   Which {data?.name} boards do you teach?
                 </div>
-                <div className="space-y-1">
+                <div className="flex items-center justify-start gap-2">
                   {boardNames.map((option) => (
                     <div key={option} className="text-sm text-gray-700">
-                      <Label className="flex items-center justify-between">
+                      <Label className="flex cursor-pointer items-center justify-between gap-2 rounded border p-2 hover:bg-gray-200">
                         <span className="font-normal uppercase">{option}</span>
                         <Input
                           type="checkbox"
                           value={option}
                           {...register("selected_boards")}
                           className="size-6 accent-primary"
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            const prevBoards = watch("boards") || [];
+                            const selectedBoards =
+                              watch("selected_boards") || [];
+                            const selectedFields = watch("selected") || {};
+                            console.log({ selectedBoards });
+                            const updatedSelectedBoards = checked
+                              ? [...selectedBoards, option]
+                              : selectedBoards.filter((ele) => ele !== option);
+                            const updatedSubjects = checked
+                              ? [
+                                  ...prevBoards,
+                                  { board_name: option, subjects: [] },
+                                ]
+                              : prevBoards.filter(
+                                  (ele) => ele.board_name !== option,
+                                );
+
+                            checked
+                              ? (selectedFields[option] = { subjects: [] })
+                              : delete selectedFields[option];
+
+                            setValue("selected", selectedFields);
+                            setValue("selected_boards", updatedSelectedBoards);
+                            setValue("boards", updatedSubjects);
+                          }}
                         />
                       </Label>
                     </div>
@@ -584,7 +611,7 @@ export default function CreateCourse({
                         .find((item) => item.board_name === board)
                         ?.subjects.map((subject) => (
                           <div key={subject} className="text-sm text-gray-700">
-                            <Label className="flex items-center justify-between">
+                            <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                               <span className="capitalize">{subject}</span>
                               <input
                                 type="checkbox"
@@ -616,7 +643,7 @@ export default function CreateCourse({
                       <div className="space-y-1">
                         {item.options.map((option) => (
                           <div key={option} className="text-sm text-gray-700">
-                            <Label className="flex items-center justify-between">
+                            <Label className="flex cursor-pointer items-center justify-between rounded border p-2 hover:bg-gray-200">
                               <span className="font-normal capitalize">
                                 {option}
                               </span>

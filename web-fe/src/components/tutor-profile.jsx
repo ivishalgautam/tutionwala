@@ -50,6 +50,7 @@ export default function TutorProfile({
   total_reviews,
   ...teacher
 }) {
+  console.log({ courses });
   const [fullAddr, setFullAddr] = useState("");
   const isInstitute = teacher.type === "institute";
 
@@ -121,10 +122,6 @@ export default function TutorProfile({
                   {teacher.availability.charAt(0).toUpperCase() +
                     teacher.availability.slice(1)}{" "}
                   availability
-                </Badge>
-                <Badge variant="secondary">
-                  <User className="mr-1 h-3 w-3" />
-                  {teacher.preference}
                 </Badge>
               </div>
               <div className="mt-2">
@@ -244,6 +241,7 @@ export default function TutorProfile({
               </Card>
             )}
 
+            {/* teaches */}
             <Card className="md:col-span-3">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center">
@@ -331,9 +329,6 @@ function CourseDetails({ courseData }) {
                     Demo Available
                   </Badge>
                 )}
-                <Badge variant="outline" className="capitalize">
-                  One-to-One
-                </Badge>
               </div>
 
               <div className="space-y-4">
