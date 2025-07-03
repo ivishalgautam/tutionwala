@@ -336,27 +336,29 @@ function CourseDetails({ courseData }) {
                   <h2 className="mb-2 text-lg font-semibold">
                     {courseData.name}
                   </h2>
-                  {courseData.details.boards.map((board, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <BookOpen className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium uppercase">
-                          {board.board_name}
-                        </span>
+                  <div className="space-y-6">
+                    {courseData.details.boards.map((board, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium uppercase">
+                            {board.board_name}
+                          </span>
+                        </div>
+                        <div className="ml-6 flex flex-wrap gap-2">
+                          {board.subjects.map((subject, idx) => (
+                            <Badge
+                              key={idx}
+                              variant="outline"
+                              className={"capitalize"}
+                            >
+                              {subject}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                      <div className="ml-6 flex flex-wrap gap-2">
-                        {board.subjects.map((subject, idx) => (
-                          <Badge
-                            key={idx}
-                            variant="outline"
-                            className={"capitalize"}
-                          >
-                            {subject}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </CardContent>
