@@ -598,51 +598,6 @@ export default function TutorProfileForm({ user, setUser }) {
             )}
           </div>
 
-          {/* preference */}
-          <div className="space-y-1">
-            <Label>Are you providing for Private or Group Classes?</Label>
-            <Controller
-              control={control}
-              rules={{ required: "required*" }}
-              name="preference"
-              render={({ field }) => (
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex items-center justify-start gap-2"
-                  value={field.value}
-                >
-                  {[
-                    "one on one/private tutions",
-                    "no preference",
-                    "group classes",
-                  ].map((ele, key) => (
-                    <div
-                      className={cn(
-                        "flex cursor-pointer items-center space-x-2 rounded border p-2",
-                        {
-                          "border-primary-200 bg-primary-50":
-                            field.value === ele,
-                        },
-                      )}
-                      key={ele}
-                    >
-                      <RadioGroupItem value={ele} id={ele} />
-                      <Label htmlFor={ele} className="capitalize">
-                        {ele}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              )}
-            />
-            {errors.preference && (
-              <span className="text-sm text-red-500">
-                {errors.preference.message}
-              </span>
-            )}
-          </div>
-
           {/* availability */}
           <div className="space-y-1">
             <Label>What days are you generally available to Classes?</Label>
