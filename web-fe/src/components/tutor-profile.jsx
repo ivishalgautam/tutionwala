@@ -153,7 +153,7 @@ export default function TutorProfile({
                     <div className="flex justify-between">
                       <div>
                         <h3 className="font-medium">
-                          {teacher.degree.name === "other"
+                          {String(teacher.degree.name).toLowerCase() === "other"
                             ? teacher.degree.other
                             : teacher.degree.name}
                         </h3>
