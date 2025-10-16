@@ -1,7 +1,6 @@
 "use client";
-import EnquiryForm from "@/forms/enquiry";
 import Review from "@/components/review";
-import { H2, H3, H4, Muted } from "@/components/ui/typography";
+import { Muted } from "@/components/ui/typography";
 import Image from "next/image";
 import DialogEnquiryForm from "@/forms/enquiry-dialog";
 import {
@@ -16,7 +15,6 @@ import {
   Languages,
   MapPin,
   MonitorPlay,
-  User,
   Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import MapStatic from "@/components/map-static";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
@@ -50,16 +48,14 @@ export default function TutorProfile({
   total_reviews,
   ...teacher
 }) {
-  console.log({ courses });
   const [fullAddr, setFullAddr] = useState("");
   const isInstitute = teacher.type === "institute";
-
   const modes = {};
   courses.forEach((item) => {
     const slug = item.slug;
     const budgets = item.details.budgets;
-    const isOnline = budgets.some((b) => b.mode === "online");
-    const isOffline = budgets.some((b) => b.mode === "offline");
+    const isOnline = budgets?.some((b) => b.mode === "online");
+    const isOffline = budgets?.some((b) => b.mode === "offline");
 
     if (!modes[slug]) modes[slug] = [];
     if (isOnline && !modes[slug].includes("online")) modes[slug].push("online");

@@ -601,7 +601,6 @@ export default function CompleteProfileTutor({
                             </span>
                           )}
                         </div>
-
                         {/* other */}
                         {degree.name === "other" && (
                           <div>
