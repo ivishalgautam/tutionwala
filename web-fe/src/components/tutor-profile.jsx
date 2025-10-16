@@ -115,8 +115,8 @@ export default function TutorProfile({
               <div className="mt-2 flex flex-wrap gap-2 uppercase">
                 <Badge variant="secondary">
                   <Calendar className="mr-1 h-3 w-3" />
-                  {teacher.availability.charAt(0).toUpperCase() +
-                    teacher.availability.slice(1)}{" "}
+                  {teacher.availability?.charAt(0)?.toUpperCase() +
+                    teacher.availability?.slice(1)}{" "}
                   availability
                 </Badge>
               </div>
@@ -194,8 +194,8 @@ export default function TutorProfile({
                               : "outline"
                           }
                         >
-                          {language.proficiency.charAt(0).toUpperCase() +
-                            language.proficiency.slice(1)}
+                          {language.proficiency?.charAt(0)?.toUpperCase() +
+                            language.proficiency?.slice(1)}
                         </Badge>
                       </div>
                     ))}
