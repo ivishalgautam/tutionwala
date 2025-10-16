@@ -65,7 +65,7 @@ export default function TutorProfile({
 
   const boards = {};
   courses.forEach((item) => {
-    boards[item.slug] = item.details.boards.flatMap((board) => board.subjects);
+    boards[item.slug] = item.details.boards?.flatMap((board) => board.subjects);
   });
 
   return (
